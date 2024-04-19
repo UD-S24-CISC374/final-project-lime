@@ -373,7 +373,7 @@ export default class Level1Scene extends Phaser.Scene {
                     this.time.delayedCall(10, updateTimer);
                 } else {
                     this.timer.setText("0.00");
-                    this.scene.start("LevelSelect", {
+                    this.scene.start("SecurityBreachScene", {
                         username: this.username,
                         lvl2: this.lvl2,
                         lvl3: this.lvl3,
