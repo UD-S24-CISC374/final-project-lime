@@ -10,8 +10,14 @@ export default class LevelSelect extends Phaser.Scene {
     private lvl3?: boolean = false;
     private lvl4?: boolean = false;
     private lvl5?: boolean = false;
+
     private username: string;
     private lastDirection: string;
+    private doorPositions: {
+        x: number;
+        Ustate: boolean;
+        scene: string;
+    }[];
 
     constructor() {
         super({ key: "LevelSelect" });
@@ -183,76 +189,33 @@ export default class LevelSelect extends Phaser.Scene {
 
         //level doors
 
-        const doorPositions = [
+        this.doorPositions = [
             {
                 x: 500,
-                state: this.lvl1,
+                Ustate: this.lvl1 || false,
                 scene: "LoadingScene1",
             },
-            { x: 950, state: this.lvl2, scene: "LoadingScene2" },
-            { x: 1400, state: this.lvl3, scene: "LevelThreeIntro" },
-            { x: 1850, state: this.lvl4, scene: "" },
-            { x: 2300, state: this.lvl5, scene: "" },
+            {
+                x: 950,
+                Ustate: this.lvl2 || false,
+                scene: "LoadingScene2",
+            },
+            {
+                x: 1400,
+                Ustate: this.lvl3 || false,
+                scene: "LevelThreeIntro",
+            },
+            {
+                x: 1850,
+                Ustate: this.lvl4 || false,
+                scene: "",
+            },
+            {
+                x: 2300,
+                Ustate: this.lvl5 || false,
+                scene: "",
+            },
         ];
-
-        doorPositions.forEach((pos) => {
-            const closedDoor = this.doors?.create(
-                pos.x,
-                507,
-                pos.state ? "closed_metal_door" : "lockedDoor"
-            ) as Phaser.Physics.Arcade.Sprite;
-            closedDoor.setScale(0.25).refreshBody();
-            closedDoor.setVisible(true);
-            const openDoor = this.doors?.create(
-                pos.x,
-                507,
-                "open_metal_door"
-            ) as Phaser.Physics.Arcade.Sprite;
-            openDoor.setScale(0.25).refreshBody();
-            openDoor.setVisible(false);
-
-            pos.state && this.player
-                ? this.physics.add.overlap(this.player, closedDoor, () => {
-                      closedDoor.setVisible(false);
-                      openDoor.setVisible(true);
-                      this.time.delayedCall(50, () => {
-                          closedDoor.setVisible(true);
-                          openDoor.setVisible(false);
-                      });
-
-                      if (
-                          openDoor.visible &&
-                          this.input.keyboard?.checkDown(
-                              this.input.keyboard.addKey(
-                                  Phaser.Input.Keyboard.KeyCodes.UP
-                              ),
-                              500
-                          )
-                      ) {
-                          this.tweens.add({
-                              targets: this.player,
-                              duration: 500,
-                              scaleX: 0,
-                              scaleY: 0,
-                              angle: 360,
-                              y: "-=40",
-                              onComplete: () => {
-                                  this.time.delayedCall(1000, () => {
-                                      this.sound.stopAll();
-                                      this.scene.start(pos.scene, {
-                                          username: this.username,
-                                          lvl2: this.lvl2,
-                                          lvl3: this.lvl3,
-                                          lvl4: this.lvl4,
-                                          lvl5: this.lvl5,
-                                      });
-                                  });
-                              },
-                          });
-                      }
-                  })
-                : null;
-        });
     }
     update() {
         if (!this.cursors) {
@@ -260,6 +223,61 @@ export default class LevelSelect extends Phaser.Scene {
         }
         if (!this.lastDirection) {
             this.lastDirection = "right"; // Assuming player starts facing right
+        }
+
+        if (this.player && this.doors) {
+            this.doorPositions.forEach((door) => {
+                const closedDoor = this.doors?.create(
+                    door.x,
+                    507,
+                    door.Ustate ? "closed_metal_door" : "lockedDoor"
+                ) as Phaser.Physics.Arcade.Sprite;
+                closedDoor.setScale(0.25).refreshBody();
+                closedDoor.setVisible(true);
+                const openDoor = this.doors?.create(
+                    door.x,
+                    507,
+                    "open_metal_door"
+                ) as Phaser.Physics.Arcade.Sprite;
+                openDoor.setScale(0.25).refreshBody();
+                openDoor.setVisible(false);
+                if (
+                    this.player &&
+                    Phaser.Geom.Intersects.RectangleToRectangle(
+                        closedDoor.getBounds(),
+                        this.player.getBounds()
+                    )
+                ) {
+                    closedDoor.setVisible(false);
+                    openDoor.setVisible(true);
+
+                    if (this.cursors?.up.isDown && openDoor.visible) {
+                        this.tweens.add({
+                            targets: this.player,
+                            duration: 500,
+                            scaleX: 0,
+                            scaleY: 0,
+                            angle: 360,
+                            y: "-=40",
+                            onComplete: () => {
+                                this.time.delayedCall(1000, () => {
+                                    this.sound.stopAll();
+                                    this.scene.start(door.scene, {
+                                        username: this.username,
+                                        lvl2: this.lvl2,
+                                        lvl3: this.lvl3,
+                                        lvl4: this.lvl4,
+                                        lvl5: this.lvl5,
+                                    });
+                                });
+                            },
+                        });
+                    }
+                } else {
+                    openDoor.setVisible(false);
+                    closedDoor.setVisible(true);
+                }
+            });
         }
 
         if (this.cursors.left.isDown) {
