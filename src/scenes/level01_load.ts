@@ -64,8 +64,10 @@ export default class LoadingScene1 extends Phaser.Scene {
         this.lineIndex = 0;
         this.content = [
             "Your mission, should you choose to accept it,",
-            "involves critical file manipulation. You need to",
-            "navigate to the 'control_room' and disable the 'surveillance_camera'.",
+            "involves critical file manipulation.",
+            " ",
+            "You need to navigate to the 'control_room' and",
+            "disable the 'surveillance_camera'.",
             " ",
             "Here are the commands at your disposal:",
             " ",
@@ -81,7 +83,7 @@ export default class LoadingScene1 extends Phaser.Scene {
             " ",
             "Disable the camera to advance further into Yortsed Corp.",
             " ",
-
+            " ",
             "                  [Enter] to Continue",
         ];
     }

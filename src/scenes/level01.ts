@@ -143,10 +143,10 @@ export default class Level1Scene extends Phaser.Scene {
         this.add.text(
             410,
             59,
-            "Enter the 'control_room' and remove the \n'surveillance_camera' so you can proceed\ninto the next area. Namuh has security\nroaming the area so time is of the essence.",
+            "Enter the 'control_room' and remove\nthe 'surveillance_camera' so you can\nproceed into the next area.",
             {
                 color: "#fff",
-                fontSize: "17px",
+                fontSize: "22px",
                 fontFamily: "Monospace",
             }
         );

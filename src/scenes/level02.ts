@@ -128,10 +128,10 @@ export default class Level2Scene extends Phaser.Scene {
         this.add.text(
             410,
             59,
-            "Move the 'emp_bomb' files into their\nrespective 'generator' directories.\n",
+            "Move the 'emp_bomb' files into their\nrespective 'generator' directories.\nTry using the 'mv' command.",
             {
                 color: "#fff",
-                fontSize: "20px",
+                fontSize: "22px",
                 fontFamily: "Monospace",
             }
         );

@@ -255,10 +255,10 @@ export default class Level03 extends Phaser.Scene {
         this.add.text(
             410,
             59,
-            "Search directories for codes \nand type them into the pin-pad\nto advance further into the facility.",
+            "Search directories for codes and type\nthem into the pin-pad to advance\n further into the facility.",
             {
                 color: "#fff",
-                fontSize: "17px",
+                fontSize: "22px",
                 fontFamily: "Monospace",
             }
         );
