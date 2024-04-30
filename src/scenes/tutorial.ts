@@ -86,7 +86,7 @@ export default class Tutorial extends Phaser.Scene {
         const cdMap = new Map<string, string[]>();
         const cdBack = new Map<string, string>();
         const manMap = new Map<string, string>();
-        const rmMap = new Map<string, string[]>(); // Map to track removable files
+        const rmMap = new Map<string, string[]>();
 
         lsMap.set("home", "dir_headquarters");
         lsMap.set("headquarters", "file_door_lock");

@@ -461,8 +461,8 @@ export default class Level2Scene extends Phaser.Scene {
         let time = 60;
         let lastUpdateTime = Date.now();
 
-        this.timer = this.add.text(75, 655, time.toFixed(2), {
-            fontSize: "50px",
+        this.timer = this.add.text(109, 589, time.toFixed(2), {
+            fontSize: "30px",
             color: "red",
         });
 
