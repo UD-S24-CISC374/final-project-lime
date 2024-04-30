@@ -125,6 +125,24 @@ export default class LevelSelect extends Phaser.Scene {
             frameRate: 12,
             repeat: -1,
         });
+        this.anims.create({
+            key: "upright",
+            frames: this.anims.generateFrameNumbers("dude", {
+                start: 18,
+                end: 18,
+            }),
+            frameRate: 12,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: "upleft",
+            frames: this.anims.generateFrameNumbers("dude", {
+                start: 19,
+                end: 19,
+            }),
+            frameRate: 12,
+            repeat: -1,
+        });
 
         this.anims.create({
             key: "idleLeft",
@@ -298,7 +316,28 @@ export default class LevelSelect extends Phaser.Scene {
             }
         }
 
+        // Check if player is jumping
+        if (this.player?.body?.velocity.y !== 0) {
+            if (this.lastDirection == "right") {
+                this.player?.anims.play("upright", true);
+            } else {
+                this.player?.anims.play("upleft", true);
+            }
+        } else if (this.player?.body.touching.down) {
+            // Player is touching the ground
+            if (this.lastDirection === "left") {
+                this.player?.anims.play("idleLeft", true);
+            } else {
+                this.player?.anims.play("idleRight", true);
+            }
+        }
+
         if (this.cursors.up.isDown && this.player?.body?.touching.down) {
+            if (this.lastDirection == "right") {
+                this.player.anims.play("upright", true);
+            } else {
+                this.player.anims.play("upleft", true);
+            }
             this.player.setVelocityY(-300);
         } else if (this.cursors.down.isDown) {
             this.player?.setVelocityY(300);
