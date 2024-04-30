@@ -81,6 +81,7 @@ export default class IntroScene extends Phaser.Scene {
             "You must utilize the tools given to you " + this.username + ".",
             " ",
             " ",
+            
             "Just as you have in the past.",
             " ",
             " ",

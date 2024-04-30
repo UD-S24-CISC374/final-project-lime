@@ -50,9 +50,15 @@ export default class Level1Scene extends Phaser.Scene {
         this.add.rectangle(640, 360, 1280, 720, 0x000);
 
         this.add.image(640, 100, "prompt").setDisplaySize(560, 110);
-        this.add.image(200, 100, "alfredicon").setDisplaySize(130, 130);
+        this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
-        this.manual = new Manual(this, 50, 100, "Initial manual text here.");
+        this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
+        this.manual = new Manual(
+            this,
+            50,
+            100,
+            "        COMMAND MANUAL \n\n- 'ls' to list the contents      of the current directory.\n\n- 'cd <directory>' to change     the current directory.\n\n- 'man <command>' to display     the manual for a specific     command.\n\n- 'rm <file> to remove a         file from its directory."
+        );
 
         let ding = this.sound.add("ding", { loop: false });
         let lsDing = this.sound.add("lsDing", { loop: false });
@@ -355,8 +361,8 @@ export default class Level1Scene extends Phaser.Scene {
         let time = 60;
         let lastUpdateTime = Date.now();
 
-        this.timer = this.add.text(75, 655, time.toFixed(2), {
-            fontSize: "50px",
+        this.timer = this.add.text(109, 589, time.toFixed(2), {
+            fontSize: "30px",
             color: "red",
         });
 

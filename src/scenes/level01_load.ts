@@ -76,6 +76,8 @@ export default class LoadingScene1 extends Phaser.Scene {
             " - 'cd <directory>' to change the current directory.",
             "                    Use 'cd ..' to go back.",
             " ",
+            " - 'rm <file> to remove a file from its directory.",
+            " ",
             " - 'man <command>' to display the manual for a specific command.",
             " ",
             "You can always run 'man alfred' for additional",

@@ -39,8 +39,8 @@ export default class Manual extends Phaser.GameObjects.Sprite {
         });
 
         // Create a container for manual text right under the book
-        let manualHeight = 355; // available space between the sprite and the text entry box
-        let manualWidth = 330; // an approximate width based on the screenshot
+        let manualHeight = 270; // available space between the sprite and the text entry box
+        let manualWidth = 300; // an approximate width based on the screenshot
         let manualX = 20; // starting X coordinate under the sprite
         let manualY = 175; // starting Y coordinate right below the sprite
         this.manualContainer = this.scene.add.container(manualX, manualY);

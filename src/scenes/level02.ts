@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import Manual from "../objects/manual";
 
 export default class Level2Scene extends Phaser.Scene {
     private stateText: Phaser.GameObjects.Text;
@@ -14,6 +15,7 @@ export default class Level2Scene extends Phaser.Scene {
     private objectiveCompleted: boolean = false;
     private lastText: string[] = [""];
     private lastPosition: number = -1;
+    private manual: Manual;
 
     constructor() {
         super({ key: "Level02" });
@@ -45,8 +47,15 @@ export default class Level2Scene extends Phaser.Scene {
         this.add.rectangle(640, 360, 1280, 720, 0x000);
 
         this.add.image(640, 100, "prompt").setDisplaySize(560, 110);
-        this.add.image(155, 100, "alfredicon").setDisplaySize(130, 130);
+        this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
+        this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
+        this.manual = new Manual(
+            this,
+            50,
+            100,
+            "        COMMAND MANUAL \n\n- 'ls' to list the contents      of the current directory.\n\n- 'cd <directory>' to change     the current directory.\n\n- 'man <command>' to display     the manual for a specific     command.\n\n- 'rm <file> to remove a         file from its directory."
+        );
 
         let ding = this.sound.add("ding", { loop: false });
         let lsDing = this.sound.add("lsDing", { loop: false });
