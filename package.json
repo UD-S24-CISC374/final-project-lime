@@ -36,7 +36,8 @@
     },
     "license": "MIT",
     "dependencies": {
-        "phaser": "^3.80.1"
+        "phaser": "^3.80.1",
+        "phaser3-rex-plugins": "^1.80.2"
     },
     "devDependencies": {
         "@types/jest": "^29.5.11",
