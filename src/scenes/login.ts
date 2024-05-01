@@ -37,6 +37,7 @@ export default class LoginScene extends Phaser.Scene {
         this.inputField.style.color = "#fff";
         this.inputField.placeholder = "Enter Username"; // Placeholder text
         this.inputField.style.border = "2px solid gold";
+        this.inputField.style.borderRadius = "10px";
 
         const authorizationText = this.add.text(
             470,

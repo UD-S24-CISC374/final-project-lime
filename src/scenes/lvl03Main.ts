@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import Manual from "../objects/manual";
 
 export default class Level03 extends Phaser.Scene {
     private stateText: Phaser.GameObjects.Text;
@@ -13,6 +14,7 @@ export default class Level03 extends Phaser.Scene {
     private objectiveCompleted: boolean = false;
     private lastText: string[] = [""];
     private lastPosition: number = -1;
+    private manual: Manual;
 
     constructor() {
         super({ key: "Level03" });
@@ -58,8 +60,9 @@ export default class Level03 extends Phaser.Scene {
         this.add.rectangle(640, 360, 1280, 720, 0x000);
 
         this.add.image(640, 100, "prompt").setDisplaySize(560, 110);
-        this.add.image(155, 100, "alfredicon").setDisplaySize(130, 130);
+        this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
+        this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
 
         function getRandomInt(min: number, max: number): number {
             min = Math.ceil(min);
@@ -114,6 +117,14 @@ export default class Level03 extends Phaser.Scene {
             .image(1109, 239, "pinPadText")
             .setDisplaySize(240, 80)
             .setDepth(0);
+
+        this.manual = new Manual(
+            this,
+            50,
+            100,
+            "        COMMAND MANUAL \n\n- 'ls' to list the contents      of the current directory.\n\n- 'cd <directory>' to change     the current directory.\n\n- 'man <command>' to display     the manual for a specific     command.\n\n- 'rm <file> to remove a         file from its directory."
+        );
+
         //padlock hover tint code
         imagePositions.forEach((pos) => {
             const image = this.add
@@ -259,10 +270,10 @@ export default class Level03 extends Phaser.Scene {
         this.add.text(
             410,
             59,
-            "Search directories for codes \nand type them into the pin-pad\nto advance further into the facility.",
+            "Search directories for codes and type\nthem into the pin-pad to advance\n further into the facility.",
             {
                 color: "#fff",
-                fontSize: "17px",
+                fontSize: "22px",
                 fontFamily: "Monospace",
             }
         );
@@ -389,8 +400,8 @@ export default class Level03 extends Phaser.Scene {
         let time = 120;
         let lastUpdateTime = Date.now();
 
-        this.timer = this.add.text(75, 655, time.toFixed(2), {
-            fontSize: "50px",
+        this.timer = this.add.text(109, 589, time.toFixed(2), {
+            fontSize: "30px",
             color: "red",
         });
 

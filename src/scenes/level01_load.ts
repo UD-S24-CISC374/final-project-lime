@@ -64,8 +64,10 @@ export default class LoadingScene1 extends Phaser.Scene {
         this.lineIndex = 0;
         this.content = [
             "Your mission, should you choose to accept it,",
-            "involves critical file manipulation. You need to",
-            "navigate to the 'control_room' and disable the 'surveillance_camera'.",
+            "involves critical file manipulation.",
+            " ",
+            "You need to navigate to the 'control_room' and",
+            "disable the 'surveillance_camera'.",
             " ",
             "Here are the commands at your disposal:",
             " ",
@@ -74,6 +76,8 @@ export default class LoadingScene1 extends Phaser.Scene {
             " - 'cd <directory>' to change the current directory.",
             "                    Use 'cd ..' to go back.",
             " ",
+            " - 'rm <file> to remove a file from its directory.",
+            " ",
             " - 'man <command>' to display the manual for a specific command.",
             " ",
             "You can always run 'man alfred' for additional",
@@ -81,7 +85,7 @@ export default class LoadingScene1 extends Phaser.Scene {
             " ",
             "Disable the camera to advance further into Yortsed Corp.",
             " ",
-
+            " ",
             "                  [Enter] to Continue",
         ];
     }
