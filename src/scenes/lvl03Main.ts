@@ -64,19 +64,19 @@ export default class Level03 extends Phaser.Scene {
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
         this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
 
-        // function getRandomInt(min: number, max: number): number {
-        //     min = Math.ceil(min);
-        //     max = Math.floor(max);
-        //     return Math.floor(Math.random() * (max - min + 1)) + min;
-        // }
-        // const randomNum1 = getRandomInt(1, 9).toString();
-        // const randomNum2 = getRandomInt(1, 9).toString();
-        // const randomNum3 = getRandomInt(1, 9).toString();
-        // const randomNum4 = getRandomInt(1, 9).toString();
-        const randomNum1 = "1";
-        const randomNum2 = "2";
-        const randomNum3 = "3";
-        const randomNum4 = "4";
+        function getRandomInt(min: number, max: number): number {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        const randomNum1 = getRandomInt(1, 9).toString();
+        const randomNum2 = getRandomInt(1, 9).toString();
+        const randomNum3 = getRandomInt(1, 9).toString();
+        const randomNum4 = getRandomInt(1, 9).toString();
+        // const randomNum1 = "1";
+        // const randomNum2 = "2";
+        // const randomNum3 = "3";
+        // const randomNum4 = "4";
 
         //Padlock code
         const imagePositions = [

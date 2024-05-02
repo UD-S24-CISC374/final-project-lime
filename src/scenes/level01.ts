@@ -8,6 +8,9 @@ export default class Level1Scene extends Phaser.Scene {
     private timer: Phaser.GameObjects.Text;
     private lvl2: boolean;
     private lvl3: boolean;
+    private playButton: Phaser.GameObjects.Image;
+    private pauseButton: Phaser.GameObjects.Image;
+    private timerPaused: boolean;
     private lvl4: boolean;
     private username: string;
     private lvl5: boolean;
@@ -360,14 +363,14 @@ export default class Level1Scene extends Phaser.Scene {
 
         let time = 60;
         let lastUpdateTime = Date.now();
-
+        this.timerPaused = false;
         this.timer = this.add.text(109, 589, time.toFixed(2), {
             fontSize: "30px",
             color: "red",
         });
 
         const updateTimer = () => {
-            if (!this.objectiveCompleted) {
+            if (!this.objectiveCompleted && !this.timerPaused) {
                 const currentTime = Date.now();
                 const elapsedTime = currentTime - lastUpdateTime;
 
@@ -396,13 +399,38 @@ export default class Level1Scene extends Phaser.Scene {
             color: "#fff",
         });
         this.events.on("shutdown", this.removeInputField, this);
+
+        // this.add.image(1080, 575, "pause").setDisplaySize(60, 60);
+        // this.add.image(620, 327, "play").setDisplaySize(335, 335);
     }
+
     removeInputField() {
         if (this.inputField.parentElement) {
             this.inputField.parentElement.removeChild(this.inputField);
         }
     }
-    update() {}
+    update() {
+        // this.pauseButton = this.add
+        //     .image(1080, 575, "pause")
+        //     .setDisplaySize(60, 60)
+        //     .setVisible(true);
+        // this.pauseButton.setInteractive();
+        // this.playButton = this.add
+        //     .image(620, 327, "play")
+        //     .setDisplaySize(335, 335)
+        //     .setVisible(false);
+        // this.playButton.setInteractive();
+        // this.pauseButton.on("pointerdown", () => {
+        //     this.timerPaused = true;
+        //     this.pauseButton.setVisible(false);
+        //     this.playButton.setVisible(true);
+        // });
+        // this.playButton.on("pointerdown", () => {
+        //     this.timerPaused = false;
+        //     this.playButton.setVisible(false);
+        //     this.pauseButton.setVisible(true);
+        // });
+    }
 
     addLsToContainer(text: string) {
         const words = text.split(" ");
