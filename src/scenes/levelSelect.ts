@@ -91,7 +91,18 @@ export default class LevelSelect extends Phaser.Scene {
             fontSize: 60,
             color: "#000000",
         });
+        const directions = this.add.text(
+            475,
+            200,
+            "Move with ← →\n\nJump and enter doors with ↑",
+            {
+                fontFamily: "Arial",
+                fontSize: 40,
+                color: "#000000",
+            }
+        );
         title.setStroke("#FFFF00", 6);
+        directions.setStroke("#FFFFFF", 6);
         const levelTextPositions = [
             { x: 490, level: "1" },
             { x: 940, level: "2" },
@@ -279,7 +290,6 @@ export default class LevelSelect extends Phaser.Scene {
                             y: "-=40",
                             onComplete: () => {
                                 this.time.delayedCall(1000, () => {
-                                    this.sound.stopAll();
                                     this.scene.start(door.scene, {
                                         username: this.username,
                                         lvl2: this.lvl2,
@@ -322,13 +332,6 @@ export default class LevelSelect extends Phaser.Scene {
                 this.player?.anims.play("upright", true);
             } else {
                 this.player?.anims.play("upleft", true);
-            }
-        } else if (this.player.body.touching.down) {
-            // Player is touching the ground
-            if (this.lastDirection === "left") {
-                this.player.anims.play("idleLeft", true);
-            } else {
-                this.player.anims.play("idleRight", true);
             }
         }
 
