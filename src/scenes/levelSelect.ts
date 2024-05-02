@@ -261,6 +261,7 @@ export default class LevelSelect extends Phaser.Scene {
                 openDoor.setVisible(false);
                 if (
                     this.player &&
+                    door.Ustate &&
                     Phaser.Geom.Intersects.RectangleToRectangle(
                         closedDoor.getBounds(),
                         this.player.getBounds()
@@ -323,12 +324,12 @@ export default class LevelSelect extends Phaser.Scene {
             } else {
                 this.player?.anims.play("upleft", true);
             }
-        } else if (this.player?.body.touching.down) {
+        } else if (this.player.body.touching.down) {
             // Player is touching the ground
             if (this.lastDirection === "left") {
-                this.player?.anims.play("idleLeft", true);
+                this.player.anims.play("idleLeft", true);
             } else {
-                this.player?.anims.play("idleRight", true);
+                this.player.anims.play("idleRight", true);
             }
         }
 

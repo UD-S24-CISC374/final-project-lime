@@ -64,20 +64,19 @@ export default class Level03 extends Phaser.Scene {
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
         this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
 
-        function getRandomInt(min: number, max: number): number {
-            min = Math.ceil(min);
-            max = Math.floor(max);
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-        const randomNum1 = getRandomInt(1, 9).toString();
-        const randomNum2 = getRandomInt(1, 9).toString();
-        const randomNum3 = getRandomInt(1, 9).toString();
-        const randomNum4 = getRandomInt(1, 9).toString();
-
-        // const randomNum1 = "1";
-        // const randomNum2 = "2";
-        // const randomNum3 = "3";
-        // const randomNum4 = "4";
+        // function getRandomInt(min: number, max: number): number {
+        //     min = Math.ceil(min);
+        //     max = Math.floor(max);
+        //     return Math.floor(Math.random() * (max - min + 1)) + min;
+        // }
+        // const randomNum1 = getRandomInt(1, 9).toString();
+        // const randomNum2 = getRandomInt(1, 9).toString();
+        // const randomNum3 = getRandomInt(1, 9).toString();
+        // const randomNum4 = getRandomInt(1, 9).toString();
+        const randomNum1 = "1";
+        const randomNum2 = "2";
+        const randomNum3 = "3";
+        const randomNum4 = "4";
 
         //Padlock code
         const imagePositions = [
@@ -189,46 +188,39 @@ export default class Level03 extends Phaser.Scene {
         const cdBack = new Map<string, string>();
         const manMap = new Map<string, string>();
 
-        lsMap.set("back_door", "dir_brick_pile dir_garbage_can dir_file_box");
-        lsMap.set("brick_pile", "file_bricks file_rocks file_dirt");
+        lsMap.set("back_door", "dir_container dir_garbage_can dir_file_box");
+        lsMap.set("container", "file_paper file_staples");
         lsMap.set(
             "garbage_can",
-            "file_soda_can file_sticks dir_cracked_phone file_broken_chair"
+            "file_soda_can file_sticks dir_red_folder file_pencil"
         );
-        lsMap.set(
-            "file_box",
-            "file_pencils dir_secret_folder_#1 dir_graph_paper"
-        );
-        lsMap.set("cracked_phone", "dir_notes_app");
-        lsMap.set("graph_paper", "file_code_#4.txt");
-        lsMap.set("notes_app", "file_code_#1.txt");
-        lsMap.set("secret_folder_#1", "file_code_#2.txt file_code_#3.txt");
+        lsMap.set("file_box", "file_pencil dir_secret_folder_1 dir_wallet");
+        lsMap.set("red_folder", "file_code_#4.txt");
+        lsMap.set("wallet", "file_code_#1.txt file_photograph");
+        lsMap.set("secret_folder_1", "file_code_#2.txt file_code_#3.txt");
 
         catMap.set("code_#1.txt", randomNum1);
         catMap.set("code_#2.txt", randomNum2);
         catMap.set("code_#3.txt", randomNum3);
         catMap.set("code_#4.txt", randomNum4);
 
-        catMap.set("bricks.txt", "bricks");
-        catMap.set("rocks.txt", "rocks");
-        catMap.set("dirt.txt", "dirt");
-        catMap.set("pencils.txt", "pencils");
-        catMap.set("soda_can.txt", "soda_can");
-        catMap.set("sticks.txt", "sticks");
-        catMap.set("broken_chair.txt", "broken_chair");
+        catMap.set("paper", "Namuh is evil.");
+        catMap.set("staples", "Just some staples.");
+        catMap.set("pencil", "Dixon Ticonderoga.");
+        catMap.set("soda_can", "Refreshing beverage.");
+        catMap.set("sticks", "Wooden sticks.");
+        catMap.set("photograph", "Photo of a cat.");
 
-        cdMap.set("back_door", ["brick_pile", "garbage_can", "file_box"]);
-        cdMap.set("garbage_can", ["cracked_phone"]);
-        cdMap.set("file_box", ["secret_folder_#1", "graph_paper"]);
-        cdMap.set("cracked_phone", ["notes_app"]);
+        cdMap.set("back_door", ["container", "garbage_can", "file_box"]);
+        cdMap.set("garbage_can", ["red_folder"]);
+        cdMap.set("file_box", ["secret_folder_1", "wallet"]);
 
-        cdBack.set("brick_pile", "back_door");
+        cdBack.set("container", "back_door");
         cdBack.set("garbage_can", "back_door");
         cdBack.set("file_box", "back_door");
-        cdBack.set("cracked_phone", "garbage_can");
-        cdBack.set("graph_paper", "file_box");
-        cdBack.set("notes_app", "cracked_phone");
-        cdBack.set("secret_folder_#1", "file_box");
+        cdBack.set("red_folder", "garbage_can");
+        cdBack.set("wallet", "file_box");
+        cdBack.set("secret_folder_1", "file_box");
 
         manMap.set(
             "ls",
@@ -246,9 +238,6 @@ export default class Level03 extends Phaser.Scene {
             "cat",
             "Alfred: The 'cat' command permits you\nto read a file's contents. Kind of like\nthe 'ls' command reads a directory's contents."
         );
-
-        // Add text input field
-        this.inputField = document.createElement("input");
 
         // Add text input field
         this.inputField = document.createElement("input");
