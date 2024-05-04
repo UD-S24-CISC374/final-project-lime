@@ -9,14 +9,32 @@ export default class TitleScene extends Phaser.Scene {
 
     init() {}
 
-    preload() {}
+    preload() {
+        this.load.image("titlescreen", "assets/CyberSpyTitleScreen.png");
+        this.load.audio("menuMusic", ["assets/menuMusic.mp3"]);
+        this.load.image("cityBackground", "assets/titleBackground2.png");
+    }
 
     create() {
         let menuMusic = this.sound.add("menuMusic", { loop: true });
         menuMusic.play();
         // menuMusic.setSeek(10);
-        this.add.image(640, 360, "titlescreen");
+        const cityBackground1 = this.add
+            .tileSprite(0, 0, 0, 0, "cityBackground")
+            .setOrigin(0, 0);
 
+        const cityBackground2 = this.add
+            .tileSprite(cityBackground1.width, 0, 0, 0, "cityBackground")
+            .setOrigin(0, 0);
+
+        // Animate city backgrounds to move from right to left infinitely
+        this.tweens.add({
+            targets: [cityBackground1, cityBackground2],
+            x: "-=" + cityBackground1.width,
+            duration: 40000, // Adjust duration as needed
+            repeat: -1,
+        });
+        this.add.image(640, 300, "titlescreen");
         this.clickButton = this.add
             .text(515, 440, "[Enter] to Start", {
                 color: "#fff",
