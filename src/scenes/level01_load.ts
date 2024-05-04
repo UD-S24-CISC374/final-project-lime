@@ -33,7 +33,7 @@ export default class LoadingScene1 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("alfredicon", "assets/alfredicon.png");
+        this.load.image("alfredicon", "assets/LevelUI/AlfredIcon.png");
     }
 
     create() {

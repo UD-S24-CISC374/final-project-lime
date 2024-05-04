@@ -40,19 +40,19 @@ export default class Level03 extends Phaser.Scene {
         this.lvl5 = data.lvl5;
     }
     preload() {
-        this.load.image("1", "assets/num1.png");
-        this.load.image("2", "assets/num2.png");
-        this.load.image("3", "assets/num3.png");
-        this.load.image("4", "assets/num4.png");
-        this.load.image("5", "assets/num5.png");
-        this.load.image("6", "assets/num6.png");
-        this.load.image("7", "assets/num7.png");
-        this.load.image("8", "assets/num8.png");
-        this.load.image("9", "assets/num9.png");
-        this.load.image("0", "assets/num0.png");
-        this.load.image("padCheck", "assets/padCheck.png");
-        this.load.image("padX", "assets/padx.png");
-        this.load.image("pinPadText", "assets/PinPadText.png");
+        this.load.image("1", "assets/Keypad/num1.png");
+        this.load.image("2", "assets/Keypad/num2.png");
+        this.load.image("3", "assets/Keypad/num3.png");
+        this.load.image("4", "assets/Keypad/num4.png");
+        this.load.image("5", "assets/Keypad/num5.png");
+        this.load.image("6", "assets/Keypad/num6.png");
+        this.load.image("7", "assets/Keypad/num7.png");
+        this.load.image("8", "assets/Keypad/num8.png");
+        this.load.image("9", "assets/Keypad/num9.png");
+        this.load.image("0", "assets/Keypad/num0.png");
+        this.load.image("padCheck", "assets/Keypad/padCheck.png");
+        this.load.image("padX", "assets/Keypad/padx.png");
+        this.load.image("pinPadText", "assets/Keypad/PinPadText.png");
     }
 
     create() {

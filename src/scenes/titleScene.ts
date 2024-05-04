@@ -11,8 +11,8 @@ export default class TitleScene extends Phaser.Scene {
 
     preload() {
         this.load.image("titlescreen", "assets/CyberSpyTitleScreen.png");
-        this.load.audio("menuMusic", ["assets/menuMusic.mp3"]);
-        this.load.image("cityBackground", "assets/city2.png");
+        this.load.audio("menuMusic", ["assets/Audio/menuMusic.mp3"]);
+        this.load.image("cityBackground", "assets/Backgrounds/city2.png");
     }
 
     create() {
