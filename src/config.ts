@@ -37,7 +37,6 @@ export const CONFIG = {
         LevelSelect,
         TerminalScene,
         Level01,
-        Level1Test,
         LoadingScene1,
         IntroScene,
         LoginScene,
