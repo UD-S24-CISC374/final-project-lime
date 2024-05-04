@@ -18,6 +18,8 @@ export default class LevelSelect extends Phaser.Scene {
         Ustate: boolean;
         scene: string;
     }[];
+    private walkSound: Phaser.Sound.BaseSound | undefined;
+    private isWalking = false;
 
     constructor() {
         super({ key: "LevelSelect" });
@@ -313,17 +315,32 @@ export default class LevelSelect extends Phaser.Scene {
             this.player?.setVelocityX(-400);
             this.player?.anims.play("left", true);
             this.lastDirection = "left"; // Update last movement direction
+            this.isWalking = true;
         } else if (this.cursors.right.isDown) {
             this.player?.setVelocityX(400);
             this.player?.anims.play("right", true);
             this.lastDirection = "right"; // Update last movement direction
+            this.isWalking = true;
         } else {
             this.player?.setVelocityX(0);
+            this.isWalking = false;
 
             if (this.lastDirection === "left") {
                 this.player?.anims.play("idleLeft", true);
             } else {
                 this.player?.anims.play("idleRight", true);
+            }
+        }
+
+        if (this.isWalking) {
+            if (!this.walkSound) {
+                this.walkSound = this.sound.add("walk");
+                this.walkSound.play();
+            }
+        } else {
+            if (this.walkSound) {
+                this.walkSound.stop();
+                this.walkSound = undefined;
             }
         }
 
@@ -337,6 +354,8 @@ export default class LevelSelect extends Phaser.Scene {
         }
 
         if (this.cursors.up.isDown && this.player?.body?.touching.down) {
+            let jumpSound = this.sound.add("jump");
+            jumpSound.play();
             if (this.lastDirection == "right") {
                 this.player.anims.play("upright", true);
             } else {
