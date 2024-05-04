@@ -12,9 +12,9 @@ import SecurityBreachScene from "./scenes/securityBreach";
 import Level2Scene from "./scenes/level02";
 import LoadingScene2 from "./scenes/level02_load";
 import LoadingScene2Part2 from "./scenes/level02_load2";
-import LevelThreeIntro from "./scenes/lvl03_intro";
-import LevelThreeIntro2 from "./scenes/LevelThreeIntro2";
-import Level03 from "./scenes/lvl03Main";
+import LevelThreeIntro from "./scenes/level03_load";
+import LevelThreeIntro2 from "./scenes/level03_load2";
+import Level03 from "./scenes/level03";
 
 const DEFAULT_WIDTH = 1280;
 const DEFAULT_HEIGHT = 720;
