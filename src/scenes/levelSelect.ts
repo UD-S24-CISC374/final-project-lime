@@ -347,6 +347,10 @@ export default class LevelSelect extends Phaser.Scene {
 
         // Check if player is jumping
         if (this.player?.body?.velocity.y !== 0) {
+            if (this.walkSound) {
+                this.walkSound.stop();
+                this.walkSound = undefined;
+            }
             if (this.lastDirection == "right") {
                 this.player?.anims.play("upright", true);
             } else {
