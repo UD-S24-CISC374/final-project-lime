@@ -335,6 +335,7 @@ export default class LevelSelect extends Phaser.Scene {
         if (this.isWalking) {
             if (!this.walkSound) {
                 this.walkSound = this.sound.add("walk");
+                this.walkSound.play({ loop: true, rate: 2 });
                 this.walkSound.play();
             }
         } else {
@@ -355,7 +356,7 @@ export default class LevelSelect extends Phaser.Scene {
 
         if (this.cursors.up.isDown && this.player?.body?.touching.down) {
             let jumpSound = this.sound.add("jump");
-            jumpSound.play();
+            jumpSound.play({ volume: 0.5 });
             if (this.lastDirection == "right") {
                 this.player.anims.play("upright", true);
             } else {
