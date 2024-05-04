@@ -44,6 +44,7 @@ export default class PreloadScene extends Phaser.Scene {
             frameHeight: 405,
         });
 
+        this.load.audio("speaking", ["assets/speaking.mp3"]);
         this.load.audio("ding", ["assets/ding.mp3"]);
         this.load.audio("cdDing", ["assets/cdDing.mp3"]);
         this.load.audio("lsDing", ["assets/lsDing.mp3"]);

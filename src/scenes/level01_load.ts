@@ -126,11 +126,16 @@ export default class LoadingScene1 extends Phaser.Scene {
             );
             // Start typing the line
             this.typeText(line);
+        } else if (this.lineIndex === this.content.length) {
+            this.contentFullyDisplayed = true;
         }
     }
 
     // Helper to animate text typing
     typeText(line: string) {
+        let speaking = this.sound.add("speaking", { loop: false });
+
+        speaking.play();
         // split the line into characters
         const characters = line.split("");
         let i = 0;
@@ -141,6 +146,8 @@ export default class LoadingScene1 extends Phaser.Scene {
             callback: () => {
                 this.currentLine.text += characters[i++];
                 if (i === characters.length) {
+                    speaking.stop();
+
                     // once all characters are added, add a delayed event to display the next line
                     this.time.delayedCall(
                         this.lineDelay,
