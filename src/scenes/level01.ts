@@ -41,9 +41,9 @@ export default class Level1Scene extends Phaser.Scene {
         this.lvl5 = data.lvl5;
     }
     preload() {
-        this.load.image("ClosedBook", "../assets/ClosedBook.png");
-        this.load.image("HoveredBook", "../assets/HoveredBook.png");
-        this.load.image("OpenBook", "../assets/OpenBook.png");
+        this.load.image("ClosedBook", "../assets/LevelUI/ClosedBook.png");
+        this.load.image("HoveredBook", "../assets/LevelUI/HoveredBook.png");
+        this.load.image("OpenBook", "../assets/LevelUI/OpenBook.png");
     }
 
     create() {

@@ -32,7 +32,7 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("alfredicon", "assets/alfredicon.png");
+        this.load.image("alfredicon", "assets/LevelUI/AlfredIcon.png");
     }
 
     create() {

@@ -33,7 +33,7 @@ export default class IntroScene extends Phaser.Scene {
         console.log(this.username);
     }
     preload() {
-        this.load.image("alfredicon", "assets/alfredicon.png");
+        this.load.image("alfredicon", "assets/LevelUI/AlfredIcon.png");
     }
 
     create() {

@@ -11,8 +11,8 @@ export default class TitleScene extends Phaser.Scene {
 
     preload() {
         this.load.image("titlescreen", "assets/CyberSpyTitleScreen.png");
-        this.load.audio("menuMusic", ["assets/menuMusic.mp3"]);
-        this.load.image("cityBackground", "assets/titleBackground2.png");
+        this.load.audio("menuMusic", ["assets/Audio/menuMusic.mp3"]);
+        this.load.image("cityBackground", "assets/Backgrounds/city2.png");
     }
 
     create() {
@@ -20,11 +20,11 @@ export default class TitleScene extends Phaser.Scene {
         menuMusic.play();
         // menuMusic.setSeek(10);
         const cityBackground1 = this.add
-            .tileSprite(0, 0, 0, 0, "cityBackground")
+            .tileSprite(0, -110, 0, 0, "cityBackground")
             .setOrigin(0, 0);
 
         const cityBackground2 = this.add
-            .tileSprite(cityBackground1.width, 0, 0, 0, "cityBackground")
+            .tileSprite(cityBackground1.width, -110, 0, 0, "cityBackground")
             .setOrigin(0, 0);
 
         // Animate city backgrounds to move from right to left infinitely

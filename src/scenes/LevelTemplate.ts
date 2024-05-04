@@ -58,19 +58,19 @@ export default class LevelTemplate extends Phaser.Scene {
     }
     preload() {
         // load images
-        this.load.image("ClosedBook", "../assets/ClosedBook.png");
-        this.load.image("HoveredBook", "../assets/HoveredBook.png");
-        this.load.image("OpenBook", "../assets/OpenBook.png");
-        this.load.image("alfredicon", "assets/AlfredIcon.png");
-        this.load.image("pin", "assets/pin.png");
-        this.load.image("prompt", "assets/PromptBox.png");
-        this.load.image("bomb", "assets/bomb.png");
+        this.load.image("ClosedBook", "../assets/LevelUI/ClosedBook.png");
+        this.load.image("HoveredBook", "../assets/LevelUI/HoveredBook.png");
+        this.load.image("OpenBook", "../assets/LevelUI/OpenBook.png");
+        this.load.image("alfredicon", "assets/LevelUI/AlfredIcon.png");
+        this.load.image("pin", "assets/LevelUI/pin.png");
+        this.load.image("prompt", "assets/LevelUI/PromptBox.png");
+        this.load.image("bomb", "assets/LevelUI/bomb.png");
         // load audio elements
-        this.load.audio("ding", ["assets/ding.mp3"]);
-        this.load.audio("cdDing", ["assets/cdDing.mp3"]);
-        this.load.audio("lsDing", ["assets/lsDing.mp3"]);
-        this.load.audio("cdBackDing", ["assets/cdBackDing.mp3"]);
-        this.load.audio("manDing", ["assets/manDing.mp3"]);
+        this.load.audio("ding", ["assets/Audio/ding.mp3"]);
+        this.load.audio("cdDing", ["assets/Audio/cdDing.mp3"]);
+        this.load.audio("lsDing", ["assets/Audio/lsDing.mp3"]);
+        this.load.audio("cdBackDing", ["assets/Audio/cdBackDing.mp3"]);
+        this.load.audio("manDing", ["assets/Audio/manDing.mp3"]);
     }
     setLsFlag(flag: boolean) {
         this.lsFlag = flag;
