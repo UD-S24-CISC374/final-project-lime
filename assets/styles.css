@@ -1,8 +1,0 @@
-@font-face {
-    font-family: "jetbrains";
-    src: url("/assets/fonts/JetBrains.ttf") format("truetype");
-}
-
-body {
-    font-family: "jetbrains";
-}
