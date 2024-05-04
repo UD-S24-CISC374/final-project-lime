@@ -11,7 +11,9 @@ export default class IntroScene extends Phaser.Scene {
     private lvl2: boolean;
     private lvl3: boolean;
     private lvl4: boolean;
+    private lvl5: boolean;
     private username: string;
+    private contentFullyDisplayed: boolean; // flag to track if content is fully displayed
 
     constructor() {
         super({ key: "IntroScene" });
@@ -46,13 +48,18 @@ export default class IntroScene extends Phaser.Scene {
         this.displayNextLine();
 
         // On enter, transition to Level 1
-        this.input.keyboard?.once("keydown-ENTER", () => {
-            this.scene.start("Tutorial", {
-                username: this.username,
-                lvl2: this.lvl2,
-                lvl3: this.lvl3,
-                lvl4: this.lvl4,
-            });
+        this.input.keyboard?.on("keydown-ENTER", () => {
+            if (this.contentFullyDisplayed) {
+                this.scene.start("Tutorial", {
+                    username: this.username,
+                    lvl2: this.lvl2,
+                    lvl3: this.lvl3,
+                    lvl4: this.lvl4,
+                    lvl5: this.lvl5,
+                });
+            } else {
+                this.displayAllContent();
+            }
         });
     }
 
@@ -81,7 +88,7 @@ export default class IntroScene extends Phaser.Scene {
             "You must utilize the tools given to you " + this.username + ".",
             " ",
             " ",
-            
+
             "Just as you have in the past.",
             " ",
             " ",
@@ -95,6 +102,19 @@ export default class IntroScene extends Phaser.Scene {
             " ",
             "                  [Enter] to Continue",
         ];
+    }
+
+    displayAllContent() {
+        this.lineIndex = 0;
+
+        this.content.forEach((line) => {
+            const textY = this.startY + 22 * this.lineIndex++;
+            this.add.text(this.startX, textY, line, {
+                fontSize: "24px",
+                color: "#fff",
+            });
+        });
+        this.contentFullyDisplayed = true;
     }
 
     // helper to display text line by line, calling typeText to animate

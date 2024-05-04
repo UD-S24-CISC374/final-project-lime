@@ -105,6 +105,10 @@ export default class Level2Scene extends Phaser.Scene {
             "Alfred: Remember, the 'ls' command\nis useful for viewing your surroundings."
         );
         manMap.set(
+            "mv",
+            "Alfred: Remember, the 'mv' command\nis used to move a file into a new directory."
+        );
+        manMap.set(
             "rm",
             "Alfred: Remember, the 'rm' command\nneutralizes enemy files."
         );
