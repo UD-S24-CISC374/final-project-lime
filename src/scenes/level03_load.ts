@@ -78,6 +78,7 @@ export default class LevelThreeIntro extends Phaser.Scene {
             "Once you've gathered them, you'll input these numbers",
             "into the pin-pad to gain access to the inner sanctum.",
             " ",
+            "You must enter these codes in number order for the passcode to work.",
             " ",
             "You can always run 'man alfred' for additional",
             "assistance to reach the end of a mission.",
@@ -119,11 +120,16 @@ export default class LevelThreeIntro extends Phaser.Scene {
             );
             // Start typing the line
             this.typeText(line);
+        } else if (this.lineIndex === this.content.length) {
+            this.contentFullyDisplayed = true;
         }
     }
 
     // helper to animate text typing
     typeText(line: string) {
+        let speaking = this.sound.add("speaking", { loop: false });
+
+        speaking.play();
         // split the line into characters
         const characters = line.split("");
         let i = 0;
@@ -134,6 +140,7 @@ export default class LevelThreeIntro extends Phaser.Scene {
             callback: () => {
                 this.currentLine.text += characters[i++];
                 if (i === characters.length) {
+                    speaking.stop();
                     // once all characters are added, add a delayed event to display the next line
                     this.time.delayedCall(
                         this.lineDelay,

@@ -68,9 +68,8 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
         this.startY = 90;
         this.lineIndex = 0;
         this.content = [
-            "Note that the 'cat' command is used to display the contents",
-            "of one or more files. It can be used on a single file, or",
-            "multiple files, and display their outputs.",
+            "The 'cat' command is used to display the contents",
+            "of a text file right in your terminal.",
             " ",
             "Below is an example using 'cat' to display the contents",
             "of a file named  'secret.txt':",
@@ -80,16 +79,15 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
             "If you need to display the contents of multiple files,",
             "you can provide their filenames separated by spaces.",
             " ",
-            "For example, to display the contents of two files, 'secret1.txt'",
-            "and 'secret2.txt', you can use:",
+            "For example, to display the contents of two files,",
+            "'secret1.txt' and 'secret2.txt', you can use:",
             " ",
             " - 'cat secret1.txt secret2.txt'",
             " ",
-            "Note, the 'cat' command displays the contents of files,",
-            "not directories which you're used to. 'Cat' is to files what 'ls' is",
-            "to directories. In your mission, files are marked with '.txt' at",
-            "the end of their names. E.g. 'secret_message.txt', and thats where",
-            "you'll find the hidden codes for this mission.",
+            "Note, the 'cat' command only displays the contents of files,",
+            "'cat' is to files what 'ls' is to directories. ",
+            "In this mission, files are marked with '.txt' at the end of their names.",
+            "Those text files are where you'll find hidden codes for the pin-pad.",
             " ",
             "If you are ever unsure about how to use the 'cat' command, you",
             "can use 'man cat' to help you.",
@@ -130,11 +128,16 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
             );
             // Start typing the line
             this.typeText(line);
+        } else if (this.lineIndex === this.content.length) {
+            this.contentFullyDisplayed = true;
         }
     }
 
     // helper to animate text typing
     typeText(line: string) {
+        let speaking = this.sound.add("speaking", { loop: false });
+
+        speaking.play();
         // split the line into characters
         const characters = line.split("");
         let i = 0;
@@ -145,6 +148,7 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
             callback: () => {
                 this.currentLine.text += characters[i++];
                 if (i === characters.length) {
+                    speaking.stop();
                     // once all characters are added, add a delayed event to display the next line
                     this.time.delayedCall(
                         this.lineDelay,
