@@ -91,7 +91,18 @@ export default class LevelSelect extends Phaser.Scene {
             fontSize: 60,
             color: "#000000",
         });
+        const directions = this.add.text(
+            475,
+            200,
+            "Move with ← →\n\nJump and enter doors with ↑",
+            {
+                fontFamily: "Arial",
+                fontSize: 40,
+                color: "#000000",
+            }
+        );
         title.setStroke("#FFFF00", 6);
+        directions.setStroke("#FFFFFF", 6);
         const levelTextPositions = [
             { x: 490, level: "1" },
             { x: 940, level: "2" },
@@ -121,6 +132,24 @@ export default class LevelSelect extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("dude", {
                 start: 7,
                 end: 0,
+            }),
+            frameRate: 12,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: "upright",
+            frames: this.anims.generateFrameNumbers("dude", {
+                start: 18,
+                end: 18,
+            }),
+            frameRate: 12,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: "upleft",
+            frames: this.anims.generateFrameNumbers("dude", {
+                start: 19,
+                end: 19,
             }),
             frameRate: 12,
             repeat: -1,
@@ -203,7 +232,7 @@ export default class LevelSelect extends Phaser.Scene {
             {
                 x: 1400,
                 Ustate: this.lvl3 || false,
-                scene: "LevelThreeIntro",
+                scene: "LoadingScene3",
             },
             {
                 x: 1850,
@@ -243,6 +272,7 @@ export default class LevelSelect extends Phaser.Scene {
                 openDoor.setVisible(false);
                 if (
                     this.player &&
+                    door.Ustate &&
                     Phaser.Geom.Intersects.RectangleToRectangle(
                         closedDoor.getBounds(),
                         this.player.getBounds()
@@ -261,7 +291,6 @@ export default class LevelSelect extends Phaser.Scene {
                             y: "-=40",
                             onComplete: () => {
                                 this.time.delayedCall(1000, () => {
-                                    this.sound.stopAll();
                                     this.scene.start(door.scene, {
                                         username: this.username,
                                         lvl2: this.lvl2,
@@ -298,7 +327,21 @@ export default class LevelSelect extends Phaser.Scene {
             }
         }
 
+        // Check if player is jumping
+        if (this.player?.body?.velocity.y !== 0) {
+            if (this.lastDirection == "right") {
+                this.player?.anims.play("upright", true);
+            } else {
+                this.player?.anims.play("upleft", true);
+            }
+        }
+
         if (this.cursors.up.isDown && this.player?.body?.touching.down) {
+            if (this.lastDirection == "right") {
+                this.player.anims.play("upright", true);
+            } else {
+                this.player.anims.play("upleft", true);
+            }
             this.player.setVelocityY(-300);
         } else if (this.cursors.down.isDown) {
             this.player?.setVelocityY(300);
