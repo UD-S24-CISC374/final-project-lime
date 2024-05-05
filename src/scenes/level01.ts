@@ -167,6 +167,7 @@ export default class Level1Scene extends Phaser.Scene {
 
         this.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
             if (event.key === "Enter" && this.typing) {
+                this.lastPosition = -1;
                 const newText = this.inputField.value;
                 this.lastText.push(newText.trim());
 

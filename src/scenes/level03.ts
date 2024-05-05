@@ -288,7 +288,10 @@ export default class Level03 extends Phaser.Scene {
 
         this.inputField.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
-                const command = this.inputField.value.trim();
+                this.lastPosition = -1;
+                const command = this.inputField.value;
+                this.lastText.push(command.trim());
+
                 this.inputField.value = ""; // Clear the input field
                 if (command === "ls") {
                     lsDing.play();
