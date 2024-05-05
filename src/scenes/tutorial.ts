@@ -65,6 +65,7 @@ export default class Tutorial extends Phaser.Scene {
         let cdDing = this.sound.add("cdDing", { loop: false });
         let cdBackDing = this.sound.add("cdBackDing", { loop: false });
         let manDing = this.sound.add("manDing", { loop: false });
+        let winChime = this.sound.add("winChime", { loop: false });
 
         this.inputContainer = this.add.container(360, 520);
 
@@ -446,6 +447,7 @@ export default class Tutorial extends Phaser.Scene {
                 this.manObjective
             ) {
                 this.time.delayedCall(6000, () => {
+                    winChime.play();
                     this.addTextToContainer(
                         "Objective complete: Passed basic training. \nGood work, " +
                             this.username +
@@ -542,6 +544,7 @@ export default class Tutorial extends Phaser.Scene {
 
     loadLevel() {
         this.removeInputField();
+
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: this.lvl2,

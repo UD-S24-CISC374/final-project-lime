@@ -13,6 +13,8 @@ export default class LoadingScene2 extends Phaser.Scene {
     private lvl4: boolean;
     private lvl5: boolean;
     private username: string;
+    private contentFullyDisplayed: boolean; // flag to track if content is fully displayed
+    private speaking: Phaser.Sound.BaseSound | undefined; // Sound object for speaking
 
     constructor() {
         super({ key: "LoadingScene2" });
@@ -31,10 +33,14 @@ export default class LoadingScene2 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("alfredicon", "assets/alfredicon.png");
+        this.load.audio("Level2Music", ["assets/Audio/Level2Music.mp3"]);
+
+        this.load.image("alfredicon", "assets/LevelUI/AlfredIcon.png");
     }
 
     create() {
+        let music = this.sound.add("Level2Music", { loop: true });
+        music.play();
         this.resetScene();
 
         this.add.rectangle(640, 360, 1280, 720, 0x000);
@@ -44,14 +50,22 @@ export default class LoadingScene2 extends Phaser.Scene {
         this.displayNextLine();
 
         // On enter, transition to Level 1
-        this.input.keyboard?.once("keydown-ENTER", () => {
-            this.scene.start("LoadingScene2part2", {
-                username: this.username,
-                lvl2: this.lvl2,
-                lvl3: this.lvl3,
-                lvl4: this.lvl4,
-                lvl5: this.lvl5,
-            });
+        this.input.keyboard?.on("keydown-ENTER", () => {
+            if (this.contentFullyDisplayed) {
+                if (this.speaking) {
+                    this.speaking.stop(); // Stop speaking sound if it's playing
+                }
+
+                this.scene.start("LoadingScene2part2", {
+                    username: this.username,
+                    lvl2: this.lvl2,
+                    lvl3: this.lvl3,
+                    lvl4: this.lvl4,
+                    lvl5: this.lvl5,
+                });
+            } else {
+                this.displayAllContent();
+            }
         });
     }
 
@@ -90,6 +104,19 @@ export default class LoadingScene2 extends Phaser.Scene {
         ];
     }
 
+    displayAllContent() {
+        this.lineIndex = 0;
+
+        this.content.forEach((line) => {
+            const textY = this.startY + 22 * this.lineIndex++;
+            this.add.text(this.startX, textY, line, {
+                fontSize: "24px",
+                color: "#fff",
+            });
+        });
+        this.contentFullyDisplayed = true;
+    }
+
     // helper to display text line by line, calling typeText to animate
     displayNextLine() {
         if (this.lineIndex < this.content.length) {
@@ -106,11 +133,15 @@ export default class LoadingScene2 extends Phaser.Scene {
             );
             // Start typing the line
             this.typeText(line);
+        } else if (this.lineIndex === this.content.length) {
+            this.contentFullyDisplayed = true;
         }
     }
 
     // helper to animate text typing
     typeText(line: string) {
+        this.speaking = this.sound.add("speaking", { loop: false });
+        this.speaking.play();
         // split the line into characters
         const characters = line.split("");
         let i = 0;
@@ -121,6 +152,7 @@ export default class LoadingScene2 extends Phaser.Scene {
             callback: () => {
                 this.currentLine.text += characters[i++];
                 if (i === characters.length) {
+                    this.speaking?.stop();
                     // once all characters are added, add a delayed event to display the next line
                     this.time.delayedCall(
                         this.lineDelay,

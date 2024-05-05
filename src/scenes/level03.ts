@@ -15,6 +15,7 @@ export default class Level03 extends Phaser.Scene {
     private lastText: string[] = [""];
     private lastPosition: number = -1;
     private manual: Manual;
+    private menuMusic: Phaser.Sound.BaseSound | undefined;
 
     constructor() {
         super({ key: "Level03" });
@@ -40,19 +41,19 @@ export default class Level03 extends Phaser.Scene {
         this.lvl5 = data.lvl5;
     }
     preload() {
-        this.load.image("1", "assets/num1.png");
-        this.load.image("2", "assets/num2.png");
-        this.load.image("3", "assets/num3.png");
-        this.load.image("4", "assets/num4.png");
-        this.load.image("5", "assets/num5.png");
-        this.load.image("6", "assets/num6.png");
-        this.load.image("7", "assets/num7.png");
-        this.load.image("8", "assets/num8.png");
-        this.load.image("9", "assets/num9.png");
-        this.load.image("0", "assets/num0.png");
-        this.load.image("padCheck", "assets/padCheck.png");
-        this.load.image("padX", "assets/padx.png");
-        this.load.image("pinPadText", "assets/PinPadText.png");
+        this.load.image("1", "assets/Keypad/num1.png");
+        this.load.image("2", "assets/Keypad/num2.png");
+        this.load.image("3", "assets/Keypad/num3.png");
+        this.load.image("4", "assets/Keypad/num4.png");
+        this.load.image("5", "assets/Keypad/num5.png");
+        this.load.image("6", "assets/Keypad/num6.png");
+        this.load.image("7", "assets/Keypad/num7.png");
+        this.load.image("8", "assets/Keypad/num8.png");
+        this.load.image("9", "assets/Keypad/num9.png");
+        this.load.image("0", "assets/Keypad/num0.png");
+        this.load.image("padCheck", "assets/Keypad/padCheck.png");
+        this.load.image("padX", "assets/Keypad/padx.png");
+        this.load.image("pinPadText", "assets/Keypad/PinPadText.png");
     }
 
     create() {
@@ -63,6 +64,7 @@ export default class Level03 extends Phaser.Scene {
         this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
         this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
+        let winChime = this.sound.add("winChime", { loop: false });
 
         function getRandomInt(min: number, max: number): number {
             min = Math.ceil(min);
@@ -120,11 +122,73 @@ export default class Level03 extends Phaser.Scene {
             "        COMMAND MANUAL \n\n- 'ls' to list the contents      of the current directory.\n\n- 'cd <directory>' to change     the current directory.\n\n- 'man <command>' to display     the manual for a specific     command.\n\n- 'rm <file> to remove a         file from its directory."
         );
 
+<<<<<<< HEAD:src/scenes/lvl03Main.ts
+        // let ding = this.sound.add("ding", { loop: false });
+        // let lsDing = this.sound.add("lsDing", { loop: false });
+        // let cdDing = this.sound.add("cdDing", { loop: false });
+        // let cdBackDing = this.sound.add("cdBackDing", { loop: false });
+        // let manDing = this.sound.add("manDing", { loop: false });
+=======
+        //padlock hover tint code
+        imagePositions.forEach((pos) => {
+            const image = this.add
+                .image(pos.x, pos.y, pos.key)
+                .setDisplaySize(70, 70);
+
+            image.setInteractive();
+
+            image.on("pointerover", () => {
+                image.setTint(hoverTintColor);
+            });
+
+            image.on("pointerout", () => {
+                image.clearTint();
+            });
+
+            image.on("pointerdown", () => {
+                if (pos.key !== "padX" && pos.key !== "padCheck") {
+                    if (displayScreen.text.length < 8) {
+                        displayScreen.text += pos.key + " ";
+                    }
+                } else if (pos.key === "padX") {
+                    // Handle backspace functionality
+                    displayScreen.text = displayScreen.text.slice(0, -1);
+                } else {
+                    if (displayScreen.text === answer) {
+                        winChime.play();
+
+                        this.objectiveCompleted = true;
+                        this.addTextToContainer("Access Granted");
+                        this.addTextToContainer("Objective complete");
+                        this.time.delayedCall(2000, () => {
+                            this.sound.stopAll();
+                            this.scene.start("LevelSelect");
+                        });
+                    } else {
+                        displayScreen.text = "";
+                        this.addTextToContainer("Access denied.");
+                    }
+                }
+            });
+        });
+
         let ding = this.sound.add("ding", { loop: false });
         let lsDing = this.sound.add("lsDing", { loop: false });
         let cdDing = this.sound.add("cdDing", { loop: false });
         let cdBackDing = this.sound.add("cdBackDing", { loop: false });
         let manDing = this.sound.add("manDing", { loop: false });
+
+        this.inputContainer = this.add.container(360, 520);
+
+        const maskGraphics = this.make.graphics();
+        maskGraphics.fillRect(300, 185, 1080, 500);
+        const mask = new Phaser.Display.Masks.GeometryMask(this, maskGraphics);
+
+        this.inputContainer.setMask(mask);
+
+        this.addTextToContainer("Alfred: Welcome back " + this.username + "!");
+
+>>>>>>> 8742fde68624c69bebbedc0d9b3ac1d923dee377:src/scenes/level03.ts
         let state: string = "back_door";
 
         const lsMap = new Map<string, string>();
@@ -284,18 +348,15 @@ export default class Level03 extends Phaser.Scene {
                 const command = this.inputField.value.trim();
                 this.inputField.value = ""; // Clear the input field
                 if (command === "ls") {
-                    lsDing.play();
                     this.appendToScroller("agent09: " + command);
                     this.appendLsToScroller(lsMap.get(state) as string);
                 } else if (command.substring(0, 4) == "cat ") {
                     const file = command.substring(4);
                     const fileContents = catMap.get(file);
                     if (fileContents !== undefined) {
-                        lsDing.play();
                         this.appendToScroller("agent09: " + command);
                         this.appendToScroller(fileContents as string);
                     } else {
-                        ding.play();
                         this.appendToScroller("File " + file + " not found.");
                     }
                 } else if (
@@ -305,12 +366,10 @@ export default class Level03 extends Phaser.Scene {
                     const dir = command.substring(3);
                     const dirC = cdMap.get(state);
                     if (dirC !== undefined) {
-                        cdDing.play();
                         this.appendToScroller("agent09: " + command);
                         state = command.substring(3);
                         this.stateText.setText(state);
                     } else {
-                        ding.play();
                         this.appendToScroller(
                             "Directory " + dir + " not found."
                         );
@@ -318,12 +377,10 @@ export default class Level03 extends Phaser.Scene {
                 } else if (command.substring(0, 5) == "cd ..") {
                     const dir = cdBack.get(state);
                     if (state !== "back_door" && dir) {
-                        cdBackDing.play();
                         this.appendToScroller("agent09: " + command);
                         this.stateText.setText(dir);
                         state = dir;
                     } else {
-                        ding.play();
                         this.appendToScroller(
                             "Cannot go back from the root directory."
                         );
@@ -332,17 +389,14 @@ export default class Level03 extends Phaser.Scene {
                     const manual = command.substring(4);
                     const tip = manMap.get(manual);
                     if (tip !== undefined) {
-                        manDing.play();
                         this.appendToScroller("agent09: " + command);
                         this.appendToScroller(tip);
                     } else {
-                        ding.play();
                         this.appendToScroller(
                             "Command " + manual + " not found."
                         );
                     }
                 } else {
-                    ding.play();
                     this.appendToScroller("agent09: " + command);
                     this.appendToScroller("Command not found.");
                 }
@@ -385,7 +439,12 @@ export default class Level03 extends Phaser.Scene {
                     this.time.delayedCall(10, updateTimer);
                 } else {
                     this.timer.setText("0.00");
+<<<<<<< HEAD:src/scenes/lvl03Main.ts
                     this.scroller.style.display = "none";
+=======
+                    this.sound.stopAll();
+
+>>>>>>> 8742fde68624c69bebbedc0d9b3ac1d923dee377:src/scenes/level03.ts
                     this.scene.start("SecurityBreachScene", {
                         username: this.username,
                         lvl2: this.lvl2,
@@ -529,6 +588,12 @@ export default class Level03 extends Phaser.Scene {
 
     loadLevel() {
         this.removeInputField();
+        this.sound.stopAll();
+        this.menuMusic = this.sound.add("menuMusic", {
+            loop: true,
+        });
+        this.menuMusic.play();
+
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: true,

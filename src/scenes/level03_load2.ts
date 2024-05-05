@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 
-export default class IntroScene extends Phaser.Scene {
+export default class LevelThreeIntro2 extends Phaser.Scene {
     private content: string[]; // text to display
     private charDelay: number; // delay between characters
     private lineDelay: number; // delay between lines
@@ -17,9 +17,8 @@ export default class IntroScene extends Phaser.Scene {
     private speaking: Phaser.Sound.BaseSound | undefined; // Sound object for speaking
 
     constructor() {
-        super({ key: "IntroScene" });
+        super({ key: "LoadingScene3part2" });
     }
-
     init(data: {
         username: string;
         lvl1: boolean;
@@ -31,20 +30,17 @@ export default class IntroScene extends Phaser.Scene {
         this.lvl3 = data.lvl3;
         this.lvl4 = data.lvl4;
         this.username = data.username;
-        console.log(this.username);
     }
+
     preload() {
         this.load.image("alfredicon", "assets/LevelUI/AlfredIcon.png");
-        this.load.audio("speaking", ["assets/audio/speaking.mp3"]);
     }
 
     create() {
-        this.resetScene(); // helper to reset intial values on load
+        this.resetScene();
 
-        //adding assets
         this.add.rectangle(640, 360, 1280, 720, 0x000);
         this.add.image(150, 100, "alfredicon").setDisplaySize(130, 130);
-        this.add.image(150, 480, "spyicon").setDisplaySize(130, 130);
 
         //display text
         this.displayNextLine();
@@ -55,7 +51,7 @@ export default class IntroScene extends Phaser.Scene {
                 if (this.speaking) {
                     this.speaking.stop(); // Stop speaking sound if it's playing
                 }
-                this.scene.start("Tutorial", {
+                this.scene.start("Level03", {
                     username: this.username,
                     lvl2: this.lvl2,
                     lvl3: this.lvl3,
@@ -75,35 +71,33 @@ export default class IntroScene extends Phaser.Scene {
         this.startX = 250;
         this.startY = 90;
         this.lineIndex = 0;
-        console.log(this.username);
         this.content = [
-            "Agent " +
-                this.username.charAt(0).toUpperCase() +
-                this.username.slice(1) +
-                ", this is Alfred speaking.",
+            "The 'cat' command is used to display the contents",
+            "of a text file right in your terminal.",
             " ",
-            "Sorry to call you so late into the evening, but it",
-            "appears we've got a situation on our hands.",
+            "Below is an example using 'cat' to display the contents",
+            "of a file named  'secret.txt':",
             " ",
-
-            "Namuh Yortsed, CEO of Yortsed Corp. has set his",
-            "sights on the city's power supply.",
+            " - 'cat secret.txt'",
             " ",
-
-            "You must utilize the tools given to you " + this.username + ".",
+            "If you need to display the contents of multiple files,",
+            "you can provide their filenames separated by spaces.",
             " ",
+            "For example, to display the contents of two files,",
+            "'secret1.txt' and 'secret2.txt', you can use:",
             " ",
-
-            "Just as you have in the past.",
+            " - 'cat secret1.txt secret2.txt'",
             " ",
+            "Note, the 'cat' command only displays the contents of files,",
+            "'cat' is to files what 'ls' is to directories. ",
+            "In this mission, files are marked with '.txt' at the end of their names.",
+            "Those text files are where you'll find hidden codes for the pin-pad.",
             " ",
+            "If you are ever unsure about how to use the 'cat' command, you",
+            "can use 'man cat' to help you.",
+            "Or use 'man alfred' to hear from me directly.",
             " ",
-            " ",
-            " ",
-
-            "...",
-            " ",
-            " ",
+            "Good luck " + this.username.toLowerCase() + ".",
             " ",
             "                  [Enter] to Continue",
         ];
@@ -137,7 +131,6 @@ export default class IntroScene extends Phaser.Scene {
                 }
             );
             // Start typing the line
-
             this.typeText(line);
         } else if (this.lineIndex === this.content.length) {
             this.contentFullyDisplayed = true;
@@ -148,7 +141,6 @@ export default class IntroScene extends Phaser.Scene {
     typeText(line: string) {
         this.speaking = this.sound.add("speaking", { loop: false });
         this.speaking.play();
-
         // split the line into characters
         const characters = line.split("");
         let i = 0;

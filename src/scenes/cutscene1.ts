@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 
-export default class LevelThreeIntro2 extends Phaser.Scene {
+export default class Cutscene1 extends Phaser.Scene {
     private content: string[]; // text to display
     private charDelay: number; // delay between characters
     private lineDelay: number; // delay between lines
@@ -13,10 +13,12 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
     private lvl4: boolean;
     private lvl5: boolean;
     private username: string;
+    private contentFullyDisplayed: boolean; // flag to track if content is fully displayed
 
     constructor() {
-        super({ key: "LevelThreeIntro2" });
+        super({ key: "Cutscene1" });
     }
+
     init(data: {
         username: string;
         lvl1: boolean;
@@ -40,18 +42,24 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
         this.add.rectangle(640, 360, 1280, 720, 0x000);
         this.add.image(150, 100, "alfredicon").setDisplaySize(130, 130);
 
-        //display text
+        // Display all content
         this.displayNextLine();
 
-        // On enter, transition to Level 1
-        this.input.keyboard?.once("keydown-ENTER", () => {
-            this.scene.start("Level03", {
-                username: this.username,
-                lvl2: this.lvl2,
-                lvl3: this.lvl3,
-                lvl4: this.lvl4,
-                lvl5: this.lvl5,
-            });
+        // On enter, transition to Level 1 if content is fully displayed, otherwise, display next line
+        this.input.keyboard?.on("keydown-ENTER", () => {
+            this.stopSpeakingSound();
+
+            if (this.contentFullyDisplayed) {
+                this.scene.start("Level01", {
+                    username: this.username,
+                    lvl2: this.lvl2,
+                    lvl3: this.lvl3,
+                    lvl4: this.lvl4,
+                    lvl5: this.lvl5,
+                });
+            } else {
+                this.displayAllContent();
+            }
         });
     }
 
@@ -62,41 +70,49 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
         this.startX = 250;
         this.startY = 90;
         this.lineIndex = 0;
+        this.contentFullyDisplayed = false;
         this.content = [
-            "Note that the 'cat' command is used to display the contents",
-            "of one or more files. It can be used on a single file, or",
-            "multiple files, and display their outputs.",
+            "Your mission, should you choose to accept it,",
+            "involves critical file manipulation.",
             " ",
-            "Below is an example using 'cat' to display the contents",
-            "of a file named  'secret.txt':",
+            "You need to navigate to the 'control_room' and",
+            "disable the 'surveillance_camera'.",
             " ",
-            " - 'cat secret.txt'",
+            "Here are the commands at your disposal:",
             " ",
-            "If you need to display the contents of multiple files,",
-            "you can provide their filenames separated by spaces.",
+            " - 'ls' to list the contents of the current directory.",
             " ",
-            "For example, to display the contents of two files, 'secret1.txt'",
-            "and 'secret2.txt', you can use:",
+            " - 'cd <directory>' to change the current directory.",
+            "                    Use 'cd ..' to go back.",
             " ",
-            " - 'cat secret1.txt secret2.txt'",
+            " - 'rm <file> to remove a file from its directory.",
             " ",
-            "Note, the 'cat' command displays the contents of files,",
-            "not directories which you're used to. 'Cat' is to files what 'ls' is",
-            "to directories. In your mission, files are marked with '.txt' at",
-            "the end of their names. E.g. 'secret_message.txt', and thats where",
-            "you'll find the hidden codes for this mission.",
+            " - 'man <command>' to display the manual for a specific command.",
             " ",
-            "If you are ever unsure about how to use the 'cat' command, you",
-            "can use 'man cat' to help you.",
-            "Or use 'man alfred' to hear from me directly.",
+            "You can always run 'man alfred' for additional",
+            "assistance to reach the end of a mission.",
             " ",
-            "Good luck " + this.username.toLowerCase() + ".",
+            "Disable the camera to advance further into Yortsed Corp.",
+            " ",
             " ",
             "                  [Enter] to Continue",
         ];
     }
+    // Helper to display all content at once
+    displayAllContent() {
+        this.lineIndex = 0;
 
-    // helper to display text line by line, calling typeText to animate
+        this.content.forEach((line) => {
+            const textY = this.startY + 22 * this.lineIndex++;
+            this.add.text(this.startX, textY, line, {
+                fontSize: "24px",
+                color: "#fff",
+            });
+        });
+        this.contentFullyDisplayed = true;
+    }
+
+    // Helper to display text line by line, calling typeText to animate
     displayNextLine() {
         if (this.lineIndex < this.content.length) {
             const line = this.content[this.lineIndex++];
@@ -112,11 +128,20 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
             );
             // Start typing the line
             this.typeText(line);
+        } else if (this.lineIndex === this.content.length) {
+            this.contentFullyDisplayed = true;
+            this.stopSpeakingSound();
         }
     }
 
-    // helper to animate text typing
+    stopSpeakingSound() {
+        this.sound.get("speaking").stop();
+    }
+    // Helper to animate text typing
     typeText(line: string) {
+        let speaking = this.sound.add("speaking", { loop: false });
+
+        speaking.play();
         // split the line into characters
         const characters = line.split("");
         let i = 0;
@@ -127,6 +152,8 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
             callback: () => {
                 this.currentLine.text += characters[i++];
                 if (i === characters.length) {
+                    speaking.stop();
+
                     // once all characters are added, add a delayed event to display the next line
                     this.time.delayedCall(
                         this.lineDelay,
