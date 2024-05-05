@@ -37,8 +37,6 @@ export default class Cutscene1 extends Phaser.Scene {
     }
 
     create() {
-        let speaking = this.sound.add("speaking", { loop: false });
-
         this.resetScene();
 
         this.add.rectangle(640, 360, 1280, 720, 0x000);

@@ -64,6 +64,7 @@ export default class Level03 extends Phaser.Scene {
         this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
         this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
+        let winChime = this.sound.add("winChime", { loop: false });
 
         function getRandomInt(min: number, max: number): number {
             min = Math.ceil(min);
@@ -173,7 +174,6 @@ export default class Level03 extends Phaser.Scene {
         let cdDing = this.sound.add("cdDing", { loop: false });
         let cdBackDing = this.sound.add("cdBackDing", { loop: false });
         let manDing = this.sound.add("manDing", { loop: false });
-        let winChime = this.sound.add("winChime", { loop: false });
 
         this.inputContainer = this.add.container(360, 520);
 
