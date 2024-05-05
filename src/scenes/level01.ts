@@ -16,6 +16,7 @@ export default class Level1Scene extends Phaser.Scene {
     private lastText: string[] = [""];
     private manual: Manual;
     private lastPosition: number = -1;
+    private menuMusic: Phaser.Sound.BaseSound | undefined;
 
     constructor() {
         super({ key: "Level01" });
@@ -54,6 +55,7 @@ export default class Level1Scene extends Phaser.Scene {
         this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
         this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
+
         this.manual = new Manual(
             this,
             50,
@@ -66,6 +68,7 @@ export default class Level1Scene extends Phaser.Scene {
         let cdDing = this.sound.add("cdDing", { loop: false });
         let cdBackDing = this.sound.add("cdBackDing", { loop: false });
         let manDing = this.sound.add("manDing", { loop: false });
+        let winChime = this.sound.add("winChime", { loop: false });
 
         this.inputContainer = this.add.container(360, 520);
 
@@ -295,6 +298,8 @@ export default class Level1Scene extends Phaser.Scene {
                                 state === "control_room" &&
                                 !files.includes("surveillance_camera")
                             ) {
+                                winChime.play();
+
                                 this.objectiveCompleted = true;
                                 // Level completion logic here
                                 this.addTextToContainer(
@@ -383,6 +388,8 @@ export default class Level1Scene extends Phaser.Scene {
                     this.time.delayedCall(10, updateTimer);
                 } else {
                     timerText.setText("0.00");
+                    this.sound.stopAll();
+
                     this.scene.start("SecurityBreachScene", {
                         username: this.username,
                         lvl2: this.lvl2,
@@ -504,6 +511,12 @@ export default class Level1Scene extends Phaser.Scene {
 
     loadLevel() {
         this.removeInputField();
+        this.sound.stopAll();
+        this.menuMusic = this.sound.add("menuMusic", {
+            loop: true,
+        });
+        this.menuMusic.play();
+
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: true,

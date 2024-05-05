@@ -49,9 +49,13 @@ export default class LevelSelect extends Phaser.Scene {
         this.lvl1 = true;
     }
 
+    preload() {
+        this.load.audio("menuMusic", ["assets/Audio/menuMusic.mp3"]);
+    }
+
     create() {
         this.platforms = this.physics.add.staticGroup();
-        this.cameras.main.setBackgroundColor("#A9A9A9");
+        this.cameras.main.setBackgroundColor("#E9E9E9");
 
         const groundWidth = this.scale.width;
         const groundX = this.scale.width / 2;
@@ -174,7 +178,7 @@ export default class LevelSelect extends Phaser.Scene {
                 start: 10,
                 end: 18,
             }),
-            frameRate: 12,
+            frameRate: 10,
             repeat: -1,
         });
 
@@ -239,7 +243,7 @@ export default class LevelSelect extends Phaser.Scene {
             {
                 x: 1850,
                 Ustate: this.lvl4 || false,
-                scene: "",
+                scene: "LoadingScene4",
             },
             {
                 x: 2300,
@@ -293,6 +297,8 @@ export default class LevelSelect extends Phaser.Scene {
                             y: "-=40",
                             onComplete: () => {
                                 this.time.delayedCall(1000, () => {
+                                    this.sound.stopAll();
+
                                     this.scene.start(door.scene, {
                                         username: this.username,
                                         lvl2: this.lvl2,

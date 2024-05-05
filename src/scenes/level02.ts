@@ -16,6 +16,7 @@ export default class Level2Scene extends Phaser.Scene {
     private lastText: string[] = [""];
     private lastPosition: number = -1;
     private manual: Manual;
+    private menuMusic: Phaser.Sound.BaseSound | undefined;
 
     constructor() {
         super({ key: "Level02" });
@@ -62,6 +63,7 @@ export default class Level2Scene extends Phaser.Scene {
         let cdDing = this.sound.add("cdDing", { loop: false });
         let cdBackDing = this.sound.add("cdBackDing", { loop: false });
         let manDing = this.sound.add("manDing", { loop: false });
+        let winChime = this.sound.add("winChime", { loop: false });
 
         this.inputContainer = this.add.container(360, 520);
 
@@ -224,6 +226,8 @@ export default class Level2Scene extends Phaser.Scene {
                                         ": " +
                                         newText
                                 );
+                                winChime.play();
+
                                 // Level completion logic here
                                 this.addTextToContainer(
                                     "\nObjective complete: Laboratory access granted.\nGood work, " +
@@ -483,6 +487,8 @@ export default class Level2Scene extends Phaser.Scene {
                     this.time.delayedCall(10, updateTimer);
                 } else {
                     this.timer.setText("0.00");
+                    this.sound.stopAll();
+
                     this.scene.start("SecurityBreachScene", {
                         username: this.username,
                         lvl2: this.lvl2,
@@ -581,6 +587,12 @@ export default class Level2Scene extends Phaser.Scene {
 
     loadLevel() {
         this.removeInputField();
+        this.sound.stopAll();
+        this.menuMusic = this.sound.add("menuMusic", {
+            loop: true,
+        });
+        this.menuMusic.play();
+
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: true,
