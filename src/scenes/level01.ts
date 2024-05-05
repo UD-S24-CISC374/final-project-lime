@@ -4,7 +4,7 @@ import Manual from "../objects/manual";
 export default class Level1Scene extends Phaser.Scene {
     private stateText: Phaser.GameObjects.Text;
     private inputField: HTMLInputElement;
-    private inputContainer: Phaser.GameObjects.Container;
+    private scroller: HTMLDivElement;
     private timer: Phaser.GameObjects.Text;
     private lvl2: boolean;
     private lvl3: boolean;
@@ -70,23 +70,12 @@ export default class Level1Scene extends Phaser.Scene {
         let manDing = this.sound.add("manDing", { loop: false });
         let winChime = this.sound.add("winChime", { loop: false });
 
-        this.inputContainer = this.add.container(360, 520);
-
-        const maskGraphics = this.make.graphics();
-        maskGraphics.fillRect(300, 185, 1080, 500);
-        const mask = new Phaser.Display.Masks.GeometryMask(this, maskGraphics);
-
-        this.inputContainer.setMask(mask);
-
-        this.addTextToContainer("Alfred: Welcome back " + this.username + "!");
-
         let state: string = "home";
 
         const lsMap = new Map<string, string>();
         const cdMap = new Map<string, string[]>();
         const cdBack = new Map<string, string>();
         const manMap = new Map<string, string>();
-        const rmMap = new Map<string, string[]>(); // Map to track removable files
 
         lsMap.set("home", "dir_break_room dir_closet dir_control_room");
         lsMap.set(
@@ -114,8 +103,6 @@ export default class Level1Scene extends Phaser.Scene {
         cdBack.set("suitcase", "break_room");
         cdBack.set("cardboard_box", "closet");
 
-        rmMap.set("control_room", ["surveillance_camera"]);
-
         manMap.set(
             "ls",
             "Alfred: Remember, the 'ls' command\nis useful for viewing your surroundings."
@@ -132,6 +119,29 @@ export default class Level1Scene extends Phaser.Scene {
             "alfred",
             "Alfred: Try using the 'cd' command to traverse through\ndifferent areas. Then use 'rm' to remove critical files."
         );
+
+        // Add scrollable text area
+        this.scroller = document.createElement("div");
+        this.scroller.style.width = "600px";
+        this.scroller.style.height = "390px";
+        this.scroller.style.backgroundColor = "black";
+        this.scroller.style.color = "white";
+        this.scroller.style.borderRadius = "10px";
+        this.scroller.style.overflowY = "auto"; // Enable vertical scrolling
+        this.scroller.style.position = "absolute";
+        this.scroller.style.top = "48%";
+        this.scroller.style.left = "50%";
+        this.scroller.style.bottom = "49%";
+        //this.scroller.style.border = "2px solid gold";
+        this.scroller.style.transform = "translate(-50%, -50%)";
+        document.body.appendChild(this.scroller);
+
+        const whiteSpace = document.createElement("p");
+        whiteSpace.textContent = "                                        ";
+        whiteSpace.style.marginTop = "350px";
+        this.scroller.appendChild(whiteSpace);
+
+        this.appendToScroller("Alfred: Welcome back " + this.username + "!");
 
         // Add text input field
         this.inputField = document.createElement("input");
@@ -165,186 +175,81 @@ export default class Level1Scene extends Phaser.Scene {
             Phaser.Input.Keyboard.KeyCodes.SPACE
         );
 
-        this.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
-            if (event.key === "Enter" && this.typing) {
-                const newText = this.inputField.value;
-                this.lastText.push(newText.trim());
-
-                if (newText.trim() !== "") {
-                    if (newText.trim() == "ls") {
-                        lsDing.play();
-                        this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer(
-                            this.username.toLowerCase().replace(/\s+/g, "_") +
-                                ": " +
-                                newText
+        this.inputField.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                const command = this.inputField.value.trim();
+                this.inputField.value = ""; // Clear the input field
+                if (command === "ls") {
+                    lsDing.play();
+                    this.appendToScroller("agent09: " + command);
+                    this.appendLsToScroller(lsMap.get(state) as string);
+                } else if (command.substring(0, 3) == "rm ") {
+                    const file = command.substring(3);
+                    if (
+                        state === "control_room" &&
+                        file === "surveillance_camera"
+                    ) {
+                        this.appendToScroller("agent09: " + command);
+                        this.appendToScroller(
+                            "surveillance_camera successfully removed"
                         );
-                        this.addLsToContainer(lsMap.get(state) as string);
-                    } else if (newText.substring(0, 3) == "cd ") {
-                        let cdInput: string = newText.substring(
-                            3,
-                            newText.length
-                        );
-                        // CD .. FUNCTIONALITY BELOW
-                        const backState = cdBack.get(state);
-                        const cdState = cdMap.get(state);
-                        if (backState !== undefined && cdInput == "..") {
-                            cdBackDing.play();
-
-                            state = backState;
-                            this.stateText.setText(state);
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                        }
-                        // CD FUNCTIONALITY BELOW
-                        else if (
-                            cdState !== undefined &&
-                            cdMap.get(state)?.includes(cdInput)
-                        ) {
-                            cdDing.play();
-
-                            state = newText.substring(3);
-                            this.stateText.setText(state);
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                        }
-                        // CD DIRECTORY NOT FOUND BELOW
-                        else {
-                            ding.play();
-
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                            this.addTextToContainer("Directory not found");
-                        }
-                        // MAN INPUT BELOW
-                    } else if (newText.substring(0, 4) == "man ") {
-                        let manInput: string = newText.substring(4);
-
-                        const manState = manMap.get(manInput);
-                        if (manState !== undefined) {
-                            manDing.play();
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                            this.addTextToContainer(
-                                manMap.get(manInput) as string
-                            );
-                        } else {
-                            ding.play();
-
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                            this.addTextToContainer(
-                                "Command '" + manInput + "' not found"
-                            );
-                        }
-                    } else if (newText.substring(0, 3) == "rm ") {
-                        let rmInput: string = newText.substring(3);
-                        if (rmMap.get(state)?.includes(rmInput)) {
-                            // Remove the file from the listing and update the map
-                            let files = lsMap.get(state) || "";
-                            files = files
-                                .replace(rmInput, "")
-                                .trim()
-                                .replace(/\s{2,}/g, " "); // Remove the file and extra spaces
-                            lsMap.set(state, files);
-
-                            // Optionally, remove the file from the rmMap if you want to prevent further references
-                            // rmMap.get(state)?.splice(rmMap.get(state)?.indexOf(rmInput), 1);
-
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                            this.addTextToContainer(
-                                "File '" + rmInput + "' removed successfully."
-                            );
-
-                            // Check if the level's objective is achieved, e.g., if all required files are removed
-                            if (
-                                state === "control_room" &&
-                                !files.includes("surveillance_camera")
-                            ) {
-                                winChime.play();
-
-                                this.objectiveCompleted = true;
-                                // Level completion logic here
-                                this.addTextToContainer(
-                                    "\nObjective complete: Classified file removed. \nGood work, " +
-                                        this.username +
-                                        "!"
-                                );
-                                this.time.delayedCall(
-                                    3000,
-                                    this.loadLevel,
-                                    [],
-                                    this
-                                );
-                            }
-                        } else {
-                            ding.play();
-
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                            this.addTextToContainer(
-                                "File '" +
-                                    rmInput +
-                                    "' cannot be found or removed."
-                            );
-                        }
-                    }
-                    // NONSENSE INPUT BELOW
-                    else {
+                        this.appendToScroller("Objective complete");
+                        this.objectiveCompleted = true;
+                        winChime.play();
+                        this.time.delayedCall(3000, this.loadLevel, [], this);
+                    } else {
                         ding.play();
-                        this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer(
-                            this.username.toLowerCase().replace(/\s+/g, "_") +
-                                ": " +
-                                newText
-                        );
-                        this.addTextToContainer(
-                            "Command '" + newText + "' not found"
+                        this.appendToScroller(
+                            "'" + file + "'" + " cannot be removed or found."
                         );
                     }
+                } else if (
+                    command.substring(0, 3) == "cd " &&
+                    command.substring(0, 5) !== "cd .."
+                ) {
+                    const dir = command.substring(3);
+                    const dirC = cdMap.get(state);
+                    if (dirC !== undefined) {
+                        cdDing.play();
+                        this.appendToScroller("agent09: " + command);
+                        state = command.substring(3);
+                        this.stateText.setText(state);
+                    } else {
+                        ding.play();
+                        this.appendToScroller(
+                            "Directory " + dir + " not found."
+                        );
+                    }
+                } else if (command.substring(0, 5) == "cd ..") {
+                    const dir = cdBack.get(state);
+                    if (state !== "back_door" && dir) {
+                        cdBackDing.play();
+                        this.appendToScroller("agent09: " + command);
+                        this.stateText.setText(dir);
+                        state = dir;
+                    } else {
+                        ding.play();
+                        this.appendToScroller(
+                            "Cannot go back from the root directory."
+                        );
+                    }
+                } else if (command.substring(0, 4) == "man ") {
+                    const manual = command.substring(4);
+                    const tip = manMap.get(manual);
+                    if (tip !== undefined) {
+                        manDing.play();
+                        this.appendToScroller("agent09: " + command);
+                        this.appendToScroller(tip);
+                    } else {
+                        ding.play();
+                        this.appendToScroller(
+                            "Command " + manual + " not found."
+                        );
+                    }
+                } else {
+                    ding.play();
+                    this.appendToScroller("agent09: " + command);
+                    this.appendToScroller("Command not found.");
                 }
             }
 
@@ -388,6 +293,7 @@ export default class Level1Scene extends Phaser.Scene {
                     this.time.delayedCall(10, updateTimer);
                 } else {
                     timerText.setText("0.00");
+                    this.scroller.style.display = "none";
                     this.sound.stopAll();
 
                     this.scene.start("SecurityBreachScene", {
@@ -436,7 +342,7 @@ export default class Level1Scene extends Phaser.Scene {
             .setDisplaySize(30, 30);
         backArrow.setInteractive();
         backArrow.on("pointerup", () => {
-            this.scene.start("LevelSelect");
+            this.loadLevel;
         });
         backArrow.on("pointerover", () => {
             backArrow.setTint(0x44ff44);
@@ -453,75 +359,77 @@ export default class Level1Scene extends Phaser.Scene {
     }
     update() {}
 
-    addLsToContainer(text: string) {
-        const words = text.split(" ");
-
-        const numNewlines = words.length;
-
-        this.inputContainer.y -= numNewlines * 24.7;
-
-        for (let word of words) {
-            if (word.substring(0, 5) === "file_") {
-                let newWord = word.substring(5);
-                const newText = this.add.text(0, 0, newWord, {
-                    fontSize: "24px",
-                    color: "#77C3EC",
-                });
-                this.inputContainer.add(newText);
-            } else if (word.substring(0, 4) === "dir_") {
-                let newWord = word.substring(4);
-                const newText = this.add.text(0, 0, newWord, {
-                    fontSize: "24px",
-                    color: "#86DC3D",
-                });
-                this.inputContainer.add(newText);
-            } else {
-                const newText = this.add.text(0, 0, word, {
-                    fontSize: "24px",
-                    color: "#fff",
-                });
-                this.inputContainer.add(newText);
-            }
-
-            this.repositionTextObjects();
-        }
-    }
-
-    addTextToContainer(text: string) {
-        const newText = this.add.text(0, 0, text, {
-            fontSize: "24px",
-            color: "#fff",
-        });
-
-        const numNewlines = (text.match(/\n/g) || []).length + 1;
-
-        // Adjust y position based on the number of newline characters
-        this.inputContainer.y -= numNewlines * 24.7;
-
+    appendToScroller(text: string) {
+        const textNode = document.createElement("text");
+        const spaceNode = document.createElement("p");
+        let spaces: string = "";
         if (text.includes("Alfred: ")) {
-            newText.setColor("gold");
+            textNode.style.color = "gold";
+        } else if (text.includes("Access Granted")) {
+            textNode.style.color = "green";
+        } else if (text.includes("Objective complete")) {
+            textNode.style.color = "green";
+        } else if (
+            text.includes("cannot be removed or found.") ||
+            text.includes("not found") ||
+            text.includes("Cannot")
+        ) {
+            textNode.style.color = "#d0413f";
         }
-        if (text.includes("Objective complete: ")) {
-            newText.setColor("lime");
+        textNode.style.fontFamily = "Monospace";
+        textNode.style.fontSize = "24px";
+        textNode.style.marginBottom = "-15px";
+        const desiredWidth = 41;
+
+        const textLength = text.length;
+        const spacesNeeded = desiredWidth - textLength;
+
+        for (let i = 0; i < spacesNeeded; i++) {
+            spaces += " ";
         }
+        spaceNode.textContent = spaces;
+        textNode.textContent = text;
+        this.scroller.appendChild(textNode);
+        this.scroller.appendChild(spaceNode);
 
-        // Add the new text object to the container
-        this.inputContainer.add(newText);
-
-        // Reposition text objects vertically within the container
-        this.repositionTextObjects();
+        // Scroll to the bottom
+        this.scroller.scrollTop = this.scroller.scrollHeight;
     }
 
-    repositionTextObjects() {
-        let yPos = 0;
-
-        // Loop through all text objects in the container and position them vertically
-        this.inputContainer.iterate((child: Phaser.GameObjects.GameObject) => {
-            if (child instanceof Phaser.GameObjects.Text) {
-                child.y = yPos;
-                yPos += child.height;
+    appendLsToScroller(text: string) {
+        const desiredWidth = 41;
+        const spaces = "                            ";
+        const spaceLength = spaces.length;
+        let total = 0;
+        const words = text.split(" ");
+        for (let word of words) {
+            if (word.substring(0, 4) === "dir_") {
+                total += word.length + spaceLength;
+                const addNode = document.createElement("text");
+                addNode.textContent = word.substring(4) + spaces;
+                addNode.style.color = "#86DC3D";
+                addNode.style.fontFamily = "Monospace";
+                addNode.style.fontSize = "24px";
+                this.scroller.appendChild(addNode);
+            } else if (word.substring(0, 5) === "file_") {
+                total += word.length + spaceLength;
+                const addNode = document.createElement("text");
+                addNode.textContent = word.substring(5) + spaces;
+                addNode.style.color = "#77C3EC";
+                addNode.style.fontFamily = "Monospace";
+                addNode.style.fontSize = "24px";
+                this.scroller.appendChild(addNode);
             }
-        });
+        }
+        let endSpace = "";
+        const spaceNeeded = desiredWidth - total;
+        for (let i = 0; i < spaceNeeded; i++) {
+            endSpace += " ";
+        }
+        const endNode = document.createElement("p");
+        endNode.textContent = endSpace;
+        this.scroller.appendChild(endNode);
+        this.scroller.scrollTop = this.scroller.scrollHeight;
     }
 
     loadLevel() {
@@ -531,7 +439,7 @@ export default class Level1Scene extends Phaser.Scene {
             loop: true,
         });
         this.menuMusic.play();
-
+        this.scroller.style.display = "none";
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: true,
