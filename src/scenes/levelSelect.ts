@@ -320,6 +320,12 @@ export default class LevelSelect extends Phaser.Scene {
         if (this.cursors.left.isDown && this.player?.body?.touching.down) {
             this.player.setVelocityX(-400);
             this.player.anims.play("left", true);
+            this.tweens.add({
+                targets: this.player,
+                duration: 180, // Duration of the tween in milliseconds
+                scaleX: 0.2, // New X scale value
+                scaleY: 0.2, // New Y scale value
+            });
             this.lastDirection = "left"; // Update last movement direction
             this.isWalking = true;
         } else if (
@@ -328,6 +334,12 @@ export default class LevelSelect extends Phaser.Scene {
         ) {
             this.player.setVelocityX(400);
             this.player.anims.play("right", true);
+            this.tweens.add({
+                targets: this.player,
+                duration: 180, // Duration of the tween in milliseconds
+                scaleX: 0.2, // New X scale value
+                scaleY: 0.2, // New Y scale value
+            });
             this.lastDirection = "right"; // Update last movement direction
             this.isWalking = true;
         } else if (
@@ -336,6 +348,12 @@ export default class LevelSelect extends Phaser.Scene {
         ) {
             this.player?.setVelocityX(400);
             this.player?.anims.play("upright", true);
+            this.tweens.add({
+                targets: this.player,
+                duration: 180, // Duration of the tween in milliseconds
+                scaleX: 0.12, // New X scale value
+                scaleY: 0.12, // New Y scale value
+            });
             this.lastDirection = "right"; // Update last movement direction
             this.isWalking = false;
         } else if (
@@ -344,6 +362,12 @@ export default class LevelSelect extends Phaser.Scene {
         ) {
             this.player?.setVelocityX(-400);
             this.player?.anims.play("upleft", true);
+            this.tweens.add({
+                targets: this.player,
+                duration: 180, // Duration of the tween in milliseconds
+                scaleX: 0.12, // New X scale value
+                scaleY: 0.12, // New Y scale value
+            });
             this.lastDirection = "left"; // Update last movement direction
             this.isWalking = false;
         } else {
@@ -354,15 +378,39 @@ export default class LevelSelect extends Phaser.Scene {
                 this.lastDirection === "right"
             ) {
                 this.player?.anims.play("upright", true);
+                this.tweens.add({
+                    targets: this.player,
+                    duration: 180, // Duration of the tween in milliseconds
+                    scaleX: 0.12, // New X scale value
+                    scaleY: 0.12, // New Y scale value
+                });
             } else if (
                 !this.player?.body?.touching.down &&
                 this.lastDirection === "left"
             ) {
                 this.player?.anims.play("upleft", true);
+                this.tweens.add({
+                    targets: this.player,
+                    duration: 180, // Duration of the tween in milliseconds
+                    scaleX: 0.12, // New X scale value
+                    scaleY: 0.12, // New Y scale value
+                });
             } else if (this.lastDirection === "left") {
                 this.player?.anims.play("idleLeft", true);
+                this.tweens.add({
+                    targets: this.player,
+                    duration: 180, // Duration of the tween in milliseconds
+                    scaleX: 0.2, // New X scale value
+                    scaleY: 0.2, // New Y scale value
+                });
             } else {
                 this.player?.anims.play("idleRight", true);
+                this.tweens.add({
+                    targets: this.player,
+                    duration: 180, // Duration of the tween in milliseconds
+                    scaleX: 0.2, // New X scale value
+                    scaleY: 0.2, // New Y scale value
+                });
             }
         }
 
