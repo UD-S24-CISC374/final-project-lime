@@ -4,7 +4,7 @@ import Manual from "../objects/manual";
 export default class Level03 extends Phaser.Scene {
     private stateText: Phaser.GameObjects.Text;
     private inputField: HTMLInputElement;
-    private inputContainer: Phaser.GameObjects.Container;
+    private scroller: HTMLDivElement;
     private timer: Phaser.GameObjects.Text;
     private lvl2: boolean;
     private lvl3: boolean;
@@ -73,10 +73,6 @@ export default class Level03 extends Phaser.Scene {
         const randomNum2 = getRandomInt(1, 9).toString();
         const randomNum3 = getRandomInt(1, 9).toString();
         const randomNum4 = getRandomInt(1, 9).toString();
-        // const randomNum1 = "1";
-        // const randomNum2 = "2";
-        // const randomNum3 = "3";
-        // const randomNum4 = "4";
 
         //Padlock code
         const imagePositions = [
@@ -124,62 +120,11 @@ export default class Level03 extends Phaser.Scene {
             "        COMMAND MANUAL \n\n- 'ls' to list the contents      of the current directory.\n\n- 'cd <directory>' to change     the current directory.\n\n- 'man <command>' to display     the manual for a specific     command.\n\n- 'rm <file> to remove a         file from its directory."
         );
 
-        //padlock hover tint code
-        imagePositions.forEach((pos) => {
-            const image = this.add
-                .image(pos.x, pos.y, pos.key)
-                .setDisplaySize(70, 70);
-
-            image.setInteractive();
-
-            image.on("pointerover", () => {
-                image.setTint(hoverTintColor);
-            });
-
-            image.on("pointerout", () => {
-                image.clearTint();
-            });
-
-            image.on("pointerdown", () => {
-                if (pos.key !== "padX" && pos.key !== "padCheck") {
-                    if (displayScreen.text.length < 8) {
-                        displayScreen.text += pos.key + " ";
-                    }
-                } else if (pos.key === "padX") {
-                    // Handle backspace functionality
-                    displayScreen.text = displayScreen.text.slice(0, -1);
-                } else {
-                    if (displayScreen.text === answer) {
-                        this.objectiveCompleted = true;
-                        this.addTextToContainer("Access Granted");
-                        this.addTextToContainer("Objective complete");
-                        this.time.delayedCall(2000, () => {
-                            this.scene.start("LevelSelect");
-                        });
-                    } else {
-                        displayScreen.text = "";
-                        this.addTextToContainer("Access denied.");
-                    }
-                }
-            });
-        });
-
-        let ding = this.sound.add("ding", { loop: false });
-        let lsDing = this.sound.add("lsDing", { loop: false });
-        let cdDing = this.sound.add("cdDing", { loop: false });
-        let cdBackDing = this.sound.add("cdBackDing", { loop: false });
-        let manDing = this.sound.add("manDing", { loop: false });
-
-        this.inputContainer = this.add.container(360, 520);
-
-        const maskGraphics = this.make.graphics();
-        maskGraphics.fillRect(300, 185, 1080, 500);
-        const mask = new Phaser.Display.Masks.GeometryMask(this, maskGraphics);
-
-        this.inputContainer.setMask(mask);
-
-        this.addTextToContainer("Alfred: Welcome back " + this.username + "!");
-
+        // let ding = this.sound.add("ding", { loop: false });
+        // let lsDing = this.sound.add("lsDing", { loop: false });
+        // let cdDing = this.sound.add("cdDing", { loop: false });
+        // let cdBackDing = this.sound.add("cdBackDing", { loop: false });
+        // let manDing = this.sound.add("manDing", { loop: false });
         let state: string = "back_door";
 
         const lsMap = new Map<string, string>();
@@ -239,6 +184,80 @@ export default class Level03 extends Phaser.Scene {
             "Alfred: The 'cat' command permits you\nto read a file's contents. Kind of like\nthe 'ls' command reads a directory's contents."
         );
 
+        this.add.text(
+            410,
+            59,
+            "Search directories for codes and type\nthem into the pin-pad to advance\n further into the facility.",
+            {
+                color: "#fff",
+                fontSize: "22px",
+                fontFamily: "Monospace",
+            }
+        );
+
+        // Add scrollable text area
+        this.scroller = document.createElement("div");
+        this.scroller.style.width = "600px";
+        this.scroller.style.height = "390px";
+        this.scroller.style.backgroundColor = "black";
+        this.scroller.style.color = "white";
+        this.scroller.style.borderRadius = "10px";
+        this.scroller.style.overflowY = "auto"; // Enable vertical scrolling
+        this.scroller.style.position = "absolute";
+        this.scroller.style.top = "48%";
+        this.scroller.style.left = "50%";
+        this.scroller.style.bottom = "49%";
+        //this.scroller.style.border = "2px solid gold";
+        this.scroller.style.transform = "translate(-50%, -50%)";
+        document.body.appendChild(this.scroller);
+
+        const whiteSpace = document.createElement("p");
+        whiteSpace.textContent = "                                        ";
+        whiteSpace.style.marginTop = "350px";
+        this.scroller.appendChild(whiteSpace);
+
+        this.appendToScroller("Alfred: Welcome back " + this.username + "!");
+
+        //padlock hover tint code
+        imagePositions.forEach((pos) => {
+            const image = this.add
+                .image(pos.x, pos.y, pos.key)
+                .setDisplaySize(70, 70);
+
+            image.setInteractive();
+
+            image.on("pointerover", () => {
+                image.setTint(hoverTintColor);
+            });
+
+            image.on("pointerout", () => {
+                image.clearTint();
+            });
+
+            image.on("pointerdown", () => {
+                if (pos.key !== "padX" && pos.key !== "padCheck") {
+                    if (displayScreen.text.length < 8) {
+                        displayScreen.text += pos.key + " ";
+                    }
+                } else if (pos.key === "padX") {
+                    // Handle backspace functionality
+                    displayScreen.text = displayScreen.text.slice(0, -1);
+                } else {
+                    if (displayScreen.text === answer) {
+                        this.objectiveCompleted = true;
+                        this.appendToScroller("Access Granted");
+                        this.appendToScroller("Objective complete");
+                        this.time.delayedCall(2000, () => {
+                            this.scene.start("LevelSelect");
+                        });
+                    } else {
+                        displayScreen.text = "";
+                        this.appendToScroller("Access denied.");
+                    }
+                }
+            });
+        });
+
         // Add text input field
         this.inputField = document.createElement("input");
         this.inputField.type = "text";
@@ -256,120 +275,69 @@ export default class Level03 extends Phaser.Scene {
         this.inputField.style.transform = "translate(-50%, -50%)";
         document.body.appendChild(this.inputField);
 
-        this.add.text(
-            410,
-            59,
-            "Search directories for codes and type\nthem into the pin-pad to advance\n further into the facility.",
-            {
-                color: "#fff",
-                fontSize: "22px",
-                fontFamily: "Monospace",
-            }
-        );
-
         this.input.keyboard?.removeCapture(
             Phaser.Input.Keyboard.KeyCodes.SPACE
         );
 
-        this.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
+        this.inputField.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
-                this.lastPosition = -1;
-                const newText = this.inputField.value;
-                if (newText.trim() !== "") {
-                    if (newText.trim() == "ls") {
-                        lsDing.play();
-                        this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer(
-                            this.username.toLowerCase().replace(/\s+/g, "_") +
-                                ": " +
-                                newText
-                        );
-                        this.addLsToContainer(lsMap.get(state) as string);
-                    } else if (newText.substring(0, 4) == "cat ") {
-                        let catInput: string = newText.substring(4);
-                        const catState = catMap.get(catInput);
-                        if (catState !== undefined) {
-                            lsDing.play();
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer("agent09: " + newText);
-                            this.addTextToContainer(catState);
-                        } else {
-                            ding.play();
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer("agent09: " + newText);
-                            this.addTextToContainer(
-                                "File '" + catInput + "' not found"
-                            );
-                        }
-                    } else if (newText.substring(0, 3) == "cd ") {
-                        let cdInput: string = newText.substring(
-                            3,
-                            newText.length
-                        );
-                        // CD .. FUNCTIONALITY BELOW
-                        const backState = cdBack.get(state);
-                        const cdState = cdMap.get(state);
-                        if (backState !== undefined && cdInput == "..") {
-                            cdBackDing.play();
-
-                            state = backState;
-                            this.stateText.setText(state);
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer("agent09: " + newText);
-                        }
-                        // CD FUNCTIONALITY BELOW
-                        else if (
-                            cdState !== undefined &&
-                            cdMap.get(state)?.includes(cdInput)
-                        ) {
-                            cdDing.play();
-
-                            state = newText.substring(3);
-                            this.stateText.setText(state);
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer("agent09: " + newText);
-                        }
-                        // CD DIRECTORY NOT FOUND BELOW
-                        else {
-                            ding.play();
-
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer("agent09: " + newText);
-                            this.addTextToContainer("Directory not found");
-                        }
-                        // MAN INPUT BELOW
-                    } else if (newText.substring(0, 4) == "man ") {
-                        let manInput: string = newText.substring(4);
-
-                        const manState = manMap.get(manInput);
-                        if (manState !== undefined) {
-                            manDing.play();
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer("agent09: " + newText);
-                            this.addTextToContainer(
-                                manMap.get(manInput) as string
-                            );
-                        } else {
-                            ding.play();
-
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer("agent09: " + newText);
-                            this.addTextToContainer(
-                                "Command '" + manInput + "' not found"
-                            );
-                        }
+                const command = this.inputField.value.trim();
+                this.inputField.value = ""; // Clear the input field
+                if (command === "ls") {
+                    this.appendToScroller("agent09: " + command);
+                    this.appendLsToScroller(lsMap.get(state) as string);
+                } else if (command.substring(0, 4) == "cat ") {
+                    const file = command.substring(4);
+                    const fileContents = catMap.get(file);
+                    if (fileContents !== undefined) {
+                        this.appendToScroller("agent09: " + command);
+                        this.appendToScroller(fileContents as string);
+                    } else {
+                        this.appendToScroller("File " + file + " not found.");
                     }
-                    // NONSENSE INPUT BELOW
-                    else {
-                        ding.play();
-                        this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer("agent09: " + newText);
-                        this.addTextToContainer(
-                            "Command '" + newText + "' not found"
+                } else if (
+                    command.substring(0, 3) == "cd " &&
+                    command.substring(0, 5) !== "cd .."
+                ) {
+                    const dir = command.substring(3);
+                    const dirC = cdMap.get(state);
+                    if (dirC !== undefined) {
+                        this.appendToScroller("agent09: " + command);
+                        state = command.substring(3);
+                        this.stateText.setText(state);
+                    } else {
+                        this.appendToScroller(
+                            "Directory " + dir + " not found."
                         );
                     }
+                } else if (command.substring(0, 5) == "cd ..") {
+                    const dir = cdBack.get(state);
+                    if (state !== "back_door" && dir) {
+                        this.appendToScroller("agent09: " + command);
+                        this.stateText.setText(dir);
+                        state = dir;
+                    } else {
+                        this.appendToScroller(
+                            "Cannot go back from the root directory."
+                        );
+                    }
+                } else if (command.substring(0, 4) == "man ") {
+                    const manual = command.substring(4);
+                    const tip = manMap.get(manual);
+                    if (tip !== undefined) {
+                        this.appendToScroller("agent09: " + command);
+                        this.appendToScroller(tip);
+                    } else {
+                        this.appendToScroller(
+                            "Command " + manual + " not found."
+                        );
+                    }
+                } else {
+                    this.appendToScroller("agent09: " + command);
+                    this.appendToScroller("Command not found.");
                 }
             }
+
             if (event.key === "ArrowUp") {
                 let index = this.lastText.length + this.lastPosition;
                 if (index > 0) {
@@ -407,6 +375,7 @@ export default class Level03 extends Phaser.Scene {
                     this.time.delayedCall(10, updateTimer);
                 } else {
                     this.timer.setText("0.00");
+                    this.scroller.style.display = "none";
                     this.scene.start("SecurityBreachScene", {
                         username: this.username,
                         lvl2: this.lvl2,
@@ -432,78 +401,120 @@ export default class Level03 extends Phaser.Scene {
     }
     update() {}
 
-    addLsToContainer(text: string) {
-        const words = text.split(" ");
-
-        const numNewlines = words.length;
-
-        this.inputContainer.y -= numNewlines * 24.7;
-
-        for (let word of words) {
-            if (word.substring(0, 5) === "file_") {
-                let newWord = word.substring(5);
-                const newText = this.add.text(0, 0, newWord, {
-                    fontSize: "24px",
-                    color: "#77C3EC",
-                });
-                this.inputContainer.add(newText);
-            } else if (word.substring(0, 4) === "dir_") {
-                let newWord = word.substring(4);
-                const newText = this.add.text(0, 0, newWord, {
-                    fontSize: "24px",
-                    color: "#86DC3D",
-                });
-                this.inputContainer.add(newText);
-            } else {
-                const newText = this.add.text(0, 0, word, {
-                    fontSize: "24px",
-                    color: "#fff",
-                });
-                this.inputContainer.add(newText);
-            }
-
-            this.repositionTextObjects();
-        }
-    }
-
-    addTextToContainer(text: string) {
-        const newText = this.add.text(0, 0, text, {
-            fontSize: "24px",
-            color: "#fff",
-        });
-
-        const numNewlines = (text.match(/\n/g) || []).length + 1;
-
-        // Adjust y position based on the number of newline characters
-        this.inputContainer.y -= numNewlines * 24.7;
-
+    appendToScroller(text: string) {
+        const textNode = document.createElement("text");
+        const spaceNode = document.createElement("p");
+        let spaces: string = "";
         if (text.includes("Alfred: ")) {
-            newText.setColor("gold");
-        } else if (text.includes("Access Granted")) {
-            newText.setColor("lime");
-        } else if (text.includes("Objective complete")) {
-            newText.setColor("lime");
-        } else if (text.includes("Access denied")) {
-            newText.setColor("red");
+            textNode.style.color = "gold";
+        } else {
+            textNode.style.color = "white";
         }
+        textNode.style.fontFamily = "Monospace";
+        textNode.style.fontSize = "24px";
+        textNode.style.marginBottom = "-15px";
+        const desiredWidth = 41;
 
-        // Add the new text object to the container
-        this.inputContainer.add(newText);
+        const textLength = text.length;
+        const spacesNeeded = desiredWidth - textLength;
 
-        // Reposition text objects vertically within the container
-        this.repositionTextObjects();
+        for (let i = 0; i < spacesNeeded; i++) {
+            spaces += " ";
+        }
+        spaceNode.textContent = spaces;
+        textNode.textContent = text;
+        this.scroller.appendChild(textNode);
+        this.scroller.appendChild(spaceNode);
+
+        // Scroll to the bottom
+        this.scroller.scrollTop = this.scroller.scrollHeight;
     }
 
-    repositionTextObjects() {
-        let yPos = 0;
-
-        // Loop through all text objects in the container and position them vertically
-        this.inputContainer.iterate((child: Phaser.GameObjects.GameObject) => {
-            if (child instanceof Phaser.GameObjects.Text) {
-                child.y = yPos;
-                yPos += child.height;
+    appendLsToScroller(text: string) {
+        const desiredWidth = 41;
+        const spaces = "                            ";
+        const spaceLength = spaces.length;
+        let total = 0;
+        const words = text.split(" ");
+        for (let word of words) {
+            if (word.substring(0, 4) === "dir_") {
+                total += word.length + spaceLength;
+                const addNode = document.createElement("text");
+                addNode.textContent = word.substring(4) + spaces;
+                addNode.style.color = "#86DC3D";
+                addNode.style.fontFamily = "Monospace";
+                addNode.style.fontSize = "24px";
+                this.scroller.appendChild(addNode);
+            } else if (word.substring(0, 5) === "file_") {
+                total += word.length + spaceLength;
+                const addNode = document.createElement("text");
+                addNode.textContent = word.substring(5) + spaces;
+                addNode.style.color = "#77C3EC";
+                addNode.style.fontFamily = "Monospace";
+                addNode.style.fontSize = "24px";
+                this.scroller.appendChild(addNode);
             }
-        });
+        }
+        let endSpace = "";
+        const spaceNeeded = desiredWidth - total;
+        for (let i = 0; i < spaceNeeded; i++) {
+            endSpace += " ";
+        }
+        const endNode = document.createElement("p");
+        endNode.textContent = endSpace;
+        this.scroller.appendChild(endNode);
+        this.scroller.scrollTop = this.scroller.scrollHeight;
+        // for (let word of words) {
+        //     if (word.substring(0, 5) === "file_") {
+        //         let newWord = word.substring(5) + "           ";
+        //         // White Space
+        //         const newWordLength = newWord.length;
+        //         const spacesNeeded = desiredWidth - newWordLength;
+        //         const spaceNode = document.createElement("p");
+        //         let spaces: string = "";
+        //         for (let i = 0; i < spacesNeeded; i++) {
+        //             spaces += " ";
+        //         }
+        //         spaceNode.textContent = spaces;
+        //         spaceNode.style.marginBottom = "-15px";
+
+        //         const fileNode = document.createElement("p");
+        //         fileNode.textContent = newWord;
+        //         fileNode.style.fontFamily = "Monospace";
+        //         fileNode.style.fontSize = "24px";
+        //         fileNode.style.color = "#77C3EC";
+        //         fileNode.style.marginBottom = "-15px";
+        //         this.scroller.appendChild(fileNode);
+        //         this.scroller.appendChild(spaceNode);
+
+        //         // Scroll to the bottom
+        //         this.scroller.scrollTop = this.scroller.scrollHeight;
+        //     } else if (word.substring(0, 4) === "dir_") {
+        //         let newWord = word.substring(4) + "           ";
+        //         // White Space
+        //         const newWordLength = newWord.length;
+        //         const spacesNeeded = desiredWidth - newWordLength;
+        //         const spaceNode = document.createElement("p");
+        //         let spaces: string = "";
+        //         for (let i = 0; i < spacesNeeded; i++) {
+        //             spaces += " ";
+        //         }
+        //         spaceNode.textContent = spaces;
+        //         spaceNode.style.marginBottom = "-15px";
+
+        //         const dirNode = document.createElement("p");
+        //         dirNode.textContent = newWord;
+        //         dirNode.style.fontFamily = "Monospace";
+        //         dirNode.style.fontSize = "24px";
+        //         dirNode.style.color = "#86DC3D";
+        //         dirNode.style.marginBottom = "-15px";
+
+        //         this.scroller.appendChild(dirNode);
+        //         this.scroller.appendChild(spaceNode);
+        //     }
+        //     // Scroll to the bottom
+        //     this.scroller.scrollTop = this.scroller.scrollHeight;
+        // }
     }
 
     loadLevel() {

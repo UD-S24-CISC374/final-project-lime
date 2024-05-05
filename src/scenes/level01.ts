@@ -422,6 +422,21 @@ export default class Level1Scene extends Phaser.Scene {
             color: "#fff",
         });
         this.events.on("shutdown", this.removeInputField, this);
+
+        // Add back arrow
+        const backArrow = this.add
+            .image(50, 35, "backArrow")
+            .setDisplaySize(30, 30);
+        backArrow.setInteractive();
+        backArrow.on("pointerup", () => {
+            this.scene.start("LevelSelect");
+        });
+        backArrow.on("pointerover", () => {
+            backArrow.setTint(0x44ff44);
+        });
+        backArrow.on("pointerout", () => {
+            backArrow.clearTint();
+        });
     }
 
     removeInputField() {
