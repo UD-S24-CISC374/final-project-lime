@@ -146,7 +146,7 @@ export default class LevelSelect extends Phaser.Scene {
             key: "upright",
             frames: this.anims.generateFrameNumbers("dude", {
                 start: 18,
-                end: 18,
+                end: 21,
             }),
             frameRate: 12,
             repeat: -1,
@@ -154,8 +154,8 @@ export default class LevelSelect extends Phaser.Scene {
         this.anims.create({
             key: "upleft",
             frames: this.anims.generateFrameNumbers("dude", {
-                start: 19,
-                end: 19,
+                start: 21,
+                end: 18,
             }),
             frameRate: 12,
             repeat: -1,
@@ -176,7 +176,7 @@ export default class LevelSelect extends Phaser.Scene {
             key: "right",
             frames: this.anims.generateFrameNumbers("dude", {
                 start: 10,
-                end: 18,
+                end: 17,
             }),
             frameRate: 10,
             repeat: -1,
@@ -317,24 +317,100 @@ export default class LevelSelect extends Phaser.Scene {
             });
         }
 
-        if (this.cursors.left.isDown) {
-            this.player?.setVelocityX(-400);
-            this.player?.anims.play("left", true);
+        if (this.cursors.left.isDown && this.player?.body?.touching.down) {
+            this.player.setVelocityX(-400);
+            this.player.anims.play("left", true);
+            this.tweens.add({
+                targets: this.player,
+                duration: 180, // Duration of the tween in milliseconds
+                scaleX: 0.2, // New X scale value
+                scaleY: 0.2, // New Y scale value
+            });
             this.lastDirection = "left"; // Update last movement direction
             this.isWalking = true;
-        } else if (this.cursors.right.isDown) {
-            this.player?.setVelocityX(400);
-            this.player?.anims.play("right", true);
+        } else if (
+            this.cursors.right.isDown &&
+            this.player?.body?.touching.down
+        ) {
+            this.player.setVelocityX(400);
+            this.player.anims.play("right", true);
+            this.tweens.add({
+                targets: this.player,
+                duration: 180, // Duration of the tween in milliseconds
+                scaleX: 0.2, // New X scale value
+                scaleY: 0.2, // New Y scale value
+            });
             this.lastDirection = "right"; // Update last movement direction
             this.isWalking = true;
+        } else if (
+            this.cursors.right.isDown &&
+            !this.player?.body?.touching.down
+        ) {
+            this.player?.setVelocityX(400);
+            this.player?.anims.play("upright", true);
+            this.tweens.add({
+                targets: this.player,
+                duration: 180, // Duration of the tween in milliseconds
+                scaleX: 0.12, // New X scale value
+                scaleY: 0.12, // New Y scale value
+            });
+            this.lastDirection = "right"; // Update last movement direction
+            this.isWalking = false;
+        } else if (
+            this.cursors.left.isDown &&
+            !this.player?.body?.touching.down
+        ) {
+            this.player?.setVelocityX(-400);
+            this.player?.anims.play("upleft", true);
+            this.tweens.add({
+                targets: this.player,
+                duration: 180, // Duration of the tween in milliseconds
+                scaleX: 0.12, // New X scale value
+                scaleY: 0.12, // New Y scale value
+            });
+            this.lastDirection = "left"; // Update last movement direction
+            this.isWalking = false;
         } else {
             this.player?.setVelocityX(0);
             this.isWalking = false;
-
-            if (this.lastDirection === "left") {
+            if (
+                !this.player?.body?.touching.down &&
+                this.lastDirection === "right"
+            ) {
+                this.player?.anims.play("upright", true);
+                this.tweens.add({
+                    targets: this.player,
+                    duration: 180, // Duration of the tween in milliseconds
+                    scaleX: 0.12, // New X scale value
+                    scaleY: 0.12, // New Y scale value
+                });
+            } else if (
+                !this.player?.body?.touching.down &&
+                this.lastDirection === "left"
+            ) {
+                this.player?.anims.play("upleft", true);
+                this.tweens.add({
+                    targets: this.player,
+                    duration: 180, // Duration of the tween in milliseconds
+                    scaleX: 0.12, // New X scale value
+                    scaleY: 0.12, // New Y scale value
+                });
+            } else if (this.lastDirection === "left") {
                 this.player?.anims.play("idleLeft", true);
+                this.tweens.add({
+                    targets: this.player,
+                    duration: 180, // Duration of the tween in milliseconds
+                    scaleX: 0.2, // New X scale value
+                    scaleY: 0.2, // New Y scale value
+                });
             } else {
                 this.player?.anims.play("idleRight", true);
+                this.tweens.add({
+                    targets: this.player,
+                    duration: 180, // Duration of the tween in milliseconds
+                    scaleX: 0.2, // New X scale value
+                    scaleY: 0.2, // New Y scale value
+                });
             }
         }
 
@@ -351,27 +427,17 @@ export default class LevelSelect extends Phaser.Scene {
             }
         }
 
-        // Check if player is jumping
         if (this.player?.body?.velocity.y !== 0) {
             if (this.walkSound) {
                 this.walkSound.stop();
                 this.walkSound = undefined;
-            }
-            if (this.lastDirection == "right") {
-                this.player?.anims.play("upright", true);
-            } else {
-                this.player?.anims.play("upleft", true);
             }
         }
 
         if (this.cursors.up.isDown && this.player?.body?.touching.down) {
             let jumpSound = this.sound.add("jump");
             jumpSound.play({ volume: 0.5 });
-            if (this.lastDirection == "right") {
-                this.player.anims.play("upright", true);
-            } else {
-                this.player.anims.play("upleft", true);
-            }
+
             this.player.setVelocityY(-300);
         } else if (this.cursors.down.isDown) {
             this.player?.setVelocityY(300);
