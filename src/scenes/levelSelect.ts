@@ -318,16 +318,16 @@ export default class LevelSelect extends Phaser.Scene {
         }
 
         if (this.cursors.left.isDown && this.player?.body?.touching.down) {
-            this.player?.setVelocityX(-400);
-            this.player?.anims.play("left", true);
+            this.player.setVelocityX(-400);
+            this.player.anims.play("left", true);
             this.lastDirection = "left"; // Update last movement direction
             this.isWalking = true;
         } else if (
             this.cursors.right.isDown &&
             this.player?.body?.touching.down
         ) {
-            this.player?.setVelocityX(400);
-            this.player?.anims.play("right", true);
+            this.player.setVelocityX(400);
+            this.player.anims.play("right", true);
             this.lastDirection = "right"; // Update last movement direction
             this.isWalking = true;
         } else if (
