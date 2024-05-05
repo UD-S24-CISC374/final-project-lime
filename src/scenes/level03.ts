@@ -64,7 +64,6 @@ export default class Level03 extends Phaser.Scene {
         this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
         this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
-        let winChime = this.sound.add("winChime", { loop: false });
 
         function getRandomInt(min: number, max: number): number {
             min = Math.ceil(min);
@@ -122,73 +121,13 @@ export default class Level03 extends Phaser.Scene {
             "        COMMAND MANUAL \n\n- 'ls' to list the contents      of the current directory.\n\n- 'cd <directory>' to change     the current directory.\n\n- 'man <command>' to display     the manual for a specific     command.\n\n- 'rm <file> to remove a         file from its directory."
         );
 
-<<<<<<< HEAD:src/scenes/lvl03Main.ts
-        // let ding = this.sound.add("ding", { loop: false });
-        // let lsDing = this.sound.add("lsDing", { loop: false });
-        // let cdDing = this.sound.add("cdDing", { loop: false });
-        // let cdBackDing = this.sound.add("cdBackDing", { loop: false });
-        // let manDing = this.sound.add("manDing", { loop: false });
-=======
-        //padlock hover tint code
-        imagePositions.forEach((pos) => {
-            const image = this.add
-                .image(pos.x, pos.y, pos.key)
-                .setDisplaySize(70, 70);
-
-            image.setInteractive();
-
-            image.on("pointerover", () => {
-                image.setTint(hoverTintColor);
-            });
-
-            image.on("pointerout", () => {
-                image.clearTint();
-            });
-
-            image.on("pointerdown", () => {
-                if (pos.key !== "padX" && pos.key !== "padCheck") {
-                    if (displayScreen.text.length < 8) {
-                        displayScreen.text += pos.key + " ";
-                    }
-                } else if (pos.key === "padX") {
-                    // Handle backspace functionality
-                    displayScreen.text = displayScreen.text.slice(0, -1);
-                } else {
-                    if (displayScreen.text === answer) {
-                        winChime.play();
-
-                        this.objectiveCompleted = true;
-                        this.addTextToContainer("Access Granted");
-                        this.addTextToContainer("Objective complete");
-                        this.time.delayedCall(2000, () => {
-                            this.sound.stopAll();
-                            this.scene.start("LevelSelect");
-                        });
-                    } else {
-                        displayScreen.text = "";
-                        this.addTextToContainer("Access denied.");
-                    }
-                }
-            });
-        });
-
         let ding = this.sound.add("ding", { loop: false });
         let lsDing = this.sound.add("lsDing", { loop: false });
         let cdDing = this.sound.add("cdDing", { loop: false });
         let cdBackDing = this.sound.add("cdBackDing", { loop: false });
         let manDing = this.sound.add("manDing", { loop: false });
+        let winChime = this.sound.add("winChime", { loop: false });
 
-        this.inputContainer = this.add.container(360, 520);
-
-        const maskGraphics = this.make.graphics();
-        maskGraphics.fillRect(300, 185, 1080, 500);
-        const mask = new Phaser.Display.Masks.GeometryMask(this, maskGraphics);
-
-        this.inputContainer.setMask(mask);
-
-        this.addTextToContainer("Alfred: Welcome back " + this.username + "!");
-
->>>>>>> 8742fde68624c69bebbedc0d9b3ac1d923dee377:src/scenes/level03.ts
         let state: string = "back_door";
 
         const lsMap = new Map<string, string>();
@@ -309,9 +248,12 @@ export default class Level03 extends Phaser.Scene {
                 } else {
                     if (displayScreen.text === answer) {
                         this.objectiveCompleted = true;
+                        winChime.play();
                         this.appendToScroller("Access Granted");
                         this.appendToScroller("Objective complete");
+
                         this.time.delayedCall(2000, () => {
+                            this.scroller.style.display = "none";
                             this.scene.start("LevelSelect");
                         });
                     } else {
@@ -348,15 +290,18 @@ export default class Level03 extends Phaser.Scene {
                 const command = this.inputField.value.trim();
                 this.inputField.value = ""; // Clear the input field
                 if (command === "ls") {
+                    lsDing.play();
                     this.appendToScroller("agent09: " + command);
                     this.appendLsToScroller(lsMap.get(state) as string);
                 } else if (command.substring(0, 4) == "cat ") {
                     const file = command.substring(4);
                     const fileContents = catMap.get(file);
                     if (fileContents !== undefined) {
+                        lsDing.play();
                         this.appendToScroller("agent09: " + command);
                         this.appendToScroller(fileContents as string);
                     } else {
+                        ding.play();
                         this.appendToScroller("File " + file + " not found.");
                     }
                 } else if (
@@ -366,10 +311,12 @@ export default class Level03 extends Phaser.Scene {
                     const dir = command.substring(3);
                     const dirC = cdMap.get(state);
                     if (dirC !== undefined) {
+                        cdDing.play();
                         this.appendToScroller("agent09: " + command);
                         state = command.substring(3);
                         this.stateText.setText(state);
                     } else {
+                        ding.play();
                         this.appendToScroller(
                             "Directory " + dir + " not found."
                         );
@@ -377,10 +324,12 @@ export default class Level03 extends Phaser.Scene {
                 } else if (command.substring(0, 5) == "cd ..") {
                     const dir = cdBack.get(state);
                     if (state !== "back_door" && dir) {
+                        cdBackDing.play();
                         this.appendToScroller("agent09: " + command);
                         this.stateText.setText(dir);
                         state = dir;
                     } else {
+                        ding.play();
                         this.appendToScroller(
                             "Cannot go back from the root directory."
                         );
@@ -389,14 +338,17 @@ export default class Level03 extends Phaser.Scene {
                     const manual = command.substring(4);
                     const tip = manMap.get(manual);
                     if (tip !== undefined) {
+                        manDing.play();
                         this.appendToScroller("agent09: " + command);
                         this.appendToScroller(tip);
                     } else {
+                        ding.play();
                         this.appendToScroller(
                             "Command " + manual + " not found."
                         );
                     }
                 } else {
+                    ding.play();
                     this.appendToScroller("agent09: " + command);
                     this.appendToScroller("Command not found.");
                 }
@@ -439,12 +391,9 @@ export default class Level03 extends Phaser.Scene {
                     this.time.delayedCall(10, updateTimer);
                 } else {
                     this.timer.setText("0.00");
-<<<<<<< HEAD:src/scenes/lvl03Main.ts
                     this.scroller.style.display = "none";
-=======
                     this.sound.stopAll();
 
->>>>>>> 8742fde68624c69bebbedc0d9b3ac1d923dee377:src/scenes/level03.ts
                     this.scene.start("SecurityBreachScene", {
                         username: this.username,
                         lvl2: this.lvl2,
@@ -476,8 +425,12 @@ export default class Level03 extends Phaser.Scene {
         let spaces: string = "";
         if (text.includes("Alfred: ")) {
             textNode.style.color = "gold";
-        } else {
-            textNode.style.color = "white";
+        } else if (text.includes("Access Granted")) {
+            textNode.style.color = "green";
+        } else if (text.includes("Objective complete")) {
+            textNode.style.color = "green";
+        } else if (text.includes("Access denied")) {
+            textNode.style.color = "red";
         }
         textNode.style.fontFamily = "Monospace";
         textNode.style.fontSize = "24px";
@@ -533,57 +486,6 @@ export default class Level03 extends Phaser.Scene {
         endNode.textContent = endSpace;
         this.scroller.appendChild(endNode);
         this.scroller.scrollTop = this.scroller.scrollHeight;
-        // for (let word of words) {
-        //     if (word.substring(0, 5) === "file_") {
-        //         let newWord = word.substring(5) + "           ";
-        //         // White Space
-        //         const newWordLength = newWord.length;
-        //         const spacesNeeded = desiredWidth - newWordLength;
-        //         const spaceNode = document.createElement("p");
-        //         let spaces: string = "";
-        //         for (let i = 0; i < spacesNeeded; i++) {
-        //             spaces += " ";
-        //         }
-        //         spaceNode.textContent = spaces;
-        //         spaceNode.style.marginBottom = "-15px";
-
-        //         const fileNode = document.createElement("p");
-        //         fileNode.textContent = newWord;
-        //         fileNode.style.fontFamily = "Monospace";
-        //         fileNode.style.fontSize = "24px";
-        //         fileNode.style.color = "#77C3EC";
-        //         fileNode.style.marginBottom = "-15px";
-        //         this.scroller.appendChild(fileNode);
-        //         this.scroller.appendChild(spaceNode);
-
-        //         // Scroll to the bottom
-        //         this.scroller.scrollTop = this.scroller.scrollHeight;
-        //     } else if (word.substring(0, 4) === "dir_") {
-        //         let newWord = word.substring(4) + "           ";
-        //         // White Space
-        //         const newWordLength = newWord.length;
-        //         const spacesNeeded = desiredWidth - newWordLength;
-        //         const spaceNode = document.createElement("p");
-        //         let spaces: string = "";
-        //         for (let i = 0; i < spacesNeeded; i++) {
-        //             spaces += " ";
-        //         }
-        //         spaceNode.textContent = spaces;
-        //         spaceNode.style.marginBottom = "-15px";
-
-        //         const dirNode = document.createElement("p");
-        //         dirNode.textContent = newWord;
-        //         dirNode.style.fontFamily = "Monospace";
-        //         dirNode.style.fontSize = "24px";
-        //         dirNode.style.color = "#86DC3D";
-        //         dirNode.style.marginBottom = "-15px";
-
-        //         this.scroller.appendChild(dirNode);
-        //         this.scroller.appendChild(spaceNode);
-        //     }
-        //     // Scroll to the bottom
-        //     this.scroller.scrollTop = this.scroller.scrollHeight;
-        // }
     }
 
     loadLevel() {
