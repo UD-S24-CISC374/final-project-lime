@@ -15,7 +15,6 @@ export default class Level03 extends Phaser.Scene {
     private lastText: string[] = [""];
     private lastPosition: number = -1;
     private manual: Manual;
-    private menuMusic: Phaser.Sound.BaseSound | undefined;
 
     constructor() {
         super({ key: "Level03" });
@@ -41,19 +40,19 @@ export default class Level03 extends Phaser.Scene {
         this.lvl5 = data.lvl5;
     }
     preload() {
-        this.load.image("1", "assets/Keypad/num1.png");
-        this.load.image("2", "assets/Keypad/num2.png");
-        this.load.image("3", "assets/Keypad/num3.png");
-        this.load.image("4", "assets/Keypad/num4.png");
-        this.load.image("5", "assets/Keypad/num5.png");
-        this.load.image("6", "assets/Keypad/num6.png");
-        this.load.image("7", "assets/Keypad/num7.png");
-        this.load.image("8", "assets/Keypad/num8.png");
-        this.load.image("9", "assets/Keypad/num9.png");
-        this.load.image("0", "assets/Keypad/num0.png");
-        this.load.image("padCheck", "assets/Keypad/padCheck.png");
-        this.load.image("padX", "assets/Keypad/padx.png");
-        this.load.image("pinPadText", "assets/Keypad/PinPadText.png");
+        this.load.image("1", "assets/num1.png");
+        this.load.image("2", "assets/num2.png");
+        this.load.image("3", "assets/num3.png");
+        this.load.image("4", "assets/num4.png");
+        this.load.image("5", "assets/num5.png");
+        this.load.image("6", "assets/num6.png");
+        this.load.image("7", "assets/num7.png");
+        this.load.image("8", "assets/num8.png");
+        this.load.image("9", "assets/num9.png");
+        this.load.image("0", "assets/num0.png");
+        this.load.image("padCheck", "assets/padCheck.png");
+        this.load.image("padX", "assets/padx.png");
+        this.load.image("pinPadText", "assets/PinPadText.png");
     }
 
     create() {
@@ -126,8 +125,6 @@ export default class Level03 extends Phaser.Scene {
         let cdDing = this.sound.add("cdDing", { loop: false });
         let cdBackDing = this.sound.add("cdBackDing", { loop: false });
         let manDing = this.sound.add("manDing", { loop: false });
-        let winChime = this.sound.add("winChime", { loop: false });
-
         let state: string = "back_door";
 
         const lsMap = new Map<string, string>();
@@ -248,12 +245,9 @@ export default class Level03 extends Phaser.Scene {
                 } else {
                     if (displayScreen.text === answer) {
                         this.objectiveCompleted = true;
-                        winChime.play();
                         this.appendToScroller("Access Granted");
                         this.appendToScroller("Objective complete");
-
                         this.time.delayedCall(2000, () => {
-                            this.scroller.style.display = "none";
                             this.scene.start("LevelSelect");
                         });
                     } else {
@@ -392,8 +386,6 @@ export default class Level03 extends Phaser.Scene {
                 } else {
                     this.timer.setText("0.00");
                     this.scroller.style.display = "none";
-                    this.sound.stopAll();
-
                     this.scene.start("SecurityBreachScene", {
                         username: this.username,
                         lvl2: this.lvl2,
@@ -425,12 +417,8 @@ export default class Level03 extends Phaser.Scene {
         let spaces: string = "";
         if (text.includes("Alfred: ")) {
             textNode.style.color = "gold";
-        } else if (text.includes("Access Granted")) {
-            textNode.style.color = "green";
-        } else if (text.includes("Objective complete")) {
-            textNode.style.color = "green";
-        } else if (text.includes("Access denied")) {
-            textNode.style.color = "red";
+        } else {
+            textNode.style.color = "white";
         }
         textNode.style.fontFamily = "Monospace";
         textNode.style.fontSize = "24px";
@@ -486,16 +474,61 @@ export default class Level03 extends Phaser.Scene {
         endNode.textContent = endSpace;
         this.scroller.appendChild(endNode);
         this.scroller.scrollTop = this.scroller.scrollHeight;
+        // for (let word of words) {
+        //     if (word.substring(0, 5) === "file_") {
+        //         let newWord = word.substring(5) + "           ";
+        //         // White Space
+        //         const newWordLength = newWord.length;
+        //         const spacesNeeded = desiredWidth - newWordLength;
+        //         const spaceNode = document.createElement("p");
+        //         let spaces: string = "";
+        //         for (let i = 0; i < spacesNeeded; i++) {
+        //             spaces += " ";
+        //         }
+        //         spaceNode.textContent = spaces;
+        //         spaceNode.style.marginBottom = "-15px";
+
+        //         const fileNode = document.createElement("p");
+        //         fileNode.textContent = newWord;
+        //         fileNode.style.fontFamily = "Monospace";
+        //         fileNode.style.fontSize = "24px";
+        //         fileNode.style.color = "#77C3EC";
+        //         fileNode.style.marginBottom = "-15px";
+        //         this.scroller.appendChild(fileNode);
+        //         this.scroller.appendChild(spaceNode);
+
+        //         // Scroll to the bottom
+        //         this.scroller.scrollTop = this.scroller.scrollHeight;
+        //     } else if (word.substring(0, 4) === "dir_") {
+        //         let newWord = word.substring(4) + "           ";
+        //         // White Space
+        //         const newWordLength = newWord.length;
+        //         const spacesNeeded = desiredWidth - newWordLength;
+        //         const spaceNode = document.createElement("p");
+        //         let spaces: string = "";
+        //         for (let i = 0; i < spacesNeeded; i++) {
+        //             spaces += " ";
+        //         }
+        //         spaceNode.textContent = spaces;
+        //         spaceNode.style.marginBottom = "-15px";
+
+        //         const dirNode = document.createElement("p");
+        //         dirNode.textContent = newWord;
+        //         dirNode.style.fontFamily = "Monospace";
+        //         dirNode.style.fontSize = "24px";
+        //         dirNode.style.color = "#86DC3D";
+        //         dirNode.style.marginBottom = "-15px";
+
+        //         this.scroller.appendChild(dirNode);
+        //         this.scroller.appendChild(spaceNode);
+        //     }
+        //     // Scroll to the bottom
+        //     this.scroller.scrollTop = this.scroller.scrollHeight;
+        // }
     }
 
     loadLevel() {
         this.removeInputField();
-        this.sound.stopAll();
-        this.menuMusic = this.sound.add("menuMusic", {
-            loop: true,
-        });
-        this.menuMusic.play();
-
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: true,
