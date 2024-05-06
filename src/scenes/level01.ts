@@ -51,7 +51,6 @@ export default class Level1Scene extends Phaser.Scene {
         this.objectiveCompleted = false;
         this.add.rectangle(640, 360, 1280, 720, 0x000);
 
-        this.add.image(640, 100, "prompt").setDisplaySize(560, 110);
         this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
         this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
@@ -142,8 +141,6 @@ export default class Level1Scene extends Phaser.Scene {
         this.scroller.style.transform = "translate(-50%, -50%)";
         document.body.appendChild(this.scroller);
 
-        // this.add.image(600, 300, "screen").setDisplaySize(650, 400);
-
         const whiteSpace = document.createElement("p");
         whiteSpace.textContent = "                                        ";
         whiteSpace.style.marginTop = "350px";
@@ -155,29 +152,45 @@ export default class Level1Scene extends Phaser.Scene {
         this.inputField = document.createElement("input");
         this.inputField.type = "text";
         this.inputField.style.position = "absolute";
-        this.inputField.style.width = "600px";
-        this.inputField.style.height = "40px";
+        this.inputField.style.width = "44vw";
+        this.inputField.style.height = "80px";
         this.inputField.style.fontSize = "20px";
         this.inputField.style.top = "80%";
         this.inputField.style.left = "50%";
         this.inputField.style.backgroundColor = "#000"; // Change background color to white
         this.inputField.style.color = "#fff"; // Change text color to black
         this.inputField.placeholder = ">$"; // Placeholder text
-        this.inputField.style.border = "2px solid gold";
+        this.inputField.style.border = "2px solid white";
 
         this.inputField.style.transform = "translate(-50%, -50%)";
         document.body.appendChild(this.inputField);
 
-        this.add.text(
-            410,
-            59,
-            "Enter the 'control_room' and remove\nthe 'surveillance_camera' so you can\nproceed into the next area.",
-            {
-                color: "#fff",
-                fontSize: "22px",
-                fontFamily: "Monospace",
-            }
-        );
+        const textContainer = document.createElement("div");
+        textContainer.style.position = "absolute";
+        textContainer.style.width = "44vw";
+        textContainer.style.height = "auto";
+        textContainer.style.padding = "5px";
+        textContainer.style.bottom = "73%";
+        textContainer.style.left = "50%";
+        textContainer.style.transform = "translate(-50%, -50%)";
+        textContainer.style.background =
+            "linear-gradient(-200deg, #444444, #000000)"; // Background color
+        textContainer.style.padding = "10px"; // Padding for the text
+        textContainer.style.border = "2px solid gray"; // Border style
+
+        // Create the text element
+        const textElement = document.createElement("div");
+        textElement.textContent =
+            "Enter the 'control_room' and remove the 'surveillance_camera' so you can proceed into the next area.";
+        textElement.style.color = "#fff"; // Text color
+        textElement.style.fontSize = "20px"; // Font size
+        textElement.style.fontFamily = "Monospace"; // Font family
+
+        // Append the text to the container
+        textContainer.appendChild(textElement);
+
+        // Append the container to the document body
+        document.body.appendChild(textContainer);
 
         this.input.keyboard?.removeCapture(
             Phaser.Input.Keyboard.KeyCodes.SPACE
@@ -212,6 +225,8 @@ export default class Level1Scene extends Phaser.Scene {
                         this.appendToScroller(
                             "surveillance_camera successfully removed"
                         );
+                        textContainer.style.display = "none";
+
                         this.appendToScroller("Objective complete");
                         this.objectiveCompleted = true;
                         winChime.play();
@@ -329,6 +344,7 @@ export default class Level1Scene extends Phaser.Scene {
                 } else {
                     timerText.setText("0.00");
                     this.scroller.style.display = "none";
+                    textContainer.style.display = "none";
                     this.sound.stopAll();
 
                     this.scene.start("SecurityBreachScene", {
@@ -458,6 +474,7 @@ export default class Level1Scene extends Phaser.Scene {
                 addNode.style.color = "#77C3EC";
                 addNode.style.fontFamily = "Monospace";
                 addNode.style.fontSize = "24px";
+
                 this.scroller.appendChild(addNode);
             }
         }
@@ -479,6 +496,7 @@ export default class Level1Scene extends Phaser.Scene {
             loop: true,
         });
         this.menuMusic.play();
+
         this.scroller.style.display = "none";
         this.scene.start("LevelSelect", {
             username: this.username,
