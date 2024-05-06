@@ -181,7 +181,11 @@ export default class Level1Scene extends Phaser.Scene {
                 this.inputField.value = ""; // Clear the input field
                 if (command === "ls") {
                     lsDing.play();
-                    this.appendToScroller("agent09: " + command);
+                    this.appendToScroller(
+                        this.username.toLowerCase().replace(/\s+/g, "_") +
+                            ": " +
+                            command
+                    );
                     this.appendLsToScroller(lsMap.get(state) as string);
                 } else if (command.substring(0, 3) == "rm ") {
                     const file = command.substring(3);
@@ -189,7 +193,11 @@ export default class Level1Scene extends Phaser.Scene {
                         state === "control_room" &&
                         file === "surveillance_camera"
                     ) {
-                        this.appendToScroller("agent09: " + command);
+                        this.appendToScroller(
+                            this.username.toLowerCase().replace(/\s+/g, "_") +
+                                ": " +
+                                command
+                        );
                         this.appendToScroller(
                             "surveillance_camera successfully removed"
                         );
@@ -211,7 +219,11 @@ export default class Level1Scene extends Phaser.Scene {
                     const dirC = cdMap.get(state);
                     if (dirC !== undefined) {
                         cdDing.play();
-                        this.appendToScroller("agent09: " + command);
+                        this.appendToScroller(
+                            this.username.toLowerCase().replace(/\s+/g, "_") +
+                                ": " +
+                                command
+                        );
                         state = command.substring(3);
                         this.stateText.setText(state);
                     } else {
@@ -224,7 +236,11 @@ export default class Level1Scene extends Phaser.Scene {
                     const dir = cdBack.get(state);
                     if (state !== "back_door" && dir) {
                         cdBackDing.play();
-                        this.appendToScroller("agent09: " + command);
+                        this.appendToScroller(
+                            this.username.toLowerCase().replace(/\s+/g, "_") +
+                                ": " +
+                                command
+                        );
                         this.stateText.setText(dir);
                         state = dir;
                     } else {
@@ -238,7 +254,11 @@ export default class Level1Scene extends Phaser.Scene {
                     const tip = manMap.get(manual);
                     if (tip !== undefined) {
                         manDing.play();
-                        this.appendToScroller("agent09: " + command);
+                        this.appendToScroller(
+                            this.username.toLowerCase().replace(/\s+/g, "_") +
+                                ": " +
+                                command
+                        );
                         this.appendToScroller(tip);
                     } else {
                         ding.play();
@@ -248,7 +268,11 @@ export default class Level1Scene extends Phaser.Scene {
                     }
                 } else {
                     ding.play();
-                    this.appendToScroller("agent09: " + command);
+                    this.appendToScroller(
+                        this.username.toLowerCase().replace(/\s+/g, "_") +
+                            ": " +
+                            command
+                    );
                     this.appendToScroller("Command not found.");
                 }
             }
