@@ -96,6 +96,7 @@ export default class Level1Scene extends Phaser.Scene {
         cdMap.set("home", ["break_room", "closet", "control_room"]);
         cdMap.set("break_room", ["suitcase"]);
         cdMap.set("closet", ["cardboard_box"]);
+        cdMap.set("control_room", [""]);
 
         cdBack.set("break_room", "home");
         cdBack.set("closet", "home");
@@ -177,7 +178,9 @@ export default class Level1Scene extends Phaser.Scene {
 
         this.inputField.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
+                this.lastPosition = -1;
                 const command = this.inputField.value.trim();
+                this.lastText.push(command.trim());
                 this.inputField.value = ""; // Clear the input field
                 if (command === "ls") {
                     lsDing.play();
@@ -190,6 +193,13 @@ export default class Level1Scene extends Phaser.Scene {
                         file === "surveillance_camera"
                     ) {
                         this.appendToScroller("agent09: " + command);
+                        lsMap.set(
+                            "control_room",
+                            lsMap
+                                .get("control_room")
+                                ?.replace("surveillance_camera", "")
+                                .trim() || ""
+                        ); // Remove surveillance_camera from lsMap
                         this.appendToScroller(
                             "surveillance_camera successfully removed"
                         );
@@ -208,7 +218,7 @@ export default class Level1Scene extends Phaser.Scene {
                     command.substring(0, 5) !== "cd .."
                 ) {
                     const dir = command.substring(3);
-                    const dirC = cdMap.get(state);
+                    const dirC = cdMap.get(dir);
                     if (dirC !== undefined) {
                         cdDing.play();
                         this.appendToScroller("agent09: " + command);
@@ -271,7 +281,6 @@ export default class Level1Scene extends Phaser.Scene {
 
         let time = 60;
         let lastUpdateTime = Date.now();
-        let timerPaused = false;
 
         // Create the timer text
         let timerText = this.add.text(109, 589, time.toFixed(2), {
@@ -279,9 +288,8 @@ export default class Level1Scene extends Phaser.Scene {
             color: "red",
         });
 
-        // Update function to handle timer and UI updates
         const updateTimer = () => {
-            if (!this.objectiveCompleted && !timerPaused) {
+            if (!this.objectiveCompleted) {
                 const currentTime = Date.now();
                 const elapsedTime = currentTime - lastUpdateTime;
 
@@ -306,27 +314,7 @@ export default class Level1Scene extends Phaser.Scene {
             }
         };
 
-        // Initial call to start the timer
         updateTimer();
-
-        let PPButton = this.add.text(950, 565, "⏸️▶️", {
-            fontSize: "24px",
-            color: "#fff",
-        });
-        PPButton.setInteractive();
-
-        // Event listener for play/pause button
-        PPButton.on("pointerdown", () => {
-            timerPaused = !timerPaused; // Toggle timer state
-            if (!timerPaused) {
-                updateTimer(); // Resume timer
-                document.body.style.pointerEvents = "auto"; // Enable typing on the webpage
-                this.typing = true;
-            } else {
-                document.body.style.pointerEvents = "none"; // Disable typing on the webpage
-                this.typing = false;
-            }
-        });
 
         this.events.on("shutdown", () => {});
 
@@ -342,7 +330,7 @@ export default class Level1Scene extends Phaser.Scene {
             .setDisplaySize(30, 30);
         backArrow.setInteractive();
         backArrow.on("pointerup", () => {
-            this.loadLevel;
+            this.loadLevel();
         });
         backArrow.on("pointerover", () => {
             backArrow.setTint(0x44ff44);
@@ -357,6 +345,7 @@ export default class Level1Scene extends Phaser.Scene {
             this.inputField.parentElement.removeChild(this.inputField);
         }
     }
+
     update() {}
 
     appendToScroller(text: string) {
@@ -365,16 +354,20 @@ export default class Level1Scene extends Phaser.Scene {
         let spaces: string = "";
         if (text.includes("Alfred: ")) {
             textNode.style.color = "gold";
-        } else if (text.includes("Access Granted")) {
-            textNode.style.color = "green";
-        } else if (text.includes("Objective complete")) {
-            textNode.style.color = "green";
+        } else if (
+            text.includes("Access Granted") ||
+            text.includes("Objective complete") ||
+            text.includes("surveillance_camera successfully removed")
+        ) {
+            textNode.style.color = "#86DC3D";
         } else if (
             text.includes("cannot be removed or found.") ||
             text.includes("not found") ||
             text.includes("Cannot")
         ) {
             textNode.style.color = "#d0413f";
+        } else {
+            textNode.style.color = "white";
         }
         textNode.style.fontFamily = "Monospace";
         textNode.style.fontSize = "24px";

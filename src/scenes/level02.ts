@@ -4,14 +4,15 @@ import Manual from "../objects/manual";
 export default class Level2Scene extends Phaser.Scene {
     private stateText: Phaser.GameObjects.Text;
     private inputField: HTMLInputElement;
-    private inputContainer: Phaser.GameObjects.Container;
+    private scroller: HTMLDivElement;
     private timer: Phaser.GameObjects.Text;
     private lvl2: boolean;
     private lvl3: boolean;
     private lvl4: boolean;
     private username: string;
     private lvl5: boolean;
-    private genComplete: boolean = false;
+    private gen1Complete: boolean = false;
+    private gen2Complete: boolean = false;
     private objectiveCompleted: boolean = false;
     private lastText: string[] = [""];
     private lastPosition: number = -1;
@@ -65,38 +66,27 @@ export default class Level2Scene extends Phaser.Scene {
         let manDing = this.sound.add("manDing", { loop: false });
         let winChime = this.sound.add("winChime", { loop: false });
 
-        this.inputContainer = this.add.container(360, 520);
-
-        const maskGraphics = this.make.graphics();
-        maskGraphics.fillRect(300, 185, 1080, 500);
-        const mask = new Phaser.Display.Masks.GeometryMask(this, maskGraphics);
-
-        this.inputContainer.setMask(mask);
-
-        this.addTextToContainer("Alfred: Welcome back " + this.username + "!");
-
         let state: string = "home";
 
         const lsMap = new Map<string, string>();
         const cdMap = new Map<string, string[]>();
         const cdBack = new Map<string, string>();
         const manMap = new Map<string, string>();
-        const rmMap = new Map<string, string[]>();
         const mvMap = new Map<string, string[]>();
 
         lsMap.set(
             "home",
             "dir_generator1 dir_generator2 dir_laboratory file_emp_bomb1 file_emp_bomb2"
         );
-        lsMap.set("generator1", "");
-        lsMap.set("generator2", "");
+        lsMap.set("generator1", "file_empty");
+        lsMap.set("generator2", "file_empty");
 
         cdMap.set("home", ["generator1", "generator2", "laboratory"]);
+        cdMap.set("generator1", []);
+        cdMap.set("generator2", []);
 
         cdBack.set("generator1", "home");
         cdBack.set("generator2", "home");
-
-        rmMap.set("control_room", ["surveillance_camera"]);
 
         mvMap.set("home", ["emp_bomb1", "emp_bomb2"]);
         mvMap.set("generator1", ["emp_bomb1"]);
@@ -122,6 +112,30 @@ export default class Level2Scene extends Phaser.Scene {
             "alfred",
             "Alfred: Try using the 'cd' command to traverse through\ndifferent areas. Then use 'rm' to remove critical files."
         );
+
+        // Add scrollable text area
+        this.scroller = document.createElement("div");
+        this.scroller.style.width = "600px";
+        this.scroller.style.height = "390px";
+        this.scroller.style.backgroundColor = "black";
+        this.scroller.style.color = "white";
+        // this.scroller.style.borderRadius = "10px";
+        this.scroller.style.overflowY = "auto"; // Enable vertical scrolling
+        this.scroller.style.position = "absolute";
+        this.scroller.style.top = "51%";
+        this.scroller.style.left = "50%";
+        this.scroller.style.bottom = "49%";
+        this.scroller.style.paddingInline = "2px";
+        this.scroller.style.paddingBlock = "2px";
+        this.scroller.style.transform = "translate(-50%, -50%)";
+        document.body.appendChild(this.scroller);
+
+        const whiteSpace = document.createElement("p");
+        whiteSpace.textContent = "                                        ";
+        whiteSpace.style.marginTop = "350px";
+        this.scroller.appendChild(whiteSpace);
+
+        this.appendToScroller("Alfred: Welcome back " + this.username + "!");
 
         // Add text input field
         this.inputField = document.createElement("input");
@@ -155,298 +169,166 @@ export default class Level2Scene extends Phaser.Scene {
             Phaser.Input.Keyboard.KeyCodes.SPACE
         );
 
-        this.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
+        this.inputField.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
                 this.lastPosition = -1;
-                const newText = this.inputField.value;
-                this.lastText.push(newText.trim());
+                const command = this.inputField.value;
+                this.lastText.push(command.trim());
 
-                if (newText.trim() !== "") {
-                    if (newText.trim() == "ls") {
-                        lsDing.play();
-                        this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer(
-                            this.username.toLowerCase().replace(/\s+/g, "_") +
-                                ": " +
-                                newText
+                this.inputField.value = ""; // Clear the input field
+                if (command === "ls") {
+                    lsDing.play();
+                    this.appendToScroller(this.username + ": " + command);
+                    this.appendLsToScroller(lsMap.get(state) as string);
+                } else if (
+                    command.substring(0, 3) == "cd " &&
+                    command.substring(0, 5) !== "cd .."
+                ) {
+                    if (
+                        this.gen1Complete &&
+                        this.gen2Complete &&
+                        command.substring(3) === "laboratory"
+                    ) {
+                        this.objectiveCompleted = true;
+                        winChime.play();
+                        this.appendToScroller(this.username + ": " + command);
+                        this.appendToScroller(
+                            "Objective complete: Laboratory access granted. Good work, " +
+                                this.username +
+                                "!"
                         );
-                        this.addLsToContainer(lsMap.get(state) as string);
-                    } else if (newText.substring(0, 3) == "cd ") {
-                        let cdInput: string = newText.substring(
-                            3,
-                            newText.length
-                        );
-                        // CD .. FUNCTIONALITY BELOW
-                        const backState = cdBack.get(state);
-                        const cdState = cdMap.get(state);
-                        if (backState !== undefined && cdInput == "..") {
-                            cdBackDing.play();
-
-                            state = backState;
-                            this.stateText.setText(state);
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                        }
-                        // CD FUNCTIONALITY BELOW
-                        else if (
-                            cdState !== undefined &&
-                            cdMap.get(state)?.includes(cdInput)
-                        ) {
-                            if (cdInput == "laboratory" && !this.genComplete) {
-                                ding.play();
-
-                                this.inputField.value = ""; // Empty the input field
-                                this.addTextToContainer(
-                                    this.username
-                                        .toLowerCase()
-                                        .replace(/\s+/g, "_") +
-                                        ": " +
-                                        newText
-                                );
-                                this.addTextToContainer(
-                                    "Alfred: You cannot enter the laboratory until \nthe generators are shut down. Shut them down by \nmoving your emp_bombs into their directories."
-                                );
-                            } else if (
-                                cdInput == "laboratory" &&
-                                this.genComplete
-                            ) {
-                                this.objectiveCompleted = true;
-
-                                this.inputField.value = ""; // Empty the input field
-                                this.addTextToContainer(
-                                    this.username
-                                        .toLowerCase()
-                                        .replace(/\s+/g, "_") +
-                                        ": " +
-                                        newText
-                                );
-                                winChime.play();
-
-                                // Level completion logic here
-                                this.addTextToContainer(
-                                    "\nObjective complete: Laboratory access granted.\nGood work, " +
-                                        this.username +
-                                        "."
-                                );
-                                this.time.delayedCall(
-                                    3000,
-                                    this.loadLevel,
-                                    [],
-                                    this
-                                );
-                            } else {
-                                cdDing.play();
-
-                                state = newText.substring(3);
-                                this.stateText.setText(state);
-                                this.inputField.value = ""; // Empty the input field
-                                this.addTextToContainer(
-                                    this.username
-                                        .toLowerCase()
-                                        .replace(/\s+/g, "_") +
-                                        ": " +
-                                        newText
-                                );
-                            }
-                        }
-                        // CD DIRECTORY NOT FOUND BELOW
-                        else {
-                            ding.play();
-
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                            this.addTextToContainer("Directory not found");
-                        }
-                        // MAN INPUT BELOW
-                    } else if (newText.substring(0, 4) == "man ") {
-                        let manInput: string = newText.substring(4);
-
-                        const manState = manMap.get(manInput);
-                        if (manState !== undefined) {
-                            manDing.play();
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                            this.addTextToContainer(
-                                manMap.get(manInput) as string
-                            );
-                        } else {
-                            ding.play();
-
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                            this.addTextToContainer(
-                                "Command '" + manInput + "' not found"
-                            );
-                        }
-                    } else if (newText.substring(0, 3) == "rm ") {
-                        let rmInput: string = newText.substring(3);
-                        if (rmMap.get(state)?.includes(rmInput)) {
-                            // Remove the file from the listing and update the map
-                            let files = lsMap.get(state) || "";
-                            files = files
-                                .replace(rmInput, "")
-                                .trim()
-                                .replace(/\s{2,}/g, " "); // Remove the file and extra spaces
-                            lsMap.set(state, files);
-
-                            // Optionally, remove the file from the rmMap if you want to prevent further references
-                            // rmMap.get(state)?.splice(rmMap.get(state)?.indexOf(rmInput), 1);
-
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                            this.addTextToContainer(
-                                "File '" + rmInput + "' removed successfully."
-                            );
-
-                            // Check if the level's objective is achieved, e.g., if all required files are removed
-                            if (
-                                state === "control_room" &&
-                                !files.includes("surveillance_camera")
-                            ) {
-                                this.objectiveCompleted = true;
-                                // Level completion logic here
-                                this.addTextToContainer(
-                                    "Objective complete: Classified file removed. \nGood work, " +
-                                        this.username +
-                                        "!"
-                                );
-                                this.time.delayedCall(
-                                    3000,
-                                    this.loadLevel,
-                                    [],
-                                    this
-                                );
-                            }
-                        } else {
-                            ding.play();
-
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                            this.addTextToContainer(
-                                "File '" +
-                                    rmInput +
-                                    "' cannot be found or removed."
-                            );
-                        }
-                    } else if (newText.substring(0, 3) == "mv ") {
-                        let mvInput: string = newText.substring(3);
-
-                        let words: string[] = mvInput.split(" ");
-
-                        let word1 = words[0];
-                        let word2 = words[1];
-
-                        if (
-                            mvMap.get(word2)?.includes(word1) &&
-                            lsMap.get(state)?.includes(word1)
-                        ) {
-                            let files = lsMap.get(state) || "";
-                            files = files
-                                .replace(word1, "")
-                                .trim()
-                                .replace(/\s{2,}/g, " "); // Remove the file and extra spaces
-                            lsMap.set(state, files);
-
-                            let originalValue: string | undefined =
-                                lsMap.get(word2);
-
-                            let newValue: string = originalValue + " " + word1;
-
-                            lsMap.set(word2, newValue);
-
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                            this.addTextToContainer(
-                                "File '" + word1 + "' moved successfully."
-                            );
-                            if (
-                                !lsMap.get("home")?.includes("emp_bomb1") &&
-                                !lsMap.get("home")?.includes("emp_bomb2") &&
-                                !this.genComplete
-                            ) {
-                                this.genComplete = true;
-
-                                this.addTextToContainer(
-                                    "\nAlfred: Masterful work " +
-                                        this.username +
-                                        "!\nBoth generators have shut down. \nNow enter the laboratory to finish the mission."
-                                );
-                            }
-                        } else {
-                            ding.play();
-
-                            this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
-                                this.username
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "_") +
-                                    ": " +
-                                    newText
-                            );
-                            this.addTextToContainer(
-                                "File '" +
-                                    word1 +
-                                    "' cannot be moved to " +
-                                    word2 +
-                                    "."
-                            );
-                        }
-                    }
-                    // NONSENSE INPUT BELOW
-                    else {
+                        this.time.delayedCall(3000, this.loadLevel, [], this);
+                    } else if (
+                        !(this.gen1Complete && this.gen2Complete) &&
+                        command.substring(3) === "laboratory"
+                    ) {
                         ding.play();
-                        this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer(
-                            this.username.toLowerCase().replace(/\s+/g, "_") +
-                                ": " +
-                                newText
+                        this.appendToScroller(
+                            "Alfred: Move the emp_bomb files to their respective generators to enter."
                         );
-                        this.addTextToContainer(
-                            "Command '" + newText + "' not found"
+                    } else {
+                        const dir = command.substring(3);
+                        const dirC = cdMap.get(dir);
+
+                        if (dirC !== undefined) {
+                            cdDing.play();
+                            this.appendToScroller(
+                                this.username + ": " + command
+                            );
+                            state = command.substring(3);
+                            this.stateText.setText(state);
+                        } else {
+                            ding.play();
+                            this.appendToScroller(
+                                "Directory " + dir + " not found."
+                            );
+                        }
+                    }
+                } else if (command.substring(0, 5) == "cd ..") {
+                    const dir = cdBack.get(state);
+                    if (state !== "back_door" && dir) {
+                        cdBackDing.play();
+                        this.appendToScroller(this.username + ": " + command);
+                        this.stateText.setText(dir);
+                        state = dir;
+                    } else {
+                        ding.play();
+                        this.appendToScroller(
+                            "Cannot go back from the root directory."
                         );
                     }
+                } else if (command.substring(0, 4) == "man ") {
+                    const manual = command.substring(4);
+                    const tip = manMap.get(manual);
+                    if (tip !== undefined) {
+                        manDing.play();
+                        this.appendToScroller(this.username + ": " + command);
+                        this.appendToScroller(tip);
+                    } else {
+                        ding.play();
+                        this.appendToScroller(
+                            "Command " + manual + " not found."
+                        );
+                    }
+                } else if (command.substring(0, 3) == "mv ") {
+                    const file = command.substring(3);
+                    const fileArr: string[] = file.split(" ");
+                    if (
+                        fileArr[0] === "emp_bomb1" &&
+                        fileArr[1] === "generator1"
+                    ) {
+                        lsMap.set(
+                            "home",
+                            lsMap
+                                .get("home")
+                                ?.replace("emp_bomb1", "")
+                                .trim() || ""
+                        ); // Remove emp_bomb1 from lsMap
+                        this.appendToScroller(this.username + ": " + command);
+                        lsMap.set(
+                            "generator1",
+                            lsMap
+                                .get("generator1")
+                                ?.replace("empty", "emp_bomb1")
+                                .trim() || ""
+                        ); // Add emp_bomb1 to generator1
+                        lsDing.play();
+                        this.gen1Complete = true;
+                        this.appendToScroller("emp_bomb1 moved successfully.");
+                        if (this.gen2Complete) {
+                            this.time.delayedCall(
+                                1000,
+                                () => {
+                                    this.appendToScroller(
+                                        "Alfred: Great, Both generators have been shut down. Now enter to the laboratory to finish this mission."
+                                    );
+                                },
+                                [],
+                                this
+                            );
+                        }
+                    } else if (
+                        fileArr[0] === "emp_bomb2" &&
+                        fileArr[1] === "generator2"
+                    ) {
+                        lsMap.set(
+                            "home",
+                            lsMap
+                                .get("home")
+                                ?.replace("emp_bomb2", "")
+                                .trim() || ""
+                        ); // Remove emp_bomb1 from lsMap
+                        lsMap.set(
+                            "generator2",
+                            lsMap
+                                .get("generator2")
+                                ?.replace("empty", "emp_bomb2")
+                                .trim() || ""
+                        ); // Add emp_bomb2 to generator2
+                        lsDing.play();
+                        this.gen2Complete = true;
+                        this.appendToScroller(this.username + ": " + command);
+                        this.appendToScroller("emp_bomb2 moved successfully.");
+                        if (this.gen1Complete) {
+                            this.time.delayedCall(
+                                1000,
+                                () => {
+                                    this.appendToScroller(
+                                        "Alfred: Great, Both generators have been shut down. Now enter to the laboratory to finish this mission."
+                                    );
+                                },
+                                [],
+                                this
+                            );
+                        }
+                    } else {
+                        ding.play();
+                        this.appendToScroller("Cannot move or invalid file.");
+                    }
+                } else {
+                    ding.play();
+                    this.appendToScroller(this.username + ": " + command);
+                    this.appendToScroller("Command not found.");
                 }
             }
 
@@ -488,6 +370,7 @@ export default class Level2Scene extends Phaser.Scene {
                 } else {
                     this.timer.setText("0.00");
                     this.sound.stopAll();
+                    this.scroller.style.display = "none";
 
                     this.scene.start("SecurityBreachScene", {
                         username: this.username,
@@ -506,6 +389,21 @@ export default class Level2Scene extends Phaser.Scene {
             color: "#fff",
         });
         this.events.on("shutdown", this.removeInputField, this);
+
+        // Add back arrow
+        const backArrow = this.add
+            .image(50, 35, "backArrow")
+            .setDisplaySize(30, 30);
+        backArrow.setInteractive();
+        backArrow.on("pointerup", () => {
+            this.loadLevel();
+        });
+        backArrow.on("pointerover", () => {
+            backArrow.setTint(0x44ff44);
+        });
+        backArrow.on("pointerout", () => {
+            backArrow.clearTint();
+        });
     }
     removeInputField() {
         if (this.inputField.parentElement) {
@@ -514,75 +412,85 @@ export default class Level2Scene extends Phaser.Scene {
     }
     update() {}
 
-    addLsToContainer(text: string) {
-        const words = text.split(" ");
-
-        const numNewlines = words.length;
-
-        this.inputContainer.y -= numNewlines * 24.7;
-
-        for (let word of words) {
-            if (word.substring(0, 5) === "file_") {
-                let newWord = word.substring(5);
-                const newText = this.add.text(0, 0, newWord, {
-                    fontSize: "24px",
-                    color: "#77C3EC",
-                });
-                this.inputContainer.add(newText);
-            } else if (word.substring(0, 4) === "dir_") {
-                let newWord = word.substring(4);
-                const newText = this.add.text(0, 0, newWord, {
-                    fontSize: "24px",
-                    color: "#86DC3D",
-                });
-                this.inputContainer.add(newText);
-            } else {
-                const newText = this.add.text(0, 0, word, {
-                    fontSize: "24px",
-                    color: "#fff",
-                });
-                this.inputContainer.add(newText);
-            }
-
-            this.repositionTextObjects();
-        }
-    }
-
-    addTextToContainer(text: string) {
-        const newText = this.add.text(0, 0, text, {
-            fontSize: "24px",
-            color: "#fff",
-        });
-
-        const numNewlines = (text.match(/\n/g) || []).length + 1;
-
-        // Adjust y position based on the number of newline characters
-        this.inputContainer.y -= numNewlines * 24.7;
-
+    appendToScroller(text: string) {
+        const textNode = document.createElement("text");
+        const spaceNode = document.createElement("p");
+        let spaces: string = "";
         if (text.includes("Alfred: ")) {
-            newText.setColor("gold");
+            textNode.style.color = "gold";
+        } else if (text.includes("Access Granted")) {
+            textNode.style.color = "#86DC3D";
+        } else if (
+            text.includes("Objective complete") ||
+            text.includes("successfully")
+        ) {
+            textNode.style.color = "#86DC3D";
+        } else if (
+            text.includes("Cannot") ||
+            text.includes("Access Denied") ||
+            text.includes("Command not found") ||
+            text.includes("not found")
+        ) {
+            textNode.style.color = "#d0413f";
         }
-        if (text.includes("Objective complete: ")) {
-            newText.setColor("lime");
+        textNode.style.fontFamily = "Monospace";
+        textNode.style.fontSize = "24px";
+        textNode.style.marginBottom = "-15px";
+        const desiredWidth = 41;
+
+        const textLength = text.length;
+        const spacesNeeded = desiredWidth - textLength;
+
+        for (let i = 0; i < spacesNeeded; i++) {
+            spaces += " ";
         }
+        spaceNode.textContent = spaces;
+        textNode.textContent = text;
+        this.scroller.appendChild(textNode);
+        this.scroller.appendChild(spaceNode);
 
-        // Add the new text object to the container
-        this.inputContainer.add(newText);
-
-        // Reposition text objects vertically within the container
-        this.repositionTextObjects();
+        // Scroll to the bottom
+        this.scroller.scrollTop = this.scroller.scrollHeight;
     }
 
-    repositionTextObjects() {
-        let yPos = 0;
-
-        // Loop through all text objects in the container and position them vertically
-        this.inputContainer.iterate((child: Phaser.GameObjects.GameObject) => {
-            if (child instanceof Phaser.GameObjects.Text) {
-                child.y = yPos;
-                yPos += child.height;
+    appendLsToScroller(text: string) {
+        const desiredWidth = 41;
+        const spaces = "                            ";
+        const spaceLength = spaces.length;
+        let total = 0;
+        const words = text.split(" ");
+        for (let word of words) {
+            if (word.substring(0, 4) === "dir_") {
+                total += word.length + spaceLength;
+                const addNode = document.createElement("text");
+                addNode.textContent = word.substring(4) + spaces;
+                addNode.style.color = "#86DC3D";
+                addNode.style.fontFamily = "Monospace";
+                addNode.style.fontSize = "24px";
+                this.scroller.appendChild(addNode);
+            } else if (word.substring(0, 5) === "file_") {
+                total += word.length + spaceLength;
+                const addNode = document.createElement("text");
+                addNode.textContent = word.substring(5) + spaces;
+                if (word.substring(5) === "empty") {
+                    addNode.style.color = "white";
+                } else {
+                    addNode.style.color = "#77C3EC";
+                }
+                addNode.style.fontFamily = "Monospace";
+                addNode.style.fontSize = "24px";
+                this.scroller.appendChild(addNode);
             }
-        });
+        }
+        let endSpace = "";
+        const spaceNeeded = desiredWidth - total;
+        for (let i = 0; i < spaceNeeded; i++) {
+            endSpace += " ";
+        }
+        const endNode = document.createElement("p");
+        endNode.textContent = endSpace;
+        this.scroller.appendChild(endNode);
+        this.scroller.scrollTop = this.scroller.scrollHeight;
     }
 
     loadLevel() {
@@ -592,6 +500,7 @@ export default class Level2Scene extends Phaser.Scene {
             loop: true,
         });
         this.menuMusic.play();
+        this.scroller.style.display = "none";
 
         this.scene.start("LevelSelect", {
             username: this.username,

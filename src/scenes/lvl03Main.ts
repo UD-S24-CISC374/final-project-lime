@@ -303,7 +303,7 @@ export default class Level03 extends Phaser.Scene {
                     command.substring(0, 5) !== "cd .."
                 ) {
                     const dir = command.substring(3);
-                    const dirC = cdMap.get(state);
+                    const dirC = cdMap.get(dir);
                     if (dirC !== undefined) {
                         cdDing.play();
                         this.appendToScroller("agent09: " + command);
@@ -474,57 +474,6 @@ export default class Level03 extends Phaser.Scene {
         endNode.textContent = endSpace;
         this.scroller.appendChild(endNode);
         this.scroller.scrollTop = this.scroller.scrollHeight;
-        // for (let word of words) {
-        //     if (word.substring(0, 5) === "file_") {
-        //         let newWord = word.substring(5) + "           ";
-        //         // White Space
-        //         const newWordLength = newWord.length;
-        //         const spacesNeeded = desiredWidth - newWordLength;
-        //         const spaceNode = document.createElement("p");
-        //         let spaces: string = "";
-        //         for (let i = 0; i < spacesNeeded; i++) {
-        //             spaces += " ";
-        //         }
-        //         spaceNode.textContent = spaces;
-        //         spaceNode.style.marginBottom = "-15px";
-
-        //         const fileNode = document.createElement("p");
-        //         fileNode.textContent = newWord;
-        //         fileNode.style.fontFamily = "Monospace";
-        //         fileNode.style.fontSize = "24px";
-        //         fileNode.style.color = "#77C3EC";
-        //         fileNode.style.marginBottom = "-15px";
-        //         this.scroller.appendChild(fileNode);
-        //         this.scroller.appendChild(spaceNode);
-
-        //         // Scroll to the bottom
-        //         this.scroller.scrollTop = this.scroller.scrollHeight;
-        //     } else if (word.substring(0, 4) === "dir_") {
-        //         let newWord = word.substring(4) + "           ";
-        //         // White Space
-        //         const newWordLength = newWord.length;
-        //         const spacesNeeded = desiredWidth - newWordLength;
-        //         const spaceNode = document.createElement("p");
-        //         let spaces: string = "";
-        //         for (let i = 0; i < spacesNeeded; i++) {
-        //             spaces += " ";
-        //         }
-        //         spaceNode.textContent = spaces;
-        //         spaceNode.style.marginBottom = "-15px";
-
-        //         const dirNode = document.createElement("p");
-        //         dirNode.textContent = newWord;
-        //         dirNode.style.fontFamily = "Monospace";
-        //         dirNode.style.fontSize = "24px";
-        //         dirNode.style.color = "#86DC3D";
-        //         dirNode.style.marginBottom = "-15px";
-
-        //         this.scroller.appendChild(dirNode);
-        //         this.scroller.appendChild(spaceNode);
-        //     }
-        //     // Scroll to the bottom
-        //     this.scroller.scrollTop = this.scroller.scrollHeight;
-        // }
     }
 
     loadLevel() {

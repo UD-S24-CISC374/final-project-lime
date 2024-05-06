@@ -162,6 +162,9 @@ export default class Level03 extends Phaser.Scene {
         cdMap.set("back_door", ["container", "garbage_can", "file_box"]);
         cdMap.set("garbage_can", ["red_folder"]);
         cdMap.set("file_box", ["secret_folder_1", "wallet"]);
+        cdMap.set("red_folder", []);
+        cdMap.set("wallet", []);
+        cdMap.set("secret_folder_1", []);
 
         cdBack.set("container", "back_door");
         cdBack.set("garbage_can", "back_door");
@@ -291,7 +294,6 @@ export default class Level03 extends Phaser.Scene {
                 this.lastPosition = -1;
                 const command = this.inputField.value;
                 this.lastText.push(command.trim());
-
                 this.inputField.value = ""; // Clear the input field
                 if (command === "ls") {
                     lsDing.play();
@@ -313,7 +315,7 @@ export default class Level03 extends Phaser.Scene {
                     command.substring(0, 5) !== "cd .."
                 ) {
                     const dir = command.substring(3);
-                    const dirC = cdMap.get(state);
+                    const dirC = cdMap.get(dir);
                     if (dirC !== undefined) {
                         cdDing.play();
                         this.appendToScroller("agent09: " + command);
@@ -415,6 +417,21 @@ export default class Level03 extends Phaser.Scene {
             color: "#fff",
         });
         this.events.on("shutdown", this.removeInputField, this);
+
+        // Add back arrow
+        const backArrow = this.add
+            .image(50, 35, "backArrow")
+            .setDisplaySize(30, 30);
+        backArrow.setInteractive();
+        backArrow.on("pointerup", () => {
+            this.loadLevel();
+        });
+        backArrow.on("pointerover", () => {
+            backArrow.setTint(0x44ff44);
+        });
+        backArrow.on("pointerout", () => {
+            backArrow.clearTint();
+        });
     }
     removeInputField() {
         if (this.inputField.parentElement) {
@@ -429,12 +446,15 @@ export default class Level03 extends Phaser.Scene {
         let spaces: string = "";
         if (text.includes("Alfred: ")) {
             textNode.style.color = "gold";
-        } else if (text.includes("Access Granted")) {
-            textNode.style.color = "green";
-        } else if (text.includes("Objective complete")) {
-            textNode.style.color = "green";
+        } else if (
+            text.includes("Access Granted") ||
+            text.includes("Objective complete")
+        ) {
+            textNode.style.color = "#86DC3D";
         } else if (text.includes("Access denied")) {
             textNode.style.color = "red";
+        } else if (text.includes("not found")) {
+            textNode.style.color = "#d0413f";
         }
         textNode.style.fontFamily = "Monospace";
         textNode.style.fontSize = "24px";
@@ -499,7 +519,7 @@ export default class Level03 extends Phaser.Scene {
             loop: true,
         });
         this.menuMusic.play();
-
+        this.scroller.style.display = "none";
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: true,
