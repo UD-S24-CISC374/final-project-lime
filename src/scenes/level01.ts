@@ -172,7 +172,6 @@ export default class Level1Scene extends Phaser.Scene {
         this.textContainer.style.position = "absolute";
         this.textContainer.style.width = "44vw";
         this.textContainer.style.height = "auto";
-        this.textContainer.style.padding = "5px";
         this.textContainer.style.bottom = "73%";
         this.textContainer.style.left = "50%";
         this.textContainer.style.transform = "translate(-50%, -50%)";

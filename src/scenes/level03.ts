@@ -283,7 +283,6 @@ export default class Level03 extends Phaser.Scene {
         this.textContainer.style.position = "absolute";
         this.textContainer.style.width = "44vw";
         this.textContainer.style.height = "auto";
-        this.textContainer.style.padding = "5px";
         this.textContainer.style.bottom = "73%";
         this.textContainer.style.left = "50%";
         this.textContainer.style.transform = "translate(-50%, -50%)";
@@ -295,7 +294,7 @@ export default class Level03 extends Phaser.Scene {
         // Create the text element
         this.textElement = document.createElement("div");
         this.textElement.textContent =
-            "Search directories for codes and type\nthem into the pin-pad to advance\n further into the facility.";
+            "Search directories for codes and type them into the pin-pad to advance further into the facility. Make sure each code is typed in the correct order.";
         this.textElement.style.color = "#fff"; // Text color
         this.textElement.style.fontSize = "20px"; // Font size
         this.textElement.style.fontFamily = "Monospace"; // Font family

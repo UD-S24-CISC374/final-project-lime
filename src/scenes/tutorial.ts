@@ -477,7 +477,7 @@ export default class Tutorial extends Phaser.Scene {
 
         const numNewlines = words.length;
 
-        this.inputContainer.y -= numNewlines * 24.7;
+        this.inputContainer.y -= numNewlines * 27.8;
 
         for (let word of words) {
             if (word.substring(0, 5) === "file_") {
@@ -485,6 +485,7 @@ export default class Tutorial extends Phaser.Scene {
                 const newText = this.add.text(0, 0, newWord, {
                     fontSize: "24px",
                     color: "#77C3EC",
+                    fontFamily: "Monospace",
                 });
                 this.inputContainer.add(newText);
             } else if (word.substring(0, 4) === "dir_") {
@@ -492,12 +493,14 @@ export default class Tutorial extends Phaser.Scene {
                 const newText = this.add.text(0, 0, newWord, {
                     fontSize: "24px",
                     color: "#86DC3D",
+                    fontFamily: "Monospace",
                 });
                 this.inputContainer.add(newText);
             } else {
                 const newText = this.add.text(0, 0, word, {
                     fontSize: "24px",
                     color: "#fff",
+                    fontFamily: "Monospace",
                 });
                 this.inputContainer.add(newText);
             }
@@ -510,12 +513,13 @@ export default class Tutorial extends Phaser.Scene {
         const newText = this.add.text(0, 0, text, {
             fontSize: "24px",
             color: "#fff",
+            fontFamily: "Monospace",
         });
 
         const numNewlines = (text.match(/\n/g) || []).length + 1;
 
         // Adjust y position based on the number of newline characters
-        this.inputContainer.y -= numNewlines * 24.7;
+        this.inputContainer.y -= numNewlines * 27.8;
 
         if (text.includes("Alfred: ")) {
             newText.setColor("gold");

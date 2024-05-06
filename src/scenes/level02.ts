@@ -50,7 +50,6 @@ export default class Level2Scene extends Phaser.Scene {
         this.objectiveCompleted = false;
         this.add.rectangle(640, 360, 1280, 720, 0x000);
 
-        this.add.image(640, 100, "prompt").setDisplaySize(560, 110);
         this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
         this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
@@ -161,7 +160,6 @@ export default class Level2Scene extends Phaser.Scene {
         this.textContainer.style.position = "absolute";
         this.textContainer.style.width = "44vw";
         this.textContainer.style.height = "auto";
-        this.textContainer.style.padding = "5px";
         this.textContainer.style.bottom = "73%";
         this.textContainer.style.left = "50%";
         this.textContainer.style.transform = "translate(-50%, -50%)";
@@ -173,7 +171,7 @@ export default class Level2Scene extends Phaser.Scene {
         // Create the text element
         this.textElement = document.createElement("div");
         this.textElement.textContent =
-            "Move the 'emp_bomb' files into their\nrespective 'generator' directories.\nTry using the 'mv' command.";
+            "Move the 'emp_bomb' files into their\nrespective 'generator' directories. Try using the 'mv' command to change where they are stored.";
         this.textElement.style.color = "#fff"; // Text color
         this.textElement.style.fontSize = "20px"; // Font size
         this.textElement.style.fontFamily = "Monospace"; // Font family
