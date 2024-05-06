@@ -60,7 +60,6 @@ export default class Level03 extends Phaser.Scene {
         this.objectiveCompleted = false;
         this.add.rectangle(640, 360, 1280, 720, 0x000);
 
-        this.add.image(640, 100, "prompt").setDisplaySize(560, 110);
         this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
         this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
@@ -190,31 +189,24 @@ export default class Level03 extends Phaser.Scene {
             "Alfred: The 'cat' command permits you\nto read a file's contents. Kind of like\nthe 'ls' command reads a directory's contents."
         );
 
-        this.add.text(
-            410,
-            59,
-            "Search directories for codes and type\nthem into the pin-pad to advance\n further into the facility.",
-            {
-                color: "#fff",
-                fontSize: "22px",
-                fontFamily: "Monospace",
-            }
-        );
-
         // Add scrollable text area
         this.scroller = document.createElement("div");
-        this.scroller.style.width = "600px";
-        this.scroller.style.height = "390px";
+        this.scroller.style.width = "44vw";
+        this.scroller.style.height = "46vh"; // Set height relative to width
+        // this.scroller.style.maxWidth = "600px"; // Set maximum width
+        this.scroller.style.maxHeight = "29vw";
         this.scroller.style.backgroundColor = "black";
         this.scroller.style.color = "white";
-        // this.scroller.style.borderRadius = "10px";
+        this.scroller.style.borderRadius = "10px";
         this.scroller.style.overflowY = "auto"; // Enable vertical scrolling
         this.scroller.style.position = "absolute";
-        this.scroller.style.top = "51%";
+        this.scroller.style.border = "solid 2px gray";
+        this.scroller.style.padding = "5px ";
+        this.scroller.style.background =
+            "linear-gradient(-200deg, #444444, #000000)";
+        this.scroller.style.top = "48%";
         this.scroller.style.left = "50%";
         this.scroller.style.bottom = "49%";
-        this.scroller.style.paddingInline = "2px";
-        this.scroller.style.paddingBlock = "2px";
         this.scroller.style.transform = "translate(-50%, -50%)";
         document.body.appendChild(this.scroller);
 
@@ -272,18 +264,45 @@ export default class Level03 extends Phaser.Scene {
         this.inputField = document.createElement("input");
         this.inputField.type = "text";
         this.inputField.style.position = "absolute";
-        this.inputField.style.width = "600px";
-        this.inputField.style.height = "40px";
+        this.inputField.style.width = "44vw";
+        this.inputField.style.height = "80px";
         this.inputField.style.fontSize = "20px";
         this.inputField.style.top = "80%";
         this.inputField.style.left = "50%";
         this.inputField.style.backgroundColor = "#000"; // Change background color to white
         this.inputField.style.color = "#fff"; // Change text color to black
         this.inputField.placeholder = ">$"; // Placeholder text
-        this.inputField.style.border = "2px solid gold";
+        this.inputField.style.border = "2px solid white";
 
         this.inputField.style.transform = "translate(-50%, -50%)";
         document.body.appendChild(this.inputField);
+
+        const textContainer = document.createElement("div");
+        textContainer.style.position = "absolute";
+        textContainer.style.width = "44vw";
+        textContainer.style.height = "auto";
+        textContainer.style.padding = "5px";
+        textContainer.style.bottom = "73%";
+        textContainer.style.left = "50%";
+        textContainer.style.transform = "translate(-50%, -50%)";
+        textContainer.style.background =
+            "linear-gradient(-200deg, #444444, #000000)"; // Background color
+        textContainer.style.padding = "10px"; // Padding for the text
+        textContainer.style.border = "2px solid gray"; // Border style
+
+        // Create the text element
+        const textElement = document.createElement("div");
+        textElement.textContent =
+            "Search directories for codes and type\nthem into the pin-pad to advance\n further into the facility.";
+        textElement.style.color = "#fff"; // Text color
+        textElement.style.fontSize = "20px"; // Font size
+        textElement.style.fontFamily = "Monospace"; // Font family
+
+        // Append the text to the container
+        textContainer.appendChild(textElement);
+
+        // Append the container to the document body
+        document.body.appendChild(textContainer);
 
         this.input.keyboard?.removeCapture(
             Phaser.Input.Keyboard.KeyCodes.SPACE
@@ -297,14 +316,22 @@ export default class Level03 extends Phaser.Scene {
                 this.inputField.value = ""; // Clear the input field
                 if (command === "ls") {
                     lsDing.play();
-                    this.appendToScroller("agent09: " + command);
+                    this.appendToScroller(
+                        this.username.toLowerCase().replace(/\s+/g, "_") +
+                            ": " +
+                            command
+                    );
                     this.appendLsToScroller(lsMap.get(state) as string);
                 } else if (command.substring(0, 4) == "cat ") {
                     const file = command.substring(4);
                     const fileContents = catMap.get(file);
                     if (fileContents !== undefined) {
                         lsDing.play();
-                        this.appendToScroller("agent09: " + command);
+                        this.appendToScroller(
+                            this.username.toLowerCase().replace(/\s+/g, "_") +
+                                ": " +
+                                command
+                        );
                         this.appendToScroller(fileContents as string);
                     } else {
                         ding.play();
@@ -318,7 +345,11 @@ export default class Level03 extends Phaser.Scene {
                     const dirC = cdMap.get(dir);
                     if (dirC !== undefined) {
                         cdDing.play();
-                        this.appendToScroller("agent09: " + command);
+                        this.appendToScroller(
+                            this.username.toLowerCase().replace(/\s+/g, "_") +
+                                ": " +
+                                command
+                        );
                         state = command.substring(3);
                         this.stateText.setText(state);
                     } else {
@@ -331,7 +362,11 @@ export default class Level03 extends Phaser.Scene {
                     const dir = cdBack.get(state);
                     if (state !== "back_door" && dir) {
                         cdBackDing.play();
-                        this.appendToScroller("agent09: " + command);
+                        this.appendToScroller(
+                            this.username.toLowerCase().replace(/\s+/g, "_") +
+                                ": " +
+                                command
+                        );
                         this.stateText.setText(dir);
                         state = dir;
                     } else {
@@ -345,7 +380,11 @@ export default class Level03 extends Phaser.Scene {
                     const tip = manMap.get(manual);
                     if (tip !== undefined) {
                         manDing.play();
-                        this.appendToScroller("agent09: " + command);
+                        this.appendToScroller(
+                            this.username.toLowerCase().replace(/\s+/g, "_") +
+                                ": " +
+                                command
+                        );
                         this.appendToScroller(tip);
                     } else {
                         ding.play();
@@ -355,7 +394,11 @@ export default class Level03 extends Phaser.Scene {
                     }
                 } else {
                     ding.play();
-                    this.appendToScroller("agent09: " + command);
+                    this.appendToScroller(
+                        this.username.toLowerCase().replace(/\s+/g, "_") +
+                            ": " +
+                            command
+                    );
                     this.appendToScroller("Command not found.");
                 }
             }
@@ -459,6 +502,7 @@ export default class Level03 extends Phaser.Scene {
         textNode.style.fontFamily = "Monospace";
         textNode.style.fontSize = "24px";
         textNode.style.marginBottom = "-15px";
+        textNode.style.paddingLeft = "15px";
         const desiredWidth = 41;
 
         const textLength = text.length;
@@ -490,6 +534,8 @@ export default class Level03 extends Phaser.Scene {
                 addNode.style.color = "#86DC3D";
                 addNode.style.fontFamily = "Monospace";
                 addNode.style.fontSize = "24px";
+                addNode.style.paddingLeft = "15px";
+
                 this.scroller.appendChild(addNode);
             } else if (word.substring(0, 5) === "file_") {
                 total += word.length + spaceLength;
@@ -498,6 +544,8 @@ export default class Level03 extends Phaser.Scene {
                 addNode.style.color = "#77C3EC";
                 addNode.style.fontFamily = "Monospace";
                 addNode.style.fontSize = "24px";
+                addNode.style.paddingLeft = "15px";
+
                 this.scroller.appendChild(addNode);
             }
         }

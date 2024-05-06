@@ -138,32 +138,49 @@ export default class Level2Scene extends Phaser.Scene {
         this.appendToScroller("Alfred: Welcome back " + this.username + "!");
 
         // Add text input field
+        // Add text input field
         this.inputField = document.createElement("input");
         this.inputField.type = "text";
         this.inputField.style.position = "absolute";
-        this.inputField.style.width = "600px";
-        this.inputField.style.height = "40px";
+        this.inputField.style.width = "44vw";
+        this.inputField.style.height = "80px";
         this.inputField.style.fontSize = "20px";
         this.inputField.style.top = "80%";
         this.inputField.style.left = "50%";
         this.inputField.style.backgroundColor = "#000"; // Change background color to white
         this.inputField.style.color = "#fff"; // Change text color to black
         this.inputField.placeholder = ">$"; // Placeholder text
-        this.inputField.style.border = "2px solid gold";
+        this.inputField.style.border = "2px solid white";
 
         this.inputField.style.transform = "translate(-50%, -50%)";
         document.body.appendChild(this.inputField);
 
-        this.add.text(
-            410,
-            59,
-            "Move the 'emp_bomb' files into their\nrespective 'generator' directories.\nTry using the 'mv' command.",
-            {
-                color: "#fff",
-                fontSize: "22px",
-                fontFamily: "Monospace",
-            }
-        );
+        const textContainer = document.createElement("div");
+        textContainer.style.position = "absolute";
+        textContainer.style.width = "44vw";
+        textContainer.style.height = "auto";
+        textContainer.style.padding = "5px";
+        textContainer.style.bottom = "73%";
+        textContainer.style.left = "50%";
+        textContainer.style.transform = "translate(-50%, -50%)";
+        textContainer.style.background =
+            "linear-gradient(-200deg, #444444, #000000)"; // Background color
+        textContainer.style.padding = "10px"; // Padding for the text
+        textContainer.style.border = "2px solid gray"; // Border style
+
+        // Create the text element
+        const textElement = document.createElement("div");
+        textElement.textContent =
+            "Move the 'emp_bomb' files into their\nrespective 'generator' directories.\nTry using the 'mv' command.";
+        textElement.style.color = "#fff"; // Text color
+        textElement.style.fontSize = "20px"; // Font size
+        textElement.style.fontFamily = "Monospace"; // Font family
+
+        // Append the text to the container
+        textContainer.appendChild(textElement);
+
+        // Append the container to the document body
+        document.body.appendChild(textContainer);
 
         this.input.keyboard?.removeCapture(
             Phaser.Input.Keyboard.KeyCodes.SPACE

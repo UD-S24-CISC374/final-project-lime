@@ -65,6 +65,7 @@ export default class Tutorial extends Phaser.Scene {
         let cdDing = this.sound.add("cdDing", { loop: false });
         let cdBackDing = this.sound.add("cdBackDing", { loop: false });
         let manDing = this.sound.add("manDing", { loop: false });
+        let rmDing = this.sound.add("rmDing", { loop: false });
         let winChime = this.sound.add("winChime", { loop: false });
 
         this.inputContainer = this.add.container(360, 520);
@@ -377,7 +378,7 @@ export default class Tutorial extends Phaser.Scene {
                                     .trim()
                                     .replace(/\s{2,}/g, " "); // Remove the file and extra spaces
                                 lsMap.set(state, files);
-
+                                rmDing.play();
                                 this.addTextToContainer(
                                     "File '" +
                                         rmInput +

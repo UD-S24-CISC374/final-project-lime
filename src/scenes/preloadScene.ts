@@ -34,6 +34,7 @@ export default class PreloadScene extends Phaser.Scene {
             "assets/LevelSelect/open_metal_door.png"
         );
         this.load.image("bomb", "assets/LevelUI/bomb.png");
+        this.load.image("screen", "assets/Backgrounds/screen.png");
         this.load.spritesheet("dude", "assets/Characters/dude.png", {
             frameWidth: 240,
             frameHeight: 405,
@@ -45,6 +46,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.audio("lsDing", ["assets/Audio/lsDing.mp3"]);
         this.load.audio("cdBackDing", ["assets/Audio/cdBackDing.mp3"]);
         this.load.audio("manDing", ["assets/Audio/manDing.mp3"]);
+        this.load.audio("rmDing", ["assets/Audio/rmDing.mp3"]);
         this.load.audio("alfredDeathMusic", [
             "assets/Audio/AlfredDeathMusic.mp3",
         ]);
