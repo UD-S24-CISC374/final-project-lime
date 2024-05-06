@@ -63,6 +63,7 @@ export default class Level2Scene extends Phaser.Scene {
         let cdDing = this.sound.add("cdDing", { loop: false });
         let cdBackDing = this.sound.add("cdBackDing", { loop: false });
         let manDing = this.sound.add("manDing", { loop: false });
+        let rmDing = this.sound.add("rmDing", { loop: false });
         let winChime = this.sound.add("winChime", { loop: false });
 
         this.inputContainer = this.add.container(360, 520);
@@ -313,8 +314,7 @@ export default class Level2Scene extends Phaser.Scene {
                                 .replace(/\s{2,}/g, " "); // Remove the file and extra spaces
                             lsMap.set(state, files);
 
-                            // Optionally, remove the file from the rmMap if you want to prevent further references
-                            // rmMap.get(state)?.splice(rmMap.get(state)?.indexOf(rmInput), 1);
+                            rmDing.play();
 
                             this.inputField.value = ""; // Empty the input field
                             this.addTextToContainer(
@@ -324,6 +324,7 @@ export default class Level2Scene extends Phaser.Scene {
                                     ": " +
                                     newText
                             );
+
                             this.addTextToContainer(
                                 "File '" + rmInput + "' removed successfully."
                             );

@@ -68,6 +68,7 @@ export default class Level1Scene extends Phaser.Scene {
         let cdDing = this.sound.add("cdDing", { loop: false });
         let cdBackDing = this.sound.add("cdBackDing", { loop: false });
         let manDing = this.sound.add("manDing", { loop: false });
+        let rmDing = this.sound.add("rmDing", { loop: false });
         let winChime = this.sound.add("winChime", { loop: false });
 
         let state: string = "home";
@@ -122,19 +123,26 @@ export default class Level1Scene extends Phaser.Scene {
 
         // Add scrollable text area
         this.scroller = document.createElement("div");
-        this.scroller.style.width = "600px";
-        this.scroller.style.height = "390px";
+        this.scroller.style.width = "44vw";
+        this.scroller.style.height = "46vh"; // Set height relative to width
+        // this.scroller.style.maxWidth = "600px"; // Set maximum width
+        this.scroller.style.maxHeight = "29vw";
         this.scroller.style.backgroundColor = "black";
         this.scroller.style.color = "white";
         this.scroller.style.borderRadius = "10px";
         this.scroller.style.overflowY = "auto"; // Enable vertical scrolling
         this.scroller.style.position = "absolute";
+        this.scroller.style.border = "solid 2px gray";
+        this.scroller.style.padding = "5px ";
+        this.scroller.style.background =
+            "linear-gradient(-200deg, #444444, #000000)";
         this.scroller.style.top = "48%";
         this.scroller.style.left = "50%";
         this.scroller.style.bottom = "49%";
-        //this.scroller.style.border = "2px solid gold";
         this.scroller.style.transform = "translate(-50%, -50%)";
         document.body.appendChild(this.scroller);
+
+        // this.add.image(600, 300, "screen").setDisplaySize(650, 400);
 
         const whiteSpace = document.createElement("p");
         whiteSpace.textContent = "                                        ";
@@ -178,7 +186,7 @@ export default class Level1Scene extends Phaser.Scene {
         this.inputField.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
                 const command = this.inputField.value.trim();
-                this.inputField.value = ""; // Clear the input field
+                this.inputField.value = "";
                 if (command === "ls") {
                     lsDing.play();
                     this.appendToScroller(
@@ -198,6 +206,9 @@ export default class Level1Scene extends Phaser.Scene {
                                 ": " +
                                 command
                         );
+
+                        rmDing.play();
+
                         this.appendToScroller(
                             "surveillance_camera successfully removed"
                         );
@@ -403,6 +414,7 @@ export default class Level1Scene extends Phaser.Scene {
         textNode.style.fontFamily = "Monospace";
         textNode.style.fontSize = "24px";
         textNode.style.marginBottom = "-15px";
+        textNode.style.paddingLeft = "15px";
         const desiredWidth = 41;
 
         const textLength = text.length;
@@ -431,6 +443,8 @@ export default class Level1Scene extends Phaser.Scene {
                 total += word.length + spaceLength;
                 const addNode = document.createElement("text");
                 addNode.textContent = word.substring(4) + spaces;
+                addNode.style.paddingLeft = "15px";
+
                 addNode.style.color = "#86DC3D";
                 addNode.style.fontFamily = "Monospace";
                 addNode.style.fontSize = "24px";
@@ -439,6 +453,8 @@ export default class Level1Scene extends Phaser.Scene {
                 total += word.length + spaceLength;
                 const addNode = document.createElement("text");
                 addNode.textContent = word.substring(5) + spaces;
+                addNode.style.paddingLeft = "15px";
+
                 addNode.style.color = "#77C3EC";
                 addNode.style.fontFamily = "Monospace";
                 addNode.style.fontSize = "24px";

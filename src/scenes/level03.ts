@@ -200,18 +200,22 @@ export default class Level03 extends Phaser.Scene {
 
         // Add scrollable text area
         this.scroller = document.createElement("div");
-        this.scroller.style.width = "600px";
-        this.scroller.style.height = "390px";
+        this.scroller.style.width = "44vw";
+        this.scroller.style.height = "46vh"; // Set height relative to width
+        // this.scroller.style.maxWidth = "600px"; // Set maximum width
+        this.scroller.style.maxHeight = "29vw";
         this.scroller.style.backgroundColor = "black";
         this.scroller.style.color = "white";
-        // this.scroller.style.borderRadius = "10px";
+        this.scroller.style.borderRadius = "10px";
         this.scroller.style.overflowY = "auto"; // Enable vertical scrolling
         this.scroller.style.position = "absolute";
-        this.scroller.style.top = "51%";
+        this.scroller.style.border = "solid 2px gray";
+        this.scroller.style.padding = "5px ";
+        this.scroller.style.background =
+            "linear-gradient(-200deg, #444444, #000000)";
+        this.scroller.style.top = "48%";
         this.scroller.style.left = "50%";
         this.scroller.style.bottom = "49%";
-        this.scroller.style.paddingInline = "2px";
-        this.scroller.style.paddingBlock = "2px";
         this.scroller.style.transform = "translate(-50%, -50%)";
         document.body.appendChild(this.scroller);
 
