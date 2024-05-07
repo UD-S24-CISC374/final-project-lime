@@ -254,6 +254,8 @@ export default class Level03 extends Phaser.Scene {
 
                         this.time.delayedCall(2000, () => {
                             this.scroller.style.display = "none";
+                            this.textContainer.style.display = "none";
+                            this.textElement.style.display = "none";
                             this.scene.start("LevelSelect");
                         });
                     } else {
