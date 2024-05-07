@@ -5,6 +5,8 @@ export default class Level2Scene extends Phaser.Scene {
     private stateText: Phaser.GameObjects.Text;
     private inputField: HTMLInputElement;
     private scroller: HTMLDivElement;
+    private textContainer: HTMLDivElement;
+    private textElement: HTMLDivElement;
     private timer: Phaser.GameObjects.Text;
     private lvl2: boolean;
     private lvl3: boolean;
@@ -48,7 +50,6 @@ export default class Level2Scene extends Phaser.Scene {
         this.objectiveCompleted = false;
         this.add.rectangle(640, 360, 1280, 720, 0x000);
 
-        this.add.image(640, 100, "prompt").setDisplaySize(560, 110);
         this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
         this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
@@ -155,32 +156,31 @@ export default class Level2Scene extends Phaser.Scene {
         this.inputField.style.transform = "translate(-50%, -50%)";
         document.body.appendChild(this.inputField);
 
-        const textContainer = document.createElement("div");
-        textContainer.style.position = "absolute";
-        textContainer.style.width = "44vw";
-        textContainer.style.height = "auto";
-        textContainer.style.padding = "5px";
-        textContainer.style.bottom = "73%";
-        textContainer.style.left = "50%";
-        textContainer.style.transform = "translate(-50%, -50%)";
-        textContainer.style.background =
+        this.textContainer = document.createElement("div");
+        this.textContainer.style.position = "absolute";
+        this.textContainer.style.width = "44vw";
+        this.textContainer.style.height = "auto";
+        this.textContainer.style.bottom = "73%";
+        this.textContainer.style.left = "50%";
+        this.textContainer.style.transform = "translate(-50%, -50%)";
+        this.textContainer.style.background =
             "linear-gradient(-200deg, #444444, #000000)"; // Background color
-        textContainer.style.padding = "10px"; // Padding for the text
-        textContainer.style.border = "2px solid gray"; // Border style
+        this.textContainer.style.padding = "10px"; // Padding for the text
+        this.textContainer.style.border = "2px solid gray"; // Border style
 
         // Create the text element
-        const textElement = document.createElement("div");
-        textElement.textContent =
-            "Move the 'emp_bomb' files into their\nrespective 'generator' directories.\nTry using the 'mv' command.";
-        textElement.style.color = "#fff"; // Text color
-        textElement.style.fontSize = "20px"; // Font size
-        textElement.style.fontFamily = "Monospace"; // Font family
+        this.textElement = document.createElement("div");
+        this.textElement.textContent =
+            "Move the 'emp_bomb' files into their\nrespective 'generator' directories. Try using the 'mv' command to change where they are stored.";
+        this.textElement.style.color = "#fff"; // Text color
+        this.textElement.style.fontSize = "20px"; // Font size
+        this.textElement.style.fontFamily = "Monospace"; // Font family
 
         // Append the text to the container
-        textContainer.appendChild(textElement);
+        this.textContainer.appendChild(this.textElement);
 
         // Append the container to the document body
-        document.body.appendChild(textContainer);
+        document.body.appendChild(this.textContainer);
 
         this.input.keyboard?.removeCapture(
             Phaser.Input.Keyboard.KeyCodes.SPACE
@@ -297,7 +297,7 @@ export default class Level2Scene extends Phaser.Scene {
                                 1000,
                                 () => {
                                     this.appendToScroller(
-                                        "Alfred: Great, Both generators have been shut down. Now enter to the laboratory to finish this mission."
+                                        "Alfred: Great, both generators have been shut down. Now enter to the laboratory to finish this mission."
                                     );
                                 },
                                 [],
@@ -411,6 +411,8 @@ export default class Level2Scene extends Phaser.Scene {
                     this.timer.setText("0.00");
                     this.sound.stopAll();
                     this.scroller.style.display = "none";
+                    this.textContainer.style.display = "none";
+                    this.textElement.style.display = "none";
 
                     this.scene.start("SecurityBreachScene", {
                         username: this.username,
@@ -541,7 +543,8 @@ export default class Level2Scene extends Phaser.Scene {
         });
         this.menuMusic.play();
         this.scroller.style.display = "none";
-
+        this.textContainer.style.display = "none";
+        this.textElement.style.display = "none";
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: true,

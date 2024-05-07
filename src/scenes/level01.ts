@@ -5,6 +5,8 @@ export default class Level1Scene extends Phaser.Scene {
     private stateText: Phaser.GameObjects.Text;
     private inputField: HTMLInputElement;
     private scroller: HTMLDivElement;
+    private textContainer: HTMLDivElement;
+    private textElement: HTMLDivElement;
     private timer: Phaser.GameObjects.Text;
     private lvl2: boolean;
     private lvl3: boolean;
@@ -166,32 +168,31 @@ export default class Level1Scene extends Phaser.Scene {
         this.inputField.style.transform = "translate(-50%, -50%)";
         document.body.appendChild(this.inputField);
 
-        const textContainer = document.createElement("div");
-        textContainer.style.position = "absolute";
-        textContainer.style.width = "44vw";
-        textContainer.style.height = "auto";
-        textContainer.style.padding = "5px";
-        textContainer.style.bottom = "73%";
-        textContainer.style.left = "50%";
-        textContainer.style.transform = "translate(-50%, -50%)";
-        textContainer.style.background =
+        this.textContainer = document.createElement("div");
+        this.textContainer.style.position = "absolute";
+        this.textContainer.style.width = "44vw";
+        this.textContainer.style.height = "auto";
+        this.textContainer.style.bottom = "73%";
+        this.textContainer.style.left = "50%";
+        this.textContainer.style.transform = "translate(-50%, -50%)";
+        this.textContainer.style.background =
             "linear-gradient(-200deg, #444444, #000000)"; // Background color
-        textContainer.style.padding = "10px"; // Padding for the text
-        textContainer.style.border = "2px solid gray"; // Border style
+        this.textContainer.style.padding = "10px"; // Padding for the text
+        this.textContainer.style.border = "2px solid gray"; // Border style
 
         // Create the text element
-        const textElement = document.createElement("div");
-        textElement.textContent =
+        this.textElement = document.createElement("div");
+        this.textElement.textContent =
             "Enter the 'control_room' and remove the 'surveillance_camera' so you can proceed into the next area.";
-        textElement.style.color = "#fff"; // Text color
-        textElement.style.fontSize = "20px"; // Font size
-        textElement.style.fontFamily = "Monospace"; // Font family
+        this.textElement.style.color = "#fff"; // Text color
+        this.textElement.style.fontSize = "20px"; // Font size
+        this.textElement.style.fontFamily = "Monospace"; // Font family
 
         // Append the text to the container
-        textContainer.appendChild(textElement);
+        this.textContainer.appendChild(this.textElement);
 
         // Append the container to the document body
-        document.body.appendChild(textContainer);
+        document.body.appendChild(this.textContainer);
 
         this.input.keyboard?.removeCapture(
             Phaser.Input.Keyboard.KeyCodes.SPACE
@@ -235,9 +236,10 @@ export default class Level1Scene extends Phaser.Scene {
                         this.appendToScroller(
                             "surveillance_camera successfully removed"
                         );
-                        textContainer.style.display = "none";
 
-                        this.appendToScroller("Objective complete");
+                        this.appendToScroller(
+                            "Objective Complete: Surveillance camera neutralized."
+                        );
                         this.objectiveCompleted = true;
                         winChime.play();
                         this.time.delayedCall(3000, this.loadLevel, [], this);
@@ -375,7 +377,8 @@ export default class Level1Scene extends Phaser.Scene {
                 } else {
                     timerText.setText("0.00");
                     this.scroller.style.display = "none";
-                    textContainer.style.display = "none";
+                    this.textContainer.style.display = "none";
+                    this.textElement.style.display = "none";
                     this.sound.stopAll();
 
                     this.scene.start("SecurityBreachScene", {
@@ -512,7 +515,8 @@ export default class Level1Scene extends Phaser.Scene {
             loop: true,
         });
         this.menuMusic.play();
-
+        this.textContainer.style.display = "none";
+        this.textElement.style.display = "none";
         this.scroller.style.display = "none";
         this.scene.start("LevelSelect", {
             username: this.username,

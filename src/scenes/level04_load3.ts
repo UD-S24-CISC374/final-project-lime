@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 
-export default class LevelThreeIntro2 extends Phaser.Scene {
+export default class LoadingScene4part3 extends Phaser.Scene {
     private content: string[]; // text to display
     private charDelay: number; // delay between characters
     private lineDelay: number; // delay between lines
@@ -17,8 +17,9 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
     private speaking: Phaser.Sound.BaseSound | undefined; // Sound object for speaking
 
     constructor() {
-        super({ key: "LoadingScene3part2" });
+        super({ key: "LoadingScene4part3" });
     }
+
     init(data: {
         username: string;
         lvl1: boolean;
@@ -33,25 +34,38 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("alfredicon", "assets/LevelUI/AlfredIcon.png");
+        this.load.audio("Level1Music", ["assets/Audio/Level1Music.mp3"]);
+        this.load.image("spyicon", "assets/Characters/SpyIcon.png");
+        this.load.image("cutscene3", "assets/Backgrounds/4Cutscene3.png");
     }
 
     create() {
+        this.cameras.main.fadeIn(200); // Fade in the next scene
+
+        let music = this.sound.add("Level1Music", { loop: true });
+        music.play();
+
         this.resetScene();
 
-        this.add.rectangle(640, 360, 1280, 720, 0x000);
-        this.add.image(150, 100, "alfredicon").setDisplaySize(130, 130);
+        this.add.image(640, 360, "cutscene3").setDisplaySize(1280, 720);
+        this.add.image(250, 635, "spyicon").setDisplaySize(130, 130);
 
-        //display text
+        this.add.text(940, 670, "[Enter] to start Level 4", {
+            color: "#fff",
+            fontSize: "20px",
+            fontFamily: "Monospace",
+        });
+
+        // Display all content
         this.displayNextLine();
 
-        // On enter, transition to Level 1
+        // On enter, transition to Level 1 if content is fully displayed, otherwise, display next line
         this.input.keyboard?.on("keydown-ENTER", () => {
             if (this.contentFullyDisplayed) {
                 if (this.speaking) {
                     this.speaking.stop(); // Stop speaking sound if it's playing
                 }
-                this.scene.start("Level03", {
+                this.scene.start("Level04", {
                     username: this.username,
                     lvl2: this.lvl2,
                     lvl3: this.lvl3,
@@ -68,38 +82,13 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
         // helper to reset intial values on load
         this.charDelay = 30;
         this.lineDelay = 120;
-        this.startX = 250;
-        this.startY = 90;
+        this.startX = 360;
+        this.startY = 630;
         this.lineIndex = 0;
-        this.content = [
-            "The 'cat' command is used to display the contents",
-            "of a text file right in your terminal.",
-            " ",
-            "Below is an example using 'cat' to display the contents",
-            "of a file named  'secret.txt':",
-            " ",
-            " - 'cat secret.txt'",
-            " ",
-            "If you need to display the contents of multiple files,",
-            "you can provide their filenames separated by spaces.",
-            " ",
-            "For example, to display the contents of two files,",
-            "'secret1.txt' and 'secret2.txt', you can use:",
-            " ",
-            " - 'cat secret1.txt secret2.txt'",
-            " ",
-            "Note, the 'cat' command only displays the contents of files,",
-            "'cat' is to files what 'ls' is to directories. ",
-            "In this mission, files are marked with '.txt' at the end of their names.",
-            "Those text files are where you'll find hidden codes for the pin-pad.",
-
-            " ",
-            "Good luck " + this.username.toLowerCase() + ".",
-            " ",
-            "                  [Enter] to Continue",
-        ];
+        this.contentFullyDisplayed = false;
+        this.content = ["I need to rescue him."];
     }
-
+    // Helper to display all content at once
     displayAllContent() {
         this.lineIndex = 0;
 
@@ -113,7 +102,7 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
         this.contentFullyDisplayed = true;
     }
 
-    // helper to display text line by line, calling typeText to animate
+    // Helper to display text line by line, calling typeText to animate
     displayNextLine() {
         if (this.lineIndex < this.content.length) {
             const line = this.content[this.lineIndex++];
@@ -134,7 +123,7 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
         }
     }
 
-    // helper to animate text typing
+    // Helper to animate text typing
     typeText(line: string) {
         this.speaking = this.sound.add("speaking", { loop: false });
         this.speaking.play();
@@ -149,6 +138,7 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
                 this.currentLine.text += characters[i++];
                 if (i === characters.length) {
                     this.speaking?.stop();
+
                     // once all characters are added, add a delayed event to display the next line
                     this.time.delayedCall(
                         this.lineDelay,
