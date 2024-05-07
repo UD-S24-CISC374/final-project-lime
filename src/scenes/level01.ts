@@ -237,7 +237,9 @@ export default class Level1Scene extends Phaser.Scene {
                             "surveillance_camera successfully removed"
                         );
 
-                        this.appendToScroller("Objective complete");
+                        this.appendToScroller(
+                            "Objective Complete: Surveillance camera neutralized."
+                        );
                         this.objectiveCompleted = true;
                         winChime.play();
                         this.time.delayedCall(3000, this.loadLevel, [], this);

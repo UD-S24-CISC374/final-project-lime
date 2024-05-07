@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 
-export default class Cutscene1 extends Phaser.Scene {
+export default class LoadingScene4part2 extends Phaser.Scene {
     private content: string[]; // text to display
     private charDelay: number; // delay between characters
     private lineDelay: number; // delay between lines
@@ -14,9 +14,10 @@ export default class Cutscene1 extends Phaser.Scene {
     private lvl5: boolean;
     private username: string;
     private contentFullyDisplayed: boolean; // flag to track if content is fully displayed
+    private speaking: Phaser.Sound.BaseSound | undefined; // Sound object for speaking
 
     constructor() {
-        super({ key: "Cutscene1" });
+        super({ key: "LoadingScene4part2" });
     }
 
     init(data: {
@@ -33,30 +34,45 @@ export default class Cutscene1 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("alfredicon", "assets/alfredicon.png");
+        this.load.audio("Level1Music", ["assets/Audio/Level1Music.mp3"]);
+        this.load.image("spyicon", "assets/Characters/SpyIcon.png");
+        this.load.image("cutscene2", "assets/Backgrounds/4Cutscene2.png");
     }
 
     create() {
+        this.cameras.main.fadeIn(200); // Fade in the next scene
+
+        let music = this.sound.add("Level1Music", { loop: true });
+        music.play();
+
         this.resetScene();
 
-        this.add.rectangle(640, 360, 1280, 720, 0x000);
-        this.add.image(150, 100, "alfredicon").setDisplaySize(130, 130);
+        this.add.image(640, 360, "cutscene2").setDisplaySize(1280, 720);
+        this.add.image(250, 635, "spyicon").setDisplaySize(130, 130);
 
         // Display all content
         this.displayNextLine();
 
         // On enter, transition to Level 1 if content is fully displayed, otherwise, display next line
         this.input.keyboard?.on("keydown-ENTER", () => {
-            this.stopSpeakingSound();
-
             if (this.contentFullyDisplayed) {
-                this.scene.start("Level01", {
-                    username: this.username,
-                    lvl2: this.lvl2,
-                    lvl3: this.lvl3,
-                    lvl4: this.lvl4,
-                    lvl5: this.lvl5,
-                });
+                if (this.speaking) {
+                    this.speaking.stop(); // Stop speaking sound if it's playing
+                }
+                this.cameras.main.fadeOut(600, 0, 0, 0);
+
+                this.cameras.main.once(
+                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                    () => {
+                        this.scene.start("LoadingScene4part3", {
+                            username: this.username,
+                            lvl2: this.lvl2,
+                            lvl3: this.lvl3,
+                            lvl4: this.lvl4,
+                            lvl5: this.lvl5,
+                        });
+                    }
+                );
             } else {
                 this.displayAllContent();
             }
@@ -67,36 +83,11 @@ export default class Cutscene1 extends Phaser.Scene {
         // helper to reset intial values on load
         this.charDelay = 30;
         this.lineDelay = 120;
-        this.startX = 250;
-        this.startY = 90;
+        this.startX = 360;
+        this.startY = 630;
         this.lineIndex = 0;
         this.contentFullyDisplayed = false;
-        this.content = [
-            "Your mission, should you choose to accept it,",
-            "involves critical file manipulation.",
-            " ",
-            "You need to navigate to the 'control_room' and",
-            "disable the 'surveillance_camera'.",
-            " ",
-            "Here are the commands at your disposal:",
-            " ",
-            " - 'ls' to list the contents of the current directory.",
-            " ",
-            " - 'cd <directory>' to change the current directory.",
-            "                    Use 'cd ..' to go back.",
-            " ",
-            " - 'rm <file> to remove a file from its directory.",
-            " ",
-            " - 'man <command>' to display the manual for a specific command.",
-            " ",
-            "You can always run 'man alfred' for additional",
-            "assistance to reach the end of a mission.",
-            " ",
-            "Disable the camera to advance further into Yortsed Corp.",
-            " ",
-            " ",
-            "                  [Enter] to Continue",
-        ];
+        this.content = ["Alfred... What is he doing with Namuh?"];
     }
     // Helper to display all content at once
     displayAllContent() {
@@ -130,18 +121,13 @@ export default class Cutscene1 extends Phaser.Scene {
             this.typeText(line);
         } else if (this.lineIndex === this.content.length) {
             this.contentFullyDisplayed = true;
-            this.stopSpeakingSound();
         }
     }
 
-    stopSpeakingSound() {
-        this.sound.get("speaking").stop();
-    }
     // Helper to animate text typing
     typeText(line: string) {
-        let speaking = this.sound.add("speaking", { loop: false });
-
-        speaking.play();
+        this.speaking = this.sound.add("speaking", { loop: false });
+        this.speaking.play();
         // split the line into characters
         const characters = line.split("");
         let i = 0;
@@ -152,7 +138,7 @@ export default class Cutscene1 extends Phaser.Scene {
             callback: () => {
                 this.currentLine.text += characters[i++];
                 if (i === characters.length) {
-                    speaking.stop();
+                    this.speaking?.stop();
 
                     // once all characters are added, add a delayed event to display the next line
                     this.time.delayedCall(

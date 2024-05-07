@@ -315,68 +315,37 @@ export default class LevelSelect extends Phaser.Scene {
                     closedDoor.setVisible(true);
                 }
             });
-        }
 
-        if (this.cursors.left.isDown && this.player?.body?.touching.down) {
-            this.player.setVelocityX(-400);
-            this.player.anims.play("left", true);
-            this.tweens.add({
-                targets: this.player,
-                duration: 180, // Duration of the tween in milliseconds
-                scaleX: 0.2, // New X scale value
-                scaleY: 0.2, // New Y scale value
-            });
-            this.lastDirection = "left"; // Update last movement direction
-            this.isWalking = true;
-        } else if (
-            this.cursors.right.isDown &&
-            this.player?.body?.touching.down
-        ) {
-            this.player.setVelocityX(400);
-            this.player.anims.play("right", true);
-            this.tweens.add({
-                targets: this.player,
-                duration: 180, // Duration of the tween in milliseconds
-                scaleX: 0.2, // New X scale value
-                scaleY: 0.2, // New Y scale value
-            });
-            this.lastDirection = "right"; // Update last movement direction
-            this.isWalking = true;
-        } else if (
-            this.cursors.right.isDown &&
-            !this.player?.body?.touching.down
-        ) {
-            this.player?.setVelocityX(400);
-            this.player?.anims.play("upright", true);
-            this.tweens.add({
-                targets: this.player,
-                duration: 180, // Duration of the tween in milliseconds
-                scaleX: 0.12, // New X scale value
-                scaleY: 0.12, // New Y scale value
-            });
-            this.lastDirection = "right"; // Update last movement direction
-            this.isWalking = false;
-        } else if (
-            this.cursors.left.isDown &&
-            !this.player?.body?.touching.down
-        ) {
-            this.player?.setVelocityX(-400);
-            this.player?.anims.play("upleft", true);
-            this.tweens.add({
-                targets: this.player,
-                duration: 180, // Duration of the tween in milliseconds
-                scaleX: 0.12, // New X scale value
-                scaleY: 0.12, // New Y scale value
-            });
-            this.lastDirection = "left"; // Update last movement direction
-            this.isWalking = false;
-        } else {
-            this.player?.setVelocityX(0);
-            this.isWalking = false;
-            if (
-                !this.player?.body?.touching.down &&
-                this.lastDirection === "right"
+            if (this.cursors.left.isDown && this.player?.body?.touching.down) {
+                this.player.setVelocityX(-400);
+                this.player.anims.play("left", true);
+                this.tweens.add({
+                    targets: this.player,
+                    duration: 180, // Duration of the tween in milliseconds
+                    scaleX: 0.2, // New X scale value
+                    scaleY: 0.2, // New Y scale value
+                });
+                this.lastDirection = "left"; // Update last movement direction
+                this.isWalking = true;
+            } else if (
+                this.cursors.right.isDown &&
+                this.player?.body?.touching.down
             ) {
+                this.player.setVelocityX(400);
+                this.player.anims.play("right", true);
+                this.tweens.add({
+                    targets: this.player,
+                    duration: 180, // Duration of the tween in milliseconds
+                    scaleX: 0.2, // New X scale value
+                    scaleY: 0.2, // New Y scale value
+                });
+                this.lastDirection = "right"; // Update last movement direction
+                this.isWalking = true;
+            } else if (
+                this.cursors.right.isDown &&
+                !this.player?.body?.touching.down
+            ) {
+                this.player?.setVelocityX(400);
                 this.player?.anims.play("upright", true);
                 this.tweens.add({
                     targets: this.player,
@@ -384,10 +353,13 @@ export default class LevelSelect extends Phaser.Scene {
                     scaleX: 0.12, // New X scale value
                     scaleY: 0.12, // New Y scale value
                 });
+                this.lastDirection = "right"; // Update last movement direction
+                this.isWalking = false;
             } else if (
-                !this.player?.body?.touching.down &&
-                this.lastDirection === "left"
+                this.cursors.left.isDown &&
+                !this.player?.body?.touching.down
             ) {
+                this.player?.setVelocityX(-400);
                 this.player?.anims.play("upleft", true);
                 this.tweens.add({
                     targets: this.player,
@@ -395,52 +367,81 @@ export default class LevelSelect extends Phaser.Scene {
                     scaleX: 0.12, // New X scale value
                     scaleY: 0.12, // New Y scale value
                 });
-            } else if (this.lastDirection === "left") {
-                this.player?.anims.play("idleLeft", true);
-                this.tweens.add({
-                    targets: this.player,
-                    duration: 180, // Duration of the tween in milliseconds
-                    scaleX: 0.2, // New X scale value
-                    scaleY: 0.2, // New Y scale value
-                });
+                this.lastDirection = "left"; // Update last movement direction
+                this.isWalking = false;
             } else {
-                this.player?.anims.play("idleRight", true);
-                this.tweens.add({
-                    targets: this.player,
-                    duration: 180, // Duration of the tween in milliseconds
-                    scaleX: 0.2, // New X scale value
-                    scaleY: 0.2, // New Y scale value
-                });
-            }
-        }
+                this.player?.setVelocityX(0);
+                this.isWalking = false;
 
-        if (this.isWalking) {
-            if (!this.walkSound) {
-                this.walkSound = this.sound.add("walk");
-                this.walkSound.play({ loop: true, rate: 2 });
-                this.walkSound.play();
+                if (
+                    !this.player?.body?.touching.down &&
+                    this.lastDirection === "right"
+                ) {
+                    this.player?.anims.play("upright", true);
+                    this.tweens.add({
+                        targets: this.player,
+                        duration: 180, // Duration of the tween in milliseconds
+                        scaleX: 0.12, // New X scale value
+                        scaleY: 0.12, // New Y scale value
+                    });
+                } else if (
+                    !this.player?.body?.touching.down &&
+                    this.lastDirection === "left"
+                ) {
+                    this.player?.anims.play("upleft", true);
+                    this.tweens.add({
+                        targets: this.player,
+                        duration: 180, // Duration of the tween in milliseconds
+                        scaleX: 0.12, // New X scale value
+                        scaleY: 0.12, // New Y scale value
+                    });
+                } else if (this.lastDirection === "left") {
+                    this.player?.anims.play("idleLeft", true);
+                    this.tweens.add({
+                        targets: this.player,
+                        duration: 180, // Duration of the tween in milliseconds
+                        scaleX: 0.2, // New X scale value
+                        scaleY: 0.2, // New Y scale value
+                    });
+                } else {
+                    this.player?.anims.play("idleRight", true);
+                    this.tweens.add({
+                        targets: this.player,
+                        duration: 180, // Duration of the tween in milliseconds
+                        scaleX: 0.2, // New X scale value
+                        scaleY: 0.2, // New Y scale value
+                    });
+                }
             }
-        } else {
-            if (this.walkSound) {
-                this.walkSound.stop();
-                this.walkSound = undefined;
+
+            if (this.isWalking) {
+                if (!this.walkSound) {
+                    this.walkSound = this.sound.add("walk");
+                    this.walkSound.play({ loop: true, rate: 2 });
+                    this.walkSound.play();
+                }
+            } else {
+                if (this.walkSound) {
+                    this.walkSound.stop();
+                    this.walkSound = undefined;
+                }
             }
-        }
 
-        if (this.player?.body?.velocity.y !== 0) {
-            if (this.walkSound) {
-                this.walkSound.stop();
-                this.walkSound = undefined;
+            if (this.player?.body?.velocity.y !== 0) {
+                if (this.walkSound) {
+                    this.walkSound.stop();
+                    this.walkSound = undefined;
+                }
             }
-        }
 
-        if (this.cursors.up.isDown && this.player?.body?.touching.down) {
-            let jumpSound = this.sound.add("jump");
-            jumpSound.play({ volume: 0.5 });
+            if (this.cursors.up.isDown && this.player?.body?.touching.down) {
+                let jumpSound = this.sound.add("jump");
+                jumpSound.play({ volume: 0.5 });
 
-            this.player.setVelocityY(-300);
-        } else if (this.cursors.down.isDown) {
-            this.player?.setVelocityY(300);
+                this.player.setVelocityY(-300);
+            } else if (this.cursors.down.isDown) {
+                this.player?.setVelocityY(300);
+            }
         }
     }
 }

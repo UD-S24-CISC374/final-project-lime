@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 
-export default class LoadingScene4 extends Phaser.Scene {
+export default class LoadingScene4part3 extends Phaser.Scene {
     private content: string[]; // text to display
     private charDelay: number; // delay between characters
     private lineDelay: number; // delay between lines
@@ -17,7 +17,7 @@ export default class LoadingScene4 extends Phaser.Scene {
     private speaking: Phaser.Sound.BaseSound | undefined; // Sound object for speaking
 
     constructor() {
-        super({ key: "LoadingScene4" });
+        super({ key: "LoadingScene4part3" });
     }
 
     init(data: {
@@ -35,19 +35,20 @@ export default class LoadingScene4 extends Phaser.Scene {
 
     preload() {
         this.load.audio("Level1Music", ["assets/Audio/Level1Music.mp3"]);
-        this.load.image("alfredicon", "assets/LevelUI/AlfredIcon.png");
-        this.load.image("cutscene", "assets/Backgrounds/4Cutscene1.png");
+        this.load.image("spyicon", "assets/Characters/SpyIcon.png");
+        this.load.image("cutscene3", "assets/Backgrounds/4Cutscene3.png");
     }
 
     create() {
-        this.cameras.main.fadeIn(1000); // Fade in the next scene
+        this.cameras.main.fadeIn(200); // Fade in the next scene
 
         let music = this.sound.add("Level1Music", { loop: true });
         music.play();
 
         this.resetScene();
 
-        this.add.image(640, 360, "cutscene").setDisplaySize(1280, 720);
+        this.add.image(640, 360, "cutscene3").setDisplaySize(1280, 720);
+        this.add.image(250, 635, "spyicon").setDisplaySize(130, 130);
 
         // Display all content
         this.displayNextLine();
@@ -58,24 +59,13 @@ export default class LoadingScene4 extends Phaser.Scene {
                 if (this.speaking) {
                     this.speaking.stop(); // Stop speaking sound if it's playing
                 }
-                // In the create method of your scene
-
-                this.cameras.main.fadeOut(300, 0, 0, 0);
-
-                this.cameras.main.once(
-                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
-                    () => {
-                        this.scene.start("LoadingScene4part2", {
-                            username: this.username,
-                            lvl2: this.lvl2,
-                            lvl3: this.lvl3,
-                            lvl4: this.lvl4,
-                            lvl5: this.lvl5,
-                        });
-                    }
-                );
-
-                // In the create method of your scene
+                this.scene.start("Level04", {
+                    username: this.username,
+                    lvl2: this.lvl2,
+                    lvl3: this.lvl3,
+                    lvl4: this.lvl4,
+                    lvl5: this.lvl5,
+                });
             } else {
                 this.displayAllContent();
             }
@@ -86,11 +76,11 @@ export default class LoadingScene4 extends Phaser.Scene {
         // helper to reset intial values on load
         this.charDelay = 30;
         this.lineDelay = 120;
-        this.startX = 440;
+        this.startX = 360;
         this.startY = 630;
         this.lineIndex = 0;
         this.contentFullyDisplayed = false;
-        this.content = ["*Namuh and Alfred speaking*"];
+        this.content = ["I need to rescue him."];
     }
     // Helper to display all content at once
     displayAllContent() {

@@ -447,7 +447,7 @@ export default class Tutorial extends Phaser.Scene {
                 this.cdObjective &&
                 this.manObjective
             ) {
-                this.time.delayedCall(6000, () => {
+                this.time.delayedCall(5000, () => {
                     winChime.play();
                     this.addTextToContainer(
                         "Objective complete: Passed basic training. \nGood work, " +

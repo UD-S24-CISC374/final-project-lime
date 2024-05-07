@@ -297,7 +297,7 @@ export default class Level2Scene extends Phaser.Scene {
                                 1000,
                                 () => {
                                     this.appendToScroller(
-                                        "Alfred: Great, Both generators have been shut down. Now enter to the laboratory to finish this mission."
+                                        "Alfred: Great, both generators have been shut down. Now enter to the laboratory to finish this mission."
                                     );
                                 },
                                 [],

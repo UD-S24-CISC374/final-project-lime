@@ -15,7 +15,10 @@ import LoadingScene2Part2 from "./scenes/level02_load2";
 import LevelThreeIntro from "./scenes/level03_load";
 import LevelThreeIntro2 from "./scenes/level03_load2";
 import Level03 from "./scenes/level03";
-import Cutscene1 from "./scenes/cutscene1";
+import LoadingScene4 from "./scenes/level04_load";
+import LoadingScene4part2 from "./scenes/level04_load2";
+import LoadingScene4part3 from "./scenes/level04_load3";
+import Level4Scene from "./scenes/level04";
 
 const DEFAULT_WIDTH = 1280;
 const DEFAULT_HEIGHT = 720;
@@ -49,8 +52,12 @@ export const CONFIG = {
         LevelThreeIntro2,
         Level03,
         SecurityBreachScene,
-        Cutscene1,
+        LoadingScene4,
+        LoadingScene4part2,
+        LoadingScene4part3,
+        Level4Scene,
     ],
+
     physics: {
         default: "arcade",
         arcade: {
