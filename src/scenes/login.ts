@@ -126,6 +126,7 @@ export default class LoginScene extends Phaser.Scene {
 
                             this.time.delayedCall(2200, () => {
                                 if (username === "admin") {
+                                    this.sound.stopAll();
                                     this.scene.start("LevelSelect", {
                                         username: username,
                                     });

@@ -1,27 +1,23 @@
 import Phaser from "phaser";
 import Manual from "../objects/manual";
 
-export default class Level1Scene extends Phaser.Scene {
+export default class Level03 extends Phaser.Scene {
     private stateText: Phaser.GameObjects.Text;
     private inputField: HTMLInputElement;
     private scroller: HTMLDivElement;
-    private textContainer: HTMLDivElement;
-    private textElement: HTMLDivElement;
     private timer: Phaser.GameObjects.Text;
     private lvl2: boolean;
     private lvl3: boolean;
     private lvl4: boolean;
     private username: string;
     private lvl5: boolean;
-    private typing: boolean = true;
     private objectiveCompleted: boolean = false;
     private lastText: string[] = [""];
-    private manual: Manual;
     private lastPosition: number = -1;
-    private menuMusic: Phaser.Sound.BaseSound | undefined;
+    private manual: Manual;
 
     constructor() {
-        super({ key: "Level01" });
+        super({ key: "Level03" });
     }
 
     init(data: {
@@ -44,18 +40,78 @@ export default class Level1Scene extends Phaser.Scene {
         this.lvl5 = data.lvl5;
     }
     preload() {
-        this.load.image("ClosedBook", "../assets/LevelUI/ClosedBook.png");
-        this.load.image("HoveredBook", "../assets/LevelUI/HoveredBook.png");
-        this.load.image("OpenBook", "../assets/LevelUI/OpenBook.png");
+        this.load.image("1", "assets/num1.png");
+        this.load.image("2", "assets/num2.png");
+        this.load.image("3", "assets/num3.png");
+        this.load.image("4", "assets/num4.png");
+        this.load.image("5", "assets/num5.png");
+        this.load.image("6", "assets/num6.png");
+        this.load.image("7", "assets/num7.png");
+        this.load.image("8", "assets/num8.png");
+        this.load.image("9", "assets/num9.png");
+        this.load.image("0", "assets/num0.png");
+        this.load.image("padCheck", "assets/padCheck.png");
+        this.load.image("padX", "assets/padx.png");
+        this.load.image("pinPadText", "assets/PinPadText.png");
     }
 
     create() {
         this.objectiveCompleted = false;
         this.add.rectangle(640, 360, 1280, 720, 0x000);
 
+        this.add.image(640, 100, "prompt").setDisplaySize(560, 110);
         this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
         this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
+
+        function getRandomInt(min: number, max: number): number {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        const randomNum1 = getRandomInt(1, 9).toString();
+        const randomNum2 = getRandomInt(1, 9).toString();
+        const randomNum3 = getRandomInt(1, 9).toString();
+        const randomNum4 = getRandomInt(1, 9).toString();
+
+        //Padlock code
+        const imagePositions = [
+            { x: 1040, y: 310, key: "1" },
+            { x: 1110, y: 310, key: "2" },
+            { x: 1180, y: 310, key: "3" },
+            { x: 1040, y: 380, key: "4" },
+            { x: 1110, y: 380, key: "5" },
+            { x: 1180, y: 380, key: "6" },
+            { x: 1040, y: 450, key: "7" },
+            { x: 1110, y: 450, key: "8" },
+            { x: 1180, y: 450, key: "9" },
+            { x: 1040, y: 520, key: "padX" },
+            { x: 1110, y: 520, key: "0" },
+            { x: 1180, y: 520, key: "padCheck" },
+        ];
+
+        const hoverTintColor = 0xd3d3d3;
+        const answer =
+            randomNum1 +
+            " " +
+            randomNum2 +
+            " " +
+            randomNum3 +
+            " " +
+            randomNum4 +
+            " ";
+
+        const displayScreen = this.add
+            .text(1023, 205, "", {
+                fontSize: "55px",
+                fontFamily: "Arial",
+                color: "#ffff00",
+            })
+            .setDepth(1);
+        this.add
+            .image(1109, 239, "pinPadText")
+            .setDisplaySize(240, 80)
+            .setDepth(0);
 
         this.manual = new Manual(
             this,
@@ -69,50 +125,51 @@ export default class Level1Scene extends Phaser.Scene {
         let cdDing = this.sound.add("cdDing", { loop: false });
         let cdBackDing = this.sound.add("cdBackDing", { loop: false });
         let manDing = this.sound.add("manDing", { loop: false });
-        let rmDing = this.sound.add("rmDing", { loop: false });
-        let winChime = this.sound.add("winChime", { loop: false });
-
-        let state: string = "home";
+        let state: string = "back_door";
 
         const lsMap = new Map<string, string>();
+        const catMap = new Map<string, string>();
         const cdMap = new Map<string, string[]>();
         const cdBack = new Map<string, string>();
         const manMap = new Map<string, string>();
 
-        lsMap.set("home", "dir_break_room dir_closet dir_control_room");
+        lsMap.set("back_door", "dir_container dir_garbage_can dir_file_box");
+        lsMap.set("container", "file_paper file_staples");
         lsMap.set(
-            "break_room",
-            "dir_suitcase file_vending_machine file_chair file_table"
+            "garbage_can",
+            "file_soda_can file_sticks dir_red_folder file_pencil"
         );
-        lsMap.set("closet", "dir_cardboard_box file_wires file_hazmat_suit");
-        lsMap.set(
-            "control_room",
-            "file_surveillance_camera file_monitor file_apple_juice"
-        );
-        lsMap.set(
-            "suitcase",
-            "file_namuhs_glasses file_batteries file_papers file_apple"
-        );
-        lsMap.set("cardboard_box", "file_papers");
+        lsMap.set("file_box", "file_pencil dir_secret_folder_1 dir_wallet");
+        lsMap.set("red_folder", "file_code_#4.txt");
+        lsMap.set("wallet", "file_code_#1.txt file_photograph");
+        lsMap.set("secret_folder_1", "file_code_#2.txt file_code_#3.txt");
 
-        cdMap.set("home", ["break_room", "closet", "control_room"]);
-        cdMap.set("break_room", ["suitcase"]);
-        cdMap.set("closet", ["cardboard_box"]);
-        cdMap.set("control_room", [""]);
+        catMap.set("code_#1.txt", randomNum1);
+        catMap.set("code_#2.txt", randomNum2);
+        catMap.set("code_#3.txt", randomNum3);
+        catMap.set("code_#4.txt", randomNum4);
 
-        cdBack.set("break_room", "home");
-        cdBack.set("closet", "home");
-        cdBack.set("control_room", "home");
-        cdBack.set("suitcase", "break_room");
-        cdBack.set("cardboard_box", "closet");
+        catMap.set("paper", "Namuh is evil.");
+        catMap.set("staples", "Just some staples.");
+        catMap.set("pencil", "Dixon Ticonderoga.");
+        catMap.set("soda_can", "Refreshing beverage.");
+        catMap.set("sticks", "Wooden sticks.");
+        catMap.set("photograph", "Photo of a cat.");
+
+        cdMap.set("back_door", ["container", "garbage_can", "file_box"]);
+        cdMap.set("garbage_can", ["red_folder"]);
+        cdMap.set("file_box", ["secret_folder_1", "wallet"]);
+
+        cdBack.set("container", "back_door");
+        cdBack.set("garbage_can", "back_door");
+        cdBack.set("file_box", "back_door");
+        cdBack.set("red_folder", "garbage_can");
+        cdBack.set("wallet", "file_box");
+        cdBack.set("secret_folder_1", "file_box");
 
         manMap.set(
             "ls",
             "Alfred: Remember, the 'ls' command\nis useful for viewing your surroundings."
-        );
-        manMap.set(
-            "rm",
-            "Alfred: Remember, the 'rm' command\nneutralizes enemy files."
         );
         manMap.set(
             "cd",
@@ -120,27 +177,37 @@ export default class Level1Scene extends Phaser.Scene {
         );
         manMap.set(
             "alfred",
-            "Alfred: Try using the 'cd' command to traverse through\ndifferent areas. Then use 'rm' to remove critical files."
+            "Alfred: Try using the 'cd' to look\nfor directories labeled secret_folder. Remember,\norder is important when typing in the on the pin-pad."
+        );
+        manMap.set(
+            "cat",
+            "Alfred: The 'cat' command permits you\nto read a file's contents. Kind of like\nthe 'ls' command reads a directory's contents."
+        );
+
+        this.add.text(
+            410,
+            59,
+            "Search directories for codes and type\nthem into the pin-pad to advance\n further into the facility.",
+            {
+                color: "#fff",
+                fontSize: "22px",
+                fontFamily: "Monospace",
+            }
         );
 
         // Add scrollable text area
         this.scroller = document.createElement("div");
-        this.scroller.style.width = "44vw";
-        this.scroller.style.height = "46vh"; // Set height relative to width
-        // this.scroller.style.maxWidth = "600px"; // Set maximum width
-        this.scroller.style.maxHeight = "29vw";
+        this.scroller.style.width = "600px";
+        this.scroller.style.height = "390px";
         this.scroller.style.backgroundColor = "black";
         this.scroller.style.color = "white";
         this.scroller.style.borderRadius = "10px";
         this.scroller.style.overflowY = "auto"; // Enable vertical scrolling
         this.scroller.style.position = "absolute";
-        this.scroller.style.border = "solid 2px gray";
-        this.scroller.style.padding = "5px ";
-        this.scroller.style.background =
-            "linear-gradient(-200deg, #444444, #000000)";
         this.scroller.style.top = "48%";
         this.scroller.style.left = "50%";
         this.scroller.style.bottom = "49%";
+        //this.scroller.style.border = "2px solid gold";
         this.scroller.style.transform = "translate(-50%, -50%)";
         document.body.appendChild(this.scroller);
 
@@ -151,48 +218,62 @@ export default class Level1Scene extends Phaser.Scene {
 
         this.appendToScroller("Alfred: Welcome back " + this.username + "!");
 
+        //padlock hover tint code
+        imagePositions.forEach((pos) => {
+            const image = this.add
+                .image(pos.x, pos.y, pos.key)
+                .setDisplaySize(70, 70);
+
+            image.setInteractive();
+
+            image.on("pointerover", () => {
+                image.setTint(hoverTintColor);
+            });
+
+            image.on("pointerout", () => {
+                image.clearTint();
+            });
+
+            image.on("pointerdown", () => {
+                if (pos.key !== "padX" && pos.key !== "padCheck") {
+                    if (displayScreen.text.length < 8) {
+                        displayScreen.text += pos.key + " ";
+                    }
+                } else if (pos.key === "padX") {
+                    // Handle backspace functionality
+                    displayScreen.text = displayScreen.text.slice(0, -1);
+                } else {
+                    if (displayScreen.text === answer) {
+                        this.objectiveCompleted = true;
+                        this.appendToScroller("Access Granted");
+                        this.appendToScroller("Objective complete");
+                        this.time.delayedCall(2000, () => {
+                            this.scene.start("LevelSelect");
+                        });
+                    } else {
+                        displayScreen.text = "";
+                        this.appendToScroller("Access denied.");
+                    }
+                }
+            });
+        });
+
         // Add text input field
         this.inputField = document.createElement("input");
         this.inputField.type = "text";
         this.inputField.style.position = "absolute";
-        this.inputField.style.width = "44vw";
-        this.inputField.style.height = "80px";
+        this.inputField.style.width = "600px";
+        this.inputField.style.height = "40px";
         this.inputField.style.fontSize = "20px";
         this.inputField.style.top = "80%";
         this.inputField.style.left = "50%";
         this.inputField.style.backgroundColor = "#000"; // Change background color to white
         this.inputField.style.color = "#fff"; // Change text color to black
         this.inputField.placeholder = ">$"; // Placeholder text
-        this.inputField.style.border = "2px solid white";
+        this.inputField.style.border = "2px solid gold";
 
         this.inputField.style.transform = "translate(-50%, -50%)";
         document.body.appendChild(this.inputField);
-
-        this.textContainer = document.createElement("div");
-        this.textContainer.style.position = "absolute";
-        this.textContainer.style.width = "44vw";
-        this.textContainer.style.height = "auto";
-        this.textContainer.style.bottom = "73%";
-        this.textContainer.style.left = "50%";
-        this.textContainer.style.transform = "translate(-50%, -50%)";
-        this.textContainer.style.background =
-            "linear-gradient(-200deg, #444444, #000000)"; // Background color
-        this.textContainer.style.padding = "10px"; // Padding for the text
-        this.textContainer.style.border = "2px solid gray"; // Border style
-
-        // Create the text element
-        this.textElement = document.createElement("div");
-        this.textElement.textContent =
-            "Enter the 'control_room' and remove the 'surveillance_camera' so you can proceed into the next area.";
-        this.textElement.style.color = "#fff"; // Text color
-        this.textElement.style.fontSize = "20px"; // Font size
-        this.textElement.style.fontFamily = "Monospace"; // Font family
-
-        // Append the text to the container
-        this.textContainer.appendChild(this.textElement);
-
-        // Append the container to the document body
-        document.body.appendChild(this.textContainer);
 
         this.input.keyboard?.removeCapture(
             Phaser.Input.Keyboard.KeyCodes.SPACE
@@ -200,54 +281,22 @@ export default class Level1Scene extends Phaser.Scene {
 
         this.inputField.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
-                this.lastPosition = -1;
                 const command = this.inputField.value.trim();
-                this.lastText.push(command.trim());
                 this.inputField.value = ""; // Clear the input field
                 if (command === "ls") {
                     lsDing.play();
-                    this.appendToScroller(
-                        this.username.toLowerCase().replace(/\s+/g, "_") +
-                            ": " +
-                            command
-                    );
+                    this.appendToScroller("agent09: " + command);
                     this.appendLsToScroller(lsMap.get(state) as string);
-                } else if (command.substring(0, 3) == "rm ") {
-                    const file = command.substring(3);
-                    if (
-                        state === "control_room" &&
-                        file === "surveillance_camera"
-                    ) {
-                        this.appendToScroller(
-                            this.username.toLowerCase().replace(/\s+/g, "_") +
-                                ": " +
-                                command
-                        );
-
-                        rmDing.play();
-
-                        lsMap.set(
-                            "control_room",
-                            lsMap
-                                .get("control_room")
-                                ?.replace("surveillance_camera", "")
-                                .trim() || ""
-                        ); // Remove surveillance_camera from lsMap
-                        this.appendToScroller(
-                            "surveillance_camera successfully removed"
-                        );
-
-                        this.appendToScroller(
-                            "Objective Complete: Surveillance camera neutralized."
-                        );
-                        this.objectiveCompleted = true;
-                        winChime.play();
-                        this.time.delayedCall(3000, this.loadLevel, [], this);
+                } else if (command.substring(0, 4) == "cat ") {
+                    const file = command.substring(4);
+                    const fileContents = catMap.get(file);
+                    if (fileContents !== undefined) {
+                        lsDing.play();
+                        this.appendToScroller("agent09: " + command);
+                        this.appendToScroller(fileContents as string);
                     } else {
                         ding.play();
-                        this.appendToScroller(
-                            "'" + file + "'" + " cannot be removed or found."
-                        );
+                        this.appendToScroller("File " + file + " not found.");
                     }
                 } else if (
                     command.substring(0, 3) == "cd " &&
@@ -257,11 +306,7 @@ export default class Level1Scene extends Phaser.Scene {
                     const dirC = cdMap.get(dir);
                     if (dirC !== undefined) {
                         cdDing.play();
-                        this.appendToScroller(
-                            this.username.toLowerCase().replace(/\s+/g, "_") +
-                                ": " +
-                                command
-                        );
+                        this.appendToScroller("agent09: " + command);
                         state = command.substring(3);
                         this.stateText.setText(state);
                     } else {
@@ -274,11 +319,7 @@ export default class Level1Scene extends Phaser.Scene {
                     const dir = cdBack.get(state);
                     if (state !== "back_door" && dir) {
                         cdBackDing.play();
-                        this.appendToScroller(
-                            this.username.toLowerCase().replace(/\s+/g, "_") +
-                                ": " +
-                                command
-                        );
+                        this.appendToScroller("agent09: " + command);
                         this.stateText.setText(dir);
                         state = dir;
                     } else {
@@ -292,11 +333,7 @@ export default class Level1Scene extends Phaser.Scene {
                     const tip = manMap.get(manual);
                     if (tip !== undefined) {
                         manDing.play();
-                        this.appendToScroller(
-                            this.username.toLowerCase().replace(/\s+/g, "_") +
-                                ": " +
-                                command
-                        );
+                        this.appendToScroller("agent09: " + command);
                         this.appendToScroller(tip);
                     } else {
                         ding.play();
@@ -306,11 +343,7 @@ export default class Level1Scene extends Phaser.Scene {
                     }
                 } else {
                     ding.play();
-                    this.appendToScroller(
-                        this.username.toLowerCase().replace(/\s+/g, "_") +
-                            ": " +
-                            command
-                    );
+                    this.appendToScroller("agent09: " + command);
                     this.appendToScroller("Command not found.");
                 }
             }
@@ -329,36 +362,12 @@ export default class Level1Scene extends Phaser.Scene {
                     this.lastPosition += 1;
                 }
             }
-            if (
-                event.key === "ArrowLeft" &&
-                this.inputField.selectionStart !== null
-            ) {
-                if (this.inputField.selectionStart > 0) {
-                    this.inputField.selectionStart -= 1;
-                    this.inputField.selectionEnd =
-                        this.inputField.selectionStart;
-                }
-            } else if (
-                event.key === "ArrowRight" &&
-                this.inputField.selectionEnd !== null
-            ) {
-                if (
-                    this.inputField.selectionEnd <
-                        this.inputField.value.length &&
-                    this.inputField.selectionStart !== null
-                ) {
-                    this.inputField.selectionStart += 1;
-                    this.inputField.selectionEnd =
-                        this.inputField.selectionStart;
-                }
-            }
         });
 
-        let time = 60;
+        let time = 120;
         let lastUpdateTime = Date.now();
 
-        // Create the timer text
-        let timerText = this.add.text(109, 589, time.toFixed(2), {
+        this.timer = this.add.text(109, 589, time.toFixed(2), {
             fontSize: "30px",
             color: "red",
         });
@@ -372,15 +381,11 @@ export default class Level1Scene extends Phaser.Scene {
                 lastUpdateTime = currentTime; // Update the last update time
 
                 if (time > 0) {
-                    timerText.setText(time.toFixed(2)); // Update the timer text
+                    this.timer.setText(time.toFixed(2)); // Update the timer text
                     this.time.delayedCall(10, updateTimer);
                 } else {
-                    timerText.setText("0.00");
+                    this.timer.setText("0.00");
                     this.scroller.style.display = "none";
-                    this.textContainer.style.display = "none";
-                    this.textElement.style.display = "none";
-                    this.sound.stopAll();
-
                     this.scene.start("SecurityBreachScene", {
                         username: this.username,
                         lvl2: this.lvl2,
@@ -393,36 +398,17 @@ export default class Level1Scene extends Phaser.Scene {
 
         updateTimer();
 
-        this.events.on("shutdown", () => {});
-
         this.stateText = this.add.text(1075, 95, state, {
             fontSize: "24px",
             color: "#fff",
         });
         this.events.on("shutdown", this.removeInputField, this);
-
-        // Add back arrow
-        const backArrow = this.add
-            .image(50, 35, "backArrow")
-            .setDisplaySize(30, 30);
-        backArrow.setInteractive();
-        backArrow.on("pointerup", () => {
-            this.loadLevel();
-        });
-        backArrow.on("pointerover", () => {
-            backArrow.setTint(0x44ff44);
-        });
-        backArrow.on("pointerout", () => {
-            backArrow.clearTint();
-        });
     }
-
     removeInputField() {
         if (this.inputField.parentElement) {
             this.inputField.parentElement.removeChild(this.inputField);
         }
     }
-
     update() {}
 
     appendToScroller(text: string) {
@@ -431,25 +417,12 @@ export default class Level1Scene extends Phaser.Scene {
         let spaces: string = "";
         if (text.includes("Alfred: ")) {
             textNode.style.color = "gold";
-        } else if (
-            text.includes("Access Granted") ||
-            text.includes("Objective complete") ||
-            text.includes("surveillance_camera successfully removed")
-        ) {
-            textNode.style.color = "#86DC3D";
-        } else if (
-            text.includes("cannot be removed or found.") ||
-            text.includes("not found") ||
-            text.includes("Cannot")
-        ) {
-            textNode.style.color = "#d0413f";
         } else {
             textNode.style.color = "white";
         }
         textNode.style.fontFamily = "Monospace";
         textNode.style.fontSize = "24px";
         textNode.style.marginBottom = "-15px";
-        textNode.style.paddingLeft = "15px";
         const desiredWidth = 41;
 
         const textLength = text.length;
@@ -478,8 +451,6 @@ export default class Level1Scene extends Phaser.Scene {
                 total += word.length + spaceLength;
                 const addNode = document.createElement("text");
                 addNode.textContent = word.substring(4) + spaces;
-                addNode.style.paddingLeft = "15px";
-
                 addNode.style.color = "#86DC3D";
                 addNode.style.fontFamily = "Monospace";
                 addNode.style.fontSize = "24px";
@@ -488,12 +459,9 @@ export default class Level1Scene extends Phaser.Scene {
                 total += word.length + spaceLength;
                 const addNode = document.createElement("text");
                 addNode.textContent = word.substring(5) + spaces;
-                addNode.style.paddingLeft = "15px";
-
                 addNode.style.color = "#77C3EC";
                 addNode.style.fontFamily = "Monospace";
                 addNode.style.fontSize = "24px";
-
                 this.scroller.appendChild(addNode);
             }
         }
@@ -510,14 +478,6 @@ export default class Level1Scene extends Phaser.Scene {
 
     loadLevel() {
         this.removeInputField();
-        this.sound.stopAll();
-        this.menuMusic = this.sound.add("menuMusic", {
-            loop: true,
-        });
-        this.menuMusic.play();
-        this.textContainer.style.display = "none";
-        this.textElement.style.display = "none";
-        this.scroller.style.display = "none";
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: true,

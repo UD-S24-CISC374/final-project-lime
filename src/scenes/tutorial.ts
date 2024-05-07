@@ -65,6 +65,8 @@ export default class Tutorial extends Phaser.Scene {
         let cdDing = this.sound.add("cdDing", { loop: false });
         let cdBackDing = this.sound.add("cdBackDing", { loop: false });
         let manDing = this.sound.add("manDing", { loop: false });
+        let rmDing = this.sound.add("rmDing", { loop: false });
+        let winChime = this.sound.add("winChime", { loop: false });
 
         this.inputContainer = this.add.container(360, 520);
 
@@ -376,7 +378,7 @@ export default class Tutorial extends Phaser.Scene {
                                     .trim()
                                     .replace(/\s{2,}/g, " "); // Remove the file and extra spaces
                                 lsMap.set(state, files);
-
+                                rmDing.play();
                                 this.addTextToContainer(
                                     "File '" +
                                         rmInput +
@@ -445,7 +447,8 @@ export default class Tutorial extends Phaser.Scene {
                 this.cdObjective &&
                 this.manObjective
             ) {
-                this.time.delayedCall(6000, () => {
+                this.time.delayedCall(5000, () => {
+                    winChime.play();
                     this.addTextToContainer(
                         "Objective complete: Passed basic training. \nGood work, " +
                             this.username +
@@ -474,7 +477,7 @@ export default class Tutorial extends Phaser.Scene {
 
         const numNewlines = words.length;
 
-        this.inputContainer.y -= numNewlines * 24.7;
+        this.inputContainer.y -= numNewlines * 27.8;
 
         for (let word of words) {
             if (word.substring(0, 5) === "file_") {
@@ -482,6 +485,7 @@ export default class Tutorial extends Phaser.Scene {
                 const newText = this.add.text(0, 0, newWord, {
                     fontSize: "24px",
                     color: "#77C3EC",
+                    fontFamily: "Monospace",
                 });
                 this.inputContainer.add(newText);
             } else if (word.substring(0, 4) === "dir_") {
@@ -489,12 +493,14 @@ export default class Tutorial extends Phaser.Scene {
                 const newText = this.add.text(0, 0, newWord, {
                     fontSize: "24px",
                     color: "#86DC3D",
+                    fontFamily: "Monospace",
                 });
                 this.inputContainer.add(newText);
             } else {
                 const newText = this.add.text(0, 0, word, {
                     fontSize: "24px",
                     color: "#fff",
+                    fontFamily: "Monospace",
                 });
                 this.inputContainer.add(newText);
             }
@@ -507,12 +513,13 @@ export default class Tutorial extends Phaser.Scene {
         const newText = this.add.text(0, 0, text, {
             fontSize: "24px",
             color: "#fff",
+            fontFamily: "Monospace",
         });
 
         const numNewlines = (text.match(/\n/g) || []).length + 1;
 
         // Adjust y position based on the number of newline characters
-        this.inputContainer.y -= numNewlines * 24.7;
+        this.inputContainer.y -= numNewlines * 27.8;
 
         if (text.includes("Alfred: ")) {
             newText.setColor("gold");
@@ -542,6 +549,7 @@ export default class Tutorial extends Phaser.Scene {
 
     loadLevel() {
         this.removeInputField();
+
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: this.lvl2,

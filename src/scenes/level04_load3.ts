@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 
-export default class IntroScene extends Phaser.Scene {
+export default class LoadingScene4part3 extends Phaser.Scene {
     private content: string[]; // text to display
     private charDelay: number; // delay between characters
     private lineDelay: number; // delay between lines
@@ -17,7 +17,7 @@ export default class IntroScene extends Phaser.Scene {
     private speaking: Phaser.Sound.BaseSound | undefined; // Sound object for speaking
 
     constructor() {
-        super({ key: "IntroScene" });
+        super({ key: "LoadingScene4part3" });
     }
 
     init(data: {
@@ -31,31 +31,41 @@ export default class IntroScene extends Phaser.Scene {
         this.lvl3 = data.lvl3;
         this.lvl4 = data.lvl4;
         this.username = data.username;
-        console.log(this.username);
     }
+
     preload() {
-        this.load.image("alfredicon", "assets/LevelUI/AlfredIcon.png");
-        this.load.audio("speaking", ["assets/audio/speaking.mp3"]);
+        this.load.audio("Level1Music", ["assets/Audio/Level1Music.mp3"]);
+        this.load.image("spyicon", "assets/Characters/SpyIcon.png");
+        this.load.image("cutscene3", "assets/Backgrounds/4Cutscene3.png");
     }
 
     create() {
-        this.resetScene(); // helper to reset intial values on load
+        this.cameras.main.fadeIn(200); // Fade in the next scene
 
-        //adding assets
-        this.add.rectangle(640, 360, 1280, 720, 0x000);
-        this.add.image(150, 100, "alfredicon").setDisplaySize(130, 130);
-        this.add.image(150, 480, "spyicon").setDisplaySize(130, 130);
+        let music = this.sound.add("Level1Music", { loop: true });
+        music.play();
 
-        //display text
+        this.resetScene();
+
+        this.add.image(640, 360, "cutscene3").setDisplaySize(1280, 720);
+        this.add.image(250, 635, "spyicon").setDisplaySize(130, 130);
+
+        this.add.text(940, 670, "[Enter] to start Level 4", {
+            color: "#fff",
+            fontSize: "20px",
+            fontFamily: "Monospace",
+        });
+
+        // Display all content
         this.displayNextLine();
 
-        // On enter, transition to Level 1
+        // On enter, transition to Level 1 if content is fully displayed, otherwise, display next line
         this.input.keyboard?.on("keydown-ENTER", () => {
             if (this.contentFullyDisplayed) {
                 if (this.speaking) {
                     this.speaking.stop(); // Stop speaking sound if it's playing
                 }
-                this.scene.start("Tutorial", {
+                this.scene.start("Level04", {
                     username: this.username,
                     lvl2: this.lvl2,
                     lvl3: this.lvl3,
@@ -72,43 +82,13 @@ export default class IntroScene extends Phaser.Scene {
         // helper to reset intial values on load
         this.charDelay = 30;
         this.lineDelay = 120;
-        this.startX = 250;
-        this.startY = 90;
+        this.startX = 360;
+        this.startY = 630;
         this.lineIndex = 0;
-        console.log(this.username);
-        this.content = [
-            "Agent " +
-                this.username.charAt(0).toUpperCase() +
-                this.username.slice(1) +
-                ", this is Alfred speaking.",
-            " ",
-            "Sorry to call you so late into the evening, but it",
-            "appears we've got a situation on our hands.",
-            " ",
-
-            "Namuh Yortsed, CEO of Yortsed Corp. has set his",
-            "sights on the city's power supply.",
-            " ",
-
-            "You must utilize the tools given to you " + this.username + ".",
-            " ",
-            " ",
-
-            "Just as you have in the past.",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-
-            "...",
-            " ",
-            " ",
-            " ",
-            "                  [Enter] to Continue",
-        ];
+        this.contentFullyDisplayed = false;
+        this.content = ["I need to rescue him."];
     }
-
+    // Helper to display all content at once
     displayAllContent() {
         this.lineIndex = 0;
 
@@ -122,7 +102,7 @@ export default class IntroScene extends Phaser.Scene {
         this.contentFullyDisplayed = true;
     }
 
-    // helper to display text line by line, calling typeText to animate
+    // Helper to display text line by line, calling typeText to animate
     displayNextLine() {
         if (this.lineIndex < this.content.length) {
             const line = this.content[this.lineIndex++];
@@ -137,18 +117,16 @@ export default class IntroScene extends Phaser.Scene {
                 }
             );
             // Start typing the line
-
             this.typeText(line);
         } else if (this.lineIndex === this.content.length) {
             this.contentFullyDisplayed = true;
         }
     }
 
-    // helper to animate text typing
+    // Helper to animate text typing
     typeText(line: string) {
         this.speaking = this.sound.add("speaking", { loop: false });
         this.speaking.play();
-
         // split the line into characters
         const characters = line.split("");
         let i = 0;
@@ -160,6 +138,7 @@ export default class IntroScene extends Phaser.Scene {
                 this.currentLine.text += characters[i++];
                 if (i === characters.length) {
                     this.speaking?.stop();
+
                     // once all characters are added, add a delayed event to display the next line
                     this.time.delayedCall(
                         this.lineDelay,

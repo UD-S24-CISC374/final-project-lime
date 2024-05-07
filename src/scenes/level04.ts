@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import Manual from "../objects/manual";
 
-export default class Level1Scene extends Phaser.Scene {
+export default class Level4Scene extends Phaser.Scene {
     private stateText: Phaser.GameObjects.Text;
     private inputField: HTMLInputElement;
     private scroller: HTMLDivElement;
@@ -21,7 +21,7 @@ export default class Level1Scene extends Phaser.Scene {
     private menuMusic: Phaser.Sound.BaseSound | undefined;
 
     constructor() {
-        super({ key: "Level01" });
+        super({ key: "Level04" });
     }
 
     init(data: {
@@ -237,9 +237,7 @@ export default class Level1Scene extends Phaser.Scene {
                             "surveillance_camera successfully removed"
                         );
 
-                        this.appendToScroller(
-                            "Objective Complete: Surveillance camera neutralized."
-                        );
+                        this.appendToScroller("Objective complete");
                         this.objectiveCompleted = true;
                         winChime.play();
                         this.time.delayedCall(3000, this.loadLevel, [], this);

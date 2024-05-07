@@ -16,6 +16,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image("pin", "assets/LevelUI/pin.png");
         this.load.image("ground", "assets/Platform.png");
         this.load.image("prompt", "assets/LevelUI/PromptBox.png");
+        this.load.image("backArrow", "../assets/backArrow.png");
 
         this.load.image(
             "closed_metal_door",
@@ -33,6 +34,7 @@ export default class PreloadScene extends Phaser.Scene {
             "assets/LevelSelect/open_metal_door.png"
         );
         this.load.image("bomb", "assets/LevelUI/bomb.png");
+        this.load.image("screen", "assets/Backgrounds/screen.png");
         this.load.spritesheet("dude", "assets/Characters/dude.png", {
             frameWidth: 240,
             frameHeight: 405,
@@ -44,11 +46,14 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.audio("lsDing", ["assets/Audio/lsDing.mp3"]);
         this.load.audio("cdBackDing", ["assets/Audio/cdBackDing.mp3"]);
         this.load.audio("manDing", ["assets/Audio/manDing.mp3"]);
+        this.load.audio("rmDing", ["assets/Audio/rmDing.mp3"]);
         this.load.audio("alfredDeathMusic", [
             "assets/Audio/AlfredDeathMusic.mp3",
         ]);
+        this.load.audio("winChime", ["assets/Audio/winChime.mp3"]);
         this.load.audio("jump", ["assets/Audio/jump.wav"]);
         this.load.audio("walk", ["assets/Audio/walking.wav"]);
+        this.load.audio("menuMusic", ["assets/Audio/menuMusic.mp3"]);
     }
 
     create() {

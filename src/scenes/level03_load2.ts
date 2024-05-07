@@ -14,6 +14,7 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
     private lvl5: boolean;
     private username: string;
     private contentFullyDisplayed: boolean; // flag to track if content is fully displayed
+    private speaking: Phaser.Sound.BaseSound | undefined; // Sound object for speaking
 
     constructor() {
         super({ key: "LoadingScene3part2" });
@@ -47,6 +48,9 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
         // On enter, transition to Level 1
         this.input.keyboard?.on("keydown-ENTER", () => {
             if (this.contentFullyDisplayed) {
+                if (this.speaking) {
+                    this.speaking.stop(); // Stop speaking sound if it's playing
+                }
                 this.scene.start("Level03", {
                     username: this.username,
                     lvl2: this.lvl2,
@@ -88,10 +92,7 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
             "'cat' is to files what 'ls' is to directories. ",
             "In this mission, files are marked with '.txt' at the end of their names.",
             "Those text files are where you'll find hidden codes for the pin-pad.",
-            " ",
-            "If you are ever unsure about how to use the 'cat' command, you",
-            "can use 'man cat' to help you.",
-            "Or use 'man alfred' to hear from me directly.",
+
             " ",
             "Good luck " + this.username.toLowerCase() + ".",
             " ",
@@ -135,9 +136,8 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
 
     // helper to animate text typing
     typeText(line: string) {
-        let speaking = this.sound.add("speaking", { loop: false });
-
-        speaking.play();
+        this.speaking = this.sound.add("speaking", { loop: false });
+        this.speaking.play();
         // split the line into characters
         const characters = line.split("");
         let i = 0;
@@ -148,7 +148,7 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
             callback: () => {
                 this.currentLine.text += characters[i++];
                 if (i === characters.length) {
-                    speaking.stop();
+                    this.speaking?.stop();
                     // once all characters are added, add a delayed event to display the next line
                     this.time.delayedCall(
                         this.lineDelay,

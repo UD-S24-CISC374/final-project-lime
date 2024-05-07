@@ -6,6 +6,7 @@ export default class SecurityBreachScene extends Phaser.Scene {
     private textColor: string;
     private timer: Phaser.Time.TimerEvent;
     private graphics: Phaser.GameObjects.Graphics;
+    private menuMusic: Phaser.Sound.BaseSound | undefined;
 
     constructor() {
         super({ key: "SecurityBreachScene" });
@@ -44,6 +45,10 @@ export default class SecurityBreachScene extends Phaser.Scene {
 
         // Scene transition after 3 seconds
         this.time.delayedCall(3000, () => {
+            this.menuMusic = this.sound.add("menuMusic", {
+                loop: true,
+            });
+            this.menuMusic.play();
             this.scene.start("LevelSelect");
         });
     }
