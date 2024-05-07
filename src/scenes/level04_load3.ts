@@ -50,6 +50,12 @@ export default class LoadingScene4part3 extends Phaser.Scene {
         this.add.image(640, 360, "cutscene3").setDisplaySize(1280, 720);
         this.add.image(250, 635, "spyicon").setDisplaySize(130, 130);
 
+        this.add.text(940, 670, "[Enter] to start Level 4", {
+            color: "#fff",
+            fontSize: "20px",
+            fontFamily: "Monospace",
+        });
+
         // Display all content
         this.displayNextLine();
 

@@ -248,7 +248,9 @@ export default class Level03 extends Phaser.Scene {
                         this.objectiveCompleted = true;
                         winChime.play();
                         this.appendToScroller("Access Granted");
-                        this.appendToScroller("Objective complete");
+                        this.appendToScroller(
+                            "Objective Complete: Access Granted to "
+                        );
 
                         this.time.delayedCall(2000, () => {
                             this.scroller.style.display = "none";

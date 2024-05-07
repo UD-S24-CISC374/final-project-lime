@@ -49,6 +49,11 @@ export default class LoadingScene4part2 extends Phaser.Scene {
 
         this.add.image(640, 360, "cutscene2").setDisplaySize(1280, 720);
         this.add.image(250, 635, "spyicon").setDisplaySize(130, 130);
+        this.add.text(980, 670, "[Enter] to continue", {
+            color: "#fff",
+            fontSize: "20px",
+            fontFamily: "Monospace",
+        });
 
         // Display all content
         this.displayNextLine();
@@ -87,7 +92,7 @@ export default class LoadingScene4part2 extends Phaser.Scene {
         this.startY = 630;
         this.lineIndex = 0;
         this.contentFullyDisplayed = false;
-        this.content = ["Alfred... What is he doing with Namuh?"];
+        this.content = ["Alfred?... What is he doing with Namuh Yortsed?"];
     }
     // Helper to display all content at once
     displayAllContent() {

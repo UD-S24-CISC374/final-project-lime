@@ -49,6 +49,12 @@ export default class LoadingScene4 extends Phaser.Scene {
 
         this.add.image(640, 360, "cutscene").setDisplaySize(1280, 720);
 
+        this.add.text(980, 670, "[Enter] to continue", {
+            color: "#fff",
+            fontSize: "20px",
+            fontFamily: "Monospace",
+        });
+
         // Display all content
         this.displayNextLine();
 
