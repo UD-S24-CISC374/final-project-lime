@@ -363,6 +363,29 @@ export default class Level2Scene extends Phaser.Scene {
                     this.lastPosition += 1;
                 }
             }
+            if (
+                event.key === "ArrowLeft" &&
+                this.inputField.selectionStart !== null
+            ) {
+                if (this.inputField.selectionStart > 0) {
+                    this.inputField.selectionStart -= 1;
+                    this.inputField.selectionEnd =
+                        this.inputField.selectionStart;
+                }
+            } else if (
+                event.key === "ArrowRight" &&
+                this.inputField.selectionEnd !== null
+            ) {
+                if (
+                    this.inputField.selectionEnd <
+                        this.inputField.value.length &&
+                    this.inputField.selectionStart !== null
+                ) {
+                    this.inputField.selectionStart += 1;
+                    this.inputField.selectionEnd =
+                        this.inputField.selectionStart;
+                }
+            }
         });
 
         let time = 60;
