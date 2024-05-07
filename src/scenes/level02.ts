@@ -429,7 +429,7 @@ export default class Level2Scene extends Phaser.Scene {
 
         updateTimer();
 
-        this.stateText = this.add.text(1075, 95, state, {
+        this.stateText = this.add.text(1075, 95, "pwd: " + state, {
             fontSize: "24px",
             color: "#fff",
         });
@@ -481,6 +481,8 @@ export default class Level2Scene extends Phaser.Scene {
         textNode.style.fontFamily = "Monospace";
         textNode.style.fontSize = "24px";
         textNode.style.marginBottom = "-15px";
+        textNode.style.paddingLeft = "15px";
+
         const desiredWidth = 41;
 
         const textLength = text.length;
@@ -512,6 +514,8 @@ export default class Level2Scene extends Phaser.Scene {
                 addNode.style.color = "#86DC3D";
                 addNode.style.fontFamily = "Monospace";
                 addNode.style.fontSize = "24px";
+                addNode.style.paddingLeft = "15px";
+
                 this.scroller.appendChild(addNode);
             } else if (word.substring(0, 5) === "file_") {
                 total += word.length + spaceLength;
@@ -524,6 +528,8 @@ export default class Level2Scene extends Phaser.Scene {
                 }
                 addNode.style.fontFamily = "Monospace";
                 addNode.style.fontSize = "24px";
+                addNode.style.paddingLeft = "15px";
+
                 this.scroller.appendChild(addNode);
             }
         }
