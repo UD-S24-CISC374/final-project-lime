@@ -470,7 +470,6 @@ export default class Level03 extends Phaser.Scene {
                     this.textContainer.style.display = "none";
                     this.textElement.style.display = "none";
                     this.sound.stopAll();
-
                     this.scene.start("SecurityBreachScene", {
                         username: this.username,
                         lvl2: this.lvl2,
