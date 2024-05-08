@@ -52,10 +52,9 @@ export default class TitleScene extends Phaser.Scene {
                 this.enterButtonRestState();
             });
 
-        this.clickButton.setStroke("#000000", 6);
-
         this.input.keyboard?.once("keydown-ENTER", () => {
             this.scene.start("LoginScene");
+            // this.scene.start("LoginScene");
         });
     }
 
