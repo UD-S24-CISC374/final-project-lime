@@ -484,7 +484,7 @@ export default class Level03 extends Phaser.Scene {
 
         updateTimer();
 
-        this.stateText = this.add.text(1075, 95, state, {
+        this.stateText = this.add.text(1075, 95, "pwd: " + state, {
             fontSize: "24px",
             color: "#fff",
         });

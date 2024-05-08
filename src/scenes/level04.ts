@@ -393,7 +393,7 @@ export default class Level4Scene extends Phaser.Scene {
 
         this.events.on("shutdown", () => {});
 
-        this.stateText = this.add.text(1075, 95, state, {
+        this.stateText = this.add.text(1075, 95, "pwd: " + state, {
             fontSize: "24px",
             color: "#fff",
         });

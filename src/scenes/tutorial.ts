@@ -459,7 +459,7 @@ export default class Tutorial extends Phaser.Scene {
             }
         });
 
-        this.stateText = this.add.text(1075, 95, state, {
+        this.stateText = this.add.text(1075, 95, "pwd: " + state, {
             fontSize: "24px",
             color: "#fff",
         });
