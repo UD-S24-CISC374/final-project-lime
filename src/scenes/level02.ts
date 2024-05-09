@@ -449,6 +449,13 @@ export default class Level2Scene extends Phaser.Scene {
         backArrow.on("pointerout", () => {
             backArrow.clearTint();
         });
+
+        document.addEventListener("mousedown", (event) => {
+            if (!this.inputField.contains(event.target as Node)) {
+                this.inputField.blur();
+            }
+        });
+        this.inputField.focus();
     }
     removeInputField() {
         if (this.inputField.parentElement) {

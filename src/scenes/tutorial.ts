@@ -4,7 +4,6 @@ export default class Tutorial extends Phaser.Scene {
     private stateText: Phaser.GameObjects.Text;
     private inputField: HTMLInputElement;
     private inputContainer: Phaser.GameObjects.Container;
-    private timer: Phaser.GameObjects.Text;
     private lvl2: boolean;
     private lvl3: boolean;
     private lvl4: boolean;
@@ -464,6 +463,13 @@ export default class Tutorial extends Phaser.Scene {
             color: "#fff",
         });
         this.events.on("shutdown", this.removeInputField, this);
+
+        document.addEventListener("mousedown", (event) => {
+            if (!this.inputField.contains(event.target as Node)) {
+                this.inputField.blur();
+            }
+        });
+        this.inputField.focus();
     }
     removeInputField() {
         if (this.inputField.parentElement) {
