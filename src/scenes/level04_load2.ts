@@ -86,7 +86,7 @@ export default class LoadingScene4part2 extends Phaser.Scene {
 
     resetScene() {
         // helper to reset intial values on load
-        this.charDelay = 30;
+        this.charDelay = 80;
         this.lineDelay = 120;
         this.startX = 360;
         this.startY = 630;

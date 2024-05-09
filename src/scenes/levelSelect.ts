@@ -10,6 +10,10 @@ export default class LevelSelect extends Phaser.Scene {
     private lvl3?: boolean = false;
     private lvl4?: boolean = false;
     private lvl5?: boolean = false;
+    private popupBackground: Phaser.GameObjects.Graphics;
+    private popupQuestion: Phaser.GameObjects.Text;
+    private popupNoText: Phaser.GameObjects.Text;
+    private popupYesText: Phaser.GameObjects.Text;
 
     private username: string;
     private lastDirection: string;
@@ -210,14 +214,7 @@ export default class LevelSelect extends Phaser.Scene {
                 wallDoor.setVisible(true);
                 backDoor.setVisible(false);
                 this.time.delayedCall(600, () => {
-                    console.log(this.username);
-                    this.scene.start("IntroScene", {
-                        username: this.username,
-                        lvl1: this.lvl1,
-                        lvl2: this.lvl2,
-                        lvl3: this.lvl3,
-                        lvl4: this.lvl4,
-                    });
+                    this.createPopup();
                 });
             });
         });
@@ -251,7 +248,135 @@ export default class LevelSelect extends Phaser.Scene {
                 scene: "",
             },
         ];
+
+        this.popupBackground = this.add.graphics();
+        this.popupBackground.fillStyle(0x000000, 0.7);
+        this.popupBackground.fillRect(330, 200, 600, 200);
+
+        // Add text for the question
+        this.popupQuestion = this.add
+            .text(635, 270, "Do you want to enter \nthe tutorial again?", {
+                fontSize: "30px",
+                color: "#ffffff",
+            })
+            .setOrigin(0.5);
+
+        // Add text for 'Yes' option
+        this.popupYesText = this.add
+            .text(550, 350, "Yes", {
+                fontSize: "30px",
+                color: "#000",
+                backgroundColor: "gold",
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 2,
+                    bottom: 2,
+                },
+            })
+            .setOrigin(0.5)
+            .on("pointerover", () => {
+                this.yesHoverState();
+            })
+            .on("pointerout", () => {
+                this.yesRestState();
+            });
+
+        // Add text for 'No' option
+        this.popupNoText = this.add
+            .text(700, 350, "No", {
+                fontSize: "30px",
+                color: "#000",
+                backgroundColor: "gold",
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 2,
+                    bottom: 2,
+                },
+            })
+            .setOrigin(0.5);
+
+        // Enable input on 'Yes' and 'No' text
+        this.popupYesText.setInteractive();
+        this.popupNoText.setInteractive();
+
+        // Add pointer down event for 'Yes' option
+        this.popupYesText
+            .on("pointerdown", () => {
+                // Start the intro scene or any other action you want
+                this.scene.start("IntroScene", {
+                    username: this.username,
+                    lvl1: this.lvl1,
+                    lvl2: this.lvl2,
+                    lvl3: this.lvl3,
+                    lvl4: this.lvl4,
+                });
+                this.closePopup();
+            })
+            .on("pointerover", () => {
+                this.yesHoverState();
+            })
+            .on("pointerout", () => {
+                this.yesRestState();
+            });
+
+        // Add pointer down event for 'No' option
+        this.popupNoText
+            .setInteractive()
+            .on("pointerdown", () => {
+                this.player?.setVisible(true);
+                this.player?.setY(100);
+                this.player?.setX(200);
+                this.closePopup();
+            })
+            .on("pointerover", () => {
+                this.noHoverState();
+            })
+            .on("pointerout", () => {
+                this.noRestState();
+            });
+
+        this.popupBackground.setVisible(false);
+        this.popupQuestion.setVisible(false);
+        this.popupYesText.setVisible(false);
+        this.popupNoText.setVisible(false);
     }
+
+    createPopup() {
+        this.popupBackground.setVisible(true);
+        this.popupQuestion.setVisible(true);
+        this.popupYesText.setVisible(true);
+        this.popupNoText.setVisible(true);
+    }
+
+    closePopup() {
+        this.popupBackground.setVisible(false);
+        this.popupQuestion.setVisible(false);
+        this.popupYesText.setVisible(false);
+        this.popupNoText.setVisible(false);
+    }
+
+    noHoverState() {
+        this.popupNoText.setStyle({ fill: "#333" });
+        this.popupNoText.setStyle({ backgroundColor: "yellow" });
+    }
+
+    noRestState() {
+        this.popupNoText.setStyle({ backgroundColor: "gold" });
+        this.popupNoText.setStyle({ fill: "black" });
+    }
+
+    yesHoverState() {
+        this.popupYesText.setStyle({ fill: "#333" });
+        this.popupYesText.setStyle({ backgroundColor: "yellow" });
+    }
+
+    yesRestState() {
+        this.popupYesText.setStyle({ backgroundColor: "gold" });
+        this.popupYesText.setStyle({ fill: "black" });
+    }
+
     update() {
         if (!this.cursors) {
             return;

@@ -109,6 +109,7 @@ export default class LoginScene extends Phaser.Scene {
 
                 this.inputField.value = ""; // Empty the input field
                 this.clickButton.visible = false;
+                this.currentLine.visible = false;
 
                 // Play sound
                 lsDing.play();
@@ -172,6 +173,7 @@ export default class LoginScene extends Phaser.Scene {
 
                 this.inputField.value = ""; // Empty the input field
                 this.clickButton.visible = false;
+                this.currentLine.visible = false;
 
                 // Play sound
                 lsDing.play();

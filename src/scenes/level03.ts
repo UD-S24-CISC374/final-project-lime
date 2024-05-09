@@ -249,7 +249,7 @@ export default class Level03 extends Phaser.Scene {
                         winChime.play();
                         this.appendToScroller("Access Granted");
                         this.appendToScroller(
-                            "Objective Complete: Access Granted to "
+                            "Objective Complete: Access granted to electrical room"
                         );
 
                         this.time.delayedCall(2000, () => {
