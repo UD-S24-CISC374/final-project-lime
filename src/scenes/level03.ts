@@ -609,8 +609,8 @@ export default class Level03 extends Phaser.Scene {
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: true,
-            lvl3: this.lvl3,
-            lvl4: this.lvl4,
+            lvl3: true,
+            lvl4: true,
             lvl5: this.lvl5,
         });
     }
