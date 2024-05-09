@@ -90,6 +90,65 @@ export default class LoginScene extends Phaser.Scene {
 
         // Append the button to the body or any desired container
 
+        // Keyboard event listener for the Enter key
+        const enterListener = (event: KeyboardEvent) => {
+            if (event.key === "Enter") {
+                const username = this.inputField.value;
+
+                this.inputField.value = ""; // Empty the input field
+                this.clickButton.visible = false;
+                this.currentLine.visible = false;
+
+                // Play sound
+                lsDing.play();
+
+                this.input.keyboard?.removeListener("keydown", enterListener);
+
+                this.removeInputField();
+
+                // Function to show the next loading bar and schedule its hiding
+                const showNextLoadingBar = () => {
+                    // Show the current loading bar
+                    loadingBars[currentBarIndex].visible = true;
+
+                    // Increment the index for the next loading bar
+                    currentBarIndex++;
+
+                    // If all loading bars have been shown, return
+                    if (currentBarIndex >= loadingBars.length) {
+                        if (currentBarIndex >= loadingBars.length) {
+                            accessGranted.visible = true;
+
+                            loadingBars[8].visible = false;
+
+                            this.time.delayedCall(2200, () => {
+                                if (username === "admin") {
+                                    this.sound.stopAll();
+                                    this.scene.start("LevelSelect", {
+                                        username: username,
+                                    });
+                                } else {
+                                    this.scene.start("IntroScene", {
+                                        username: username,
+                                    });
+                                }
+                            });
+
+                            return;
+                        }
+                    }
+
+                    this.time.delayedCall(100, () => {
+                        loadingBars[currentBarIndex - 1].visible = false;
+
+                        showNextLoadingBar();
+                    });
+                };
+
+                showNextLoadingBar();
+            }
+        };
+
         this.clickButton = this.add
             .text(570, 420, "LOGIN", {
                 color: "#000",
@@ -165,65 +224,6 @@ export default class LoginScene extends Phaser.Scene {
             .on("pointerout", () => {
                 this.enterButtonRestState();
             });
-
-        // Keyboard event listener for the Enter key
-        const enterListener = (event: KeyboardEvent) => {
-            if (event.key === "Enter") {
-                const username = this.inputField.value;
-
-                this.inputField.value = ""; // Empty the input field
-                this.clickButton.visible = false;
-                this.currentLine.visible = false;
-
-                // Play sound
-                lsDing.play();
-
-                this.input.keyboard?.removeListener("keydown", enterListener);
-
-                this.removeInputField();
-
-                // Function to show the next loading bar and schedule its hiding
-                const showNextLoadingBar = () => {
-                    // Show the current loading bar
-                    loadingBars[currentBarIndex].visible = true;
-
-                    // Increment the index for the next loading bar
-                    currentBarIndex++;
-
-                    // If all loading bars have been shown, return
-                    if (currentBarIndex >= loadingBars.length) {
-                        if (currentBarIndex >= loadingBars.length) {
-                            accessGranted.visible = true;
-
-                            loadingBars[8].visible = false;
-
-                            this.time.delayedCall(2200, () => {
-                                if (username === "admin") {
-                                    this.sound.stopAll();
-                                    this.scene.start("LevelSelect", {
-                                        username: username,
-                                    });
-                                } else {
-                                    this.scene.start("IntroScene", {
-                                        username: username,
-                                    });
-                                }
-                            });
-
-                            return;
-                        }
-                    }
-
-                    this.time.delayedCall(100, () => {
-                        loadingBars[currentBarIndex - 1].visible = false;
-
-                        showNextLoadingBar();
-                    });
-                };
-
-                showNextLoadingBar();
-            }
-        };
 
         this.input.keyboard?.on("keydown", enterListener);
 

@@ -304,7 +304,8 @@ export default class LevelSelect extends Phaser.Scene {
         // Add pointer down event for 'Yes' option
         this.popupYesText
             .on("pointerdown", () => {
-                // Start the intro scene or any other action you want
+                this.closePopup();
+
                 this.scene.start("IntroScene", {
                     username: this.username,
                     lvl1: this.lvl1,
@@ -312,7 +313,6 @@ export default class LevelSelect extends Phaser.Scene {
                     lvl3: this.lvl3,
                     lvl4: this.lvl4,
                 });
-                this.closePopup();
             })
             .on("pointerover", () => {
                 this.yesHoverState();
