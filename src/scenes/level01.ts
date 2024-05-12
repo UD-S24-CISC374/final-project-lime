@@ -440,7 +440,7 @@ export default class Level1Scene extends Phaser.Scene {
             textNode.style.color = "gold";
         } else if (
             text.includes("Access Granted") ||
-            text.includes("Objective complete") ||
+            text.includes("Objective Complete") ||
             text.includes("surveillance_camera successfully removed")
         ) {
             textNode.style.color = "#86DC3D";

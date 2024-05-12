@@ -49,6 +49,12 @@ export default class LoadingScene2 extends Phaser.Scene {
         //display text
         this.displayNextLine();
 
+        this.add.text(460, 670, "[Enter] to continue", {
+            color: "#fff",
+            fontSize: "24px",
+            fontFamily: "Monospace",
+        });
+
         // On enter, transition to Level 1
         this.input.keyboard?.on("keydown-ENTER", () => {
             if (this.contentFullyDisplayed) {
@@ -95,12 +101,6 @@ export default class LoadingScene2 extends Phaser.Scene {
             " ",
             " ",
             "Only then will you be able to enter the 'laboratory'.",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            "                  [Enter] to Continue",
         ];
     }
 

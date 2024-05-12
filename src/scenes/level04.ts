@@ -53,7 +53,6 @@ export default class Level4Scene extends Phaser.Scene {
         this.objectiveCompleted = false;
         this.add.rectangle(640, 360, 1280, 720, 0x000);
 
-        this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
         this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
 
@@ -149,8 +148,6 @@ export default class Level4Scene extends Phaser.Scene {
         whiteSpace.style.marginTop = "350px";
         this.scroller.appendChild(whiteSpace);
 
-        this.appendToScroller("Alfred: Welcome back " + this.username + "!");
-
         // Add text input field
         this.inputField = document.createElement("input");
         this.inputField.type = "text";
@@ -183,7 +180,7 @@ export default class Level4Scene extends Phaser.Scene {
         // Create the text element
         this.textElement = document.createElement("div");
         this.textElement.textContent =
-            "Enter the 'control_room' and remove the 'surveillance_camera' so you can proceed into the next area.";
+            "Create a file named 'trap' in the 'office' directory Create a file named 'bomb' in the 'chamber' directory";
         this.textElement.style.color = "#fff"; // Text color
         this.textElement.style.fontSize = "20px"; // Font size
         this.textElement.style.fontFamily = "Monospace"; // Font family
@@ -438,7 +435,7 @@ export default class Level4Scene extends Phaser.Scene {
             textNode.style.color = "gold";
         } else if (
             text.includes("Access Granted") ||
-            text.includes("Objective complete") ||
+            text.includes("Objective Complete") ||
             text.includes("surveillance_camera successfully removed")
         ) {
             textNode.style.color = "#86DC3D";

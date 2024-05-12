@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 
-export default class LoadingScene4part2 extends Phaser.Scene {
+export default class LoadingScene4part4 extends Phaser.Scene {
     private content: string[]; // text to display
     private charDelay: number; // delay between characters
     private lineDelay: number; // delay between lines
@@ -17,7 +17,7 @@ export default class LoadingScene4part2 extends Phaser.Scene {
     private speaking: Phaser.Sound.BaseSound | undefined; // Sound object for speaking
 
     constructor() {
-        super({ key: "LoadingScene4part2" });
+        super({ key: "LoadingScene4part4" });
     }
 
     init(data: {
@@ -36,22 +36,19 @@ export default class LoadingScene4part2 extends Phaser.Scene {
     preload() {
         this.load.audio("Level1Music", ["assets/Audio/Level1Music.mp3"]);
         this.load.image("spyicon", "assets/Characters/SpyIcon.png");
-        this.load.image("cutscene2", "assets/Backgrounds/4Cutscene2.png");
     }
 
     create() {
-        this.cameras.main.fadeIn(200); // Fade in the next scene
-
         this.resetScene();
 
-        this.add.image(640, 360, "cutscene2").setDisplaySize(1280, 720);
-        this.add.image(250, 635, "spyicon").setDisplaySize(130, 130);
-        this.add.text(980, 670, "[Enter] to continue", {
+        this.add.rectangle(640, 360, 1280, 720, 0x000);
+        this.add.image(150, 100, "spyicon").setDisplaySize(130, 130);
+
+        this.add.text(460, 670, "[Enter] to Start Level 4", {
             color: "#fff",
-            fontSize: "20px",
+            fontSize: "24px",
             fontFamily: "Monospace",
         });
-
         // Display all content
         this.displayNextLine();
 
@@ -61,20 +58,13 @@ export default class LoadingScene4part2 extends Phaser.Scene {
                 if (this.speaking) {
                     this.speaking.stop(); // Stop speaking sound if it's playing
                 }
-                this.cameras.main.fadeOut(600, 0, 0, 0);
-
-                this.cameras.main.once(
-                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
-                    () => {
-                        this.scene.start("LoadingScene4part3", {
-                            username: this.username,
-                            lvl2: this.lvl2,
-                            lvl3: this.lvl3,
-                            lvl4: this.lvl4,
-                            lvl5: this.lvl5,
-                        });
-                    }
-                );
+                this.scene.start("Level04", {
+                    username: this.username,
+                    lvl2: this.lvl2,
+                    lvl3: this.lvl3,
+                    lvl4: this.lvl4,
+                    lvl5: this.lvl5,
+                });
             } else {
                 this.displayAllContent();
             }
@@ -83,13 +73,39 @@ export default class LoadingScene4part2 extends Phaser.Scene {
 
     resetScene() {
         // helper to reset intial values on load
-        this.charDelay = 80;
+        this.charDelay = 30;
         this.lineDelay = 120;
-        this.startX = 360;
-        this.startY = 630;
+        this.startX = 250;
+        this.startY = 90;
         this.lineIndex = 0;
         this.contentFullyDisplayed = false;
-        this.content = ["Alfred?... What is he doing with Namuh Yortsed?"];
+        this.content = [
+            "To rescue Alfred I'm going to need to use the 'touch' command.",
+            " ",
+
+            "'touch' will be used to create a new file.",
+            " ",
+            " ",
+            "Below is an example of creating a new file",
+            "named 'document' into the existing directory.",
+            " ",
+            " ",
+            " - touch document",
+            " ",
+            " ",
+            "This adds the 'document' file to the",
+            "directory that I am currently in.",
+            " ",
+            " ",
+            "In this mission I must: ",
+            " ",
+            "Create a file named 'trap' in the 'office' directory",
+            "Create a file named 'bomb' in the 'chamber' directory",
+            " ",
+            " ",
+            "The manual can be used to list instructions",
+            "on any previous commands used.",
+        ];
     }
     // Helper to display all content at once
     displayAllContent() {

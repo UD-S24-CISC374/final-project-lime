@@ -527,7 +527,7 @@ export default class Level03 extends Phaser.Scene {
             textNode.style.color = "gold";
         } else if (
             text.includes("Access Granted") ||
-            text.includes("Objective complete")
+            text.includes("Objective Complete")
         ) {
             textNode.style.color = "#86DC3D";
         } else if (text.includes("Access denied")) {

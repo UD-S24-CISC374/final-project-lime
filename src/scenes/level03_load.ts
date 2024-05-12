@@ -49,6 +49,12 @@ export default class LevelThreeIntro extends Phaser.Scene {
         //display text
         this.displayNextLine();
 
+        this.add.text(460, 670, "[Enter] to continue", {
+            color: "#fff",
+            fontSize: "24px",
+            fontFamily: "Monospace",
+        });
+
         // On enter, transition to Level 3
         this.input.keyboard?.on("keydown-ENTER", () => {
             if (this.contentFullyDisplayed) {
@@ -93,9 +99,6 @@ export default class LevelThreeIntro extends Phaser.Scene {
             " ",
             "Type in the correct code to access Yortsed Corp's facility.",
             "Time is of the essence, Agent. Good luck.",
-            " ",
-            " ",
-            "                  [Enter] to Continue",
         ];
     }
 
