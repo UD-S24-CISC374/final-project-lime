@@ -55,11 +55,13 @@ export default class LevelSelect extends Phaser.Scene {
 
     preload() {
         this.load.audio("menuMusic", ["assets/Audio/menuMusic.mp3"]);
+        this.load.image("sign", ["assets/LevelSelect/sign.png"]);
+        this.load.image("backdrop", ["assets/Backgrounds/Levelselect.png"]);
     }
 
     create() {
         this.platforms = this.physics.add.staticGroup();
-        this.cameras.main.setBackgroundColor("#E9E9E9");
+        this.cameras.main.setBackgroundColor("#332211");
 
         const groundWidth = this.scale.width;
         const groundX = this.scale.width / 2;
@@ -67,21 +69,33 @@ export default class LevelSelect extends Phaser.Scene {
 
         const ground = this.platforms.create(
             groundX,
-            568,
+            648,
             "ground"
         ) as Phaser.Physics.Arcade.Sprite;
 
         ground
-            .setScale(groundWidth / ground.width, 1)
+            .setScale(groundWidth / ground.width, 6)
             .refreshBody()
-            .setTint(808080);
-        const ground2 = this.platforms.create(groundX2, 568, "ground");
+            .setTint(0x000000);
+        const ground2 = this.platforms.create(groundX2, 648, "ground");
         ground2
-            .setScale(groundWidth / ground.width, 1)
+            .setScale(groundWidth / ground.width, 6)
             .refreshBody()
-            .setTint(808080);
+            .setTint(0x000000);
 
-        this.add.image(1175, 330, "arrow").setScale(0.5);
+        this.add.image(525, 373, "backdrop").setScale(0.535);
+        this.add.image(1483, 373, "backdrop").setScale(0.535);
+        this.add.image(2441, 373, "backdrop").setScale(0.535);
+        this.add.image(3399, 373, "backdrop").setScale(0.535);
+        this.add.image(4357, 373, "backdrop").setScale(0.535);
+
+        this.add.image(250, 230, "sign").setScale(0.9);
+
+        this.add.image(500, 410, "sign").setScale(0.3);
+        this.add.image(950, 410, "sign").setScale(0.3);
+        this.add.image(1400, 410, "sign").setScale(0.3);
+        this.add.image(1850, 410, "sign").setScale(0.3);
+        this.add.image(2300, 410, "sign").setScale(0.3);
 
         const walls = [{ x: -357 }, { x: 2555 }];
 
@@ -91,28 +105,15 @@ export default class LevelSelect extends Phaser.Scene {
                 .setOrigin(0, 0)
                 .setScale(1, this.scale.height)
                 .refreshBody()
-                .setTint(808080);
+                .setTint(0x000000);
         });
 
-        // Title Text
-
-        const title = this.add.text(475, 100, "Level Select", {
+        this.add.text(150, 160, "Move: ← →\n\nJump: ↑ \n\nEnter doors: ↑", {
             fontFamily: "Arial",
-            fontSize: 60,
+            fontSize: 25,
             color: "#000000",
         });
-        const directions = this.add.text(
-            475,
-            200,
-            "Move with ← →\n\nJump and enter doors with ↑",
-            {
-                fontFamily: "Arial",
-                fontSize: 40,
-                color: "#000000",
-            }
-        );
-        title.setStroke("#FFFF00", 6);
-        directions.setStroke("#FFFFFF", 6);
+
         const levelTextPositions = [
             { x: 490, level: "1" },
             { x: 940, level: "2" },
@@ -121,12 +122,12 @@ export default class LevelSelect extends Phaser.Scene {
             { x: 2290, level: "5" },
         ];
         levelTextPositions.forEach((pos) => {
-            const text = this.add.text(pos.x, 430, pos.level, {
+            const text = this.add.text(pos.x, 395, pos.level, {
                 fontFamily: "Arial",
                 fontSize: 24,
-                color: "#000000",
+                color: "#000",
             });
-            text.setStroke("#FFFF00", 6);
+            // text.setStroke("#000", 1);
         });
 
         // this.player = this.physics.add.sprite(250, 370, "spy");
@@ -143,7 +144,7 @@ export default class LevelSelect extends Phaser.Scene {
                 start: 7,
                 end: 0,
             }),
-            frameRate: 12,
+            frameRate: 18,
             repeat: -1,
         });
         this.anims.create({
@@ -182,7 +183,7 @@ export default class LevelSelect extends Phaser.Scene {
                 start: 10,
                 end: 17,
             }),
-            frameRate: 10,
+            frameRate: 18,
             repeat: -1,
         });
 
