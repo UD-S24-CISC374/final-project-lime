@@ -96,7 +96,7 @@ export default class Level4Scene extends Phaser.Scene {
         cdBack.set("hallway", "facility");
         cdBack.set("chamber", "hallway");
 
-        catMap.set("alfred.txt", "Read 'Namuh Yortsed' backwards..");
+        catMap.set("alfred_note.txt", "Read 'Namuh Yortsed' backwards..");
 
         manMap.set(
             "ls",
