@@ -75,7 +75,6 @@ export default class Level4Scene extends Phaser.Scene {
 
         const cdBack = new Map<string, string>();
         const manMap = new Map<string, string>();
-        const mvMap = new Map<string, string[]>();
 
         lsMap.set(
             "facility",
