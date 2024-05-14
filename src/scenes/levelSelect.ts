@@ -5,6 +5,7 @@ export default class LevelSelect extends Phaser.Scene {
     private player?: Phaser.Physics.Arcade.Sprite;
     private platforms?: Phaser.Physics.Arcade.StaticGroup;
     private doors?: Phaser.Physics.Arcade.StaticGroup;
+    private greenLights?: Phaser.Physics.Arcade.StaticGroup;
     private lvl1?: boolean = true;
     private lvl2?: boolean = false;
     private lvl3?: boolean = false;
@@ -51,6 +52,7 @@ export default class LevelSelect extends Phaser.Scene {
 
     preload() {
         this.load.audio("menuMusic", ["assets/Audio/menuMusic.mp3"]);
+        this.load.image("greenLight", "assets/LevelSelect/greenLight.png");
     }
 
     create() {
@@ -187,6 +189,7 @@ export default class LevelSelect extends Phaser.Scene {
 
         this.doors = this.physics.add.staticGroup();
         this.doors.setDepth(0);
+        this.greenLights = this.physics.add.staticGroup();
 
         const wallDoor = this.doors.create(
             48,
@@ -251,6 +254,18 @@ export default class LevelSelect extends Phaser.Scene {
                 scene: "",
             },
         ];
+        this.lights.enable().setAmbientColor(0x555555);
+
+        this.doorPositions.forEach((door) => {
+            if (door.Ustate) {
+                let lightSprite = this.add
+                    .sprite(door.x, 450, "greenLight")
+                    .setScale(0.1)
+                    .setDepth(0);
+                this.lights.addLight(door.x, 450, 300, 0x00ff00, 1);
+                lightSprite.setPipeline("Light2D");
+            }
+        });
     }
     update() {
         if (!this.cursors) {
@@ -269,6 +284,10 @@ export default class LevelSelect extends Phaser.Scene {
                 ) as Phaser.Physics.Arcade.Sprite;
                 closedDoor.setScale(0.25).refreshBody();
                 closedDoor.setVisible(true);
+                //add green light
+
+                // Optional: Add an effect to make the light 'glow'
+
                 const openDoor = this.doors?.create(
                     door.x,
                     507,
