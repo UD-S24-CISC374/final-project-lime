@@ -63,9 +63,8 @@ export default class LevelSelect extends Phaser.Scene {
         this.platforms = this.physics.add.staticGroup();
         this.cameras.main.setBackgroundColor("#332211");
 
-        const groundWidth = this.scale.width;
-        const groundX = this.scale.width / 2;
-        const groundX2 = groundWidth + groundWidth / 2;
+        const groundWidth = this.scale.width * 5;
+        const groundX = (this.scale.width * 5) / 2;
 
         const ground = this.platforms.create(
             groundX,
@@ -74,11 +73,6 @@ export default class LevelSelect extends Phaser.Scene {
         ) as Phaser.Physics.Arcade.Sprite;
 
         ground
-            .setScale(groundWidth / ground.width, 6)
-            .refreshBody()
-            .setTint(0x000000);
-        const ground2 = this.platforms.create(groundX2, 648, "ground");
-        ground2
             .setScale(groundWidth / ground.width, 6)
             .refreshBody()
             .setTint(0x000000);
@@ -91,13 +85,13 @@ export default class LevelSelect extends Phaser.Scene {
 
         this.add.image(250, 230, "sign").setScale(0.9);
 
-        this.add.image(500, 410, "sign").setScale(0.3);
-        this.add.image(950, 410, "sign").setScale(0.3);
-        this.add.image(1400, 410, "sign").setScale(0.3);
-        this.add.image(1850, 410, "sign").setScale(0.3);
-        this.add.image(2300, 410, "sign").setScale(0.3);
+        this.add.image(480, 410, "sign").setScale(0.3);
+        this.add.image(1440, 410, "sign").setScale(0.3);
+        this.add.image(2400, 410, "sign").setScale(0.3);
+        this.add.image(3360, 410, "sign").setScale(0.3);
+        this.add.image(4320, 410, "sign").setScale(0.3);
 
-        const walls = [{ x: -357 }, { x: 2555 }];
+        const walls = [{ x: -357 }, { x: 4555 }];
 
         walls.forEach((pos) => {
             this.platforms
@@ -115,11 +109,11 @@ export default class LevelSelect extends Phaser.Scene {
         });
 
         const levelTextPositions = [
-            { x: 490, level: "1" },
-            { x: 940, level: "2" },
-            { x: 1390, level: "3" },
-            { x: 1840, level: "4" },
-            { x: 2290, level: "5" },
+            { x: 470, level: "1" },
+            { x: 1430, level: "2" },
+            { x: 2390, level: "3" },
+            { x: 3350, level: "4" },
+            { x: 4310, level: "5" },
         ];
         levelTextPositions.forEach((pos) => {
             const text = this.add.text(pos.x, 395, pos.level, {
@@ -127,14 +121,13 @@ export default class LevelSelect extends Phaser.Scene {
                 fontSize: 24,
                 color: "#000",
             });
-            // text.setStroke("#000", 1);
         });
 
         // this.player = this.physics.add.sprite(250, 370, "spy");
         this.player = this.physics.add.sprite(250, 370, "dude").setScale(0.2);
         this.player.setCollideWorldBounds(false);
         this.player.setDepth(1);
-        this.cameras.main.setBounds(0, 0, 2595, this.scale.height);
+        this.cameras.main.setBounds(0, 0, 4595, this.scale.height);
 
         this.cameras.main.startFollow(this.player);
 
@@ -224,27 +217,27 @@ export default class LevelSelect extends Phaser.Scene {
 
         this.doorPositions = [
             {
-                x: 500,
+                x: 480,
                 Ustate: this.lvl1 || false,
                 scene: "LoadingScene1",
             },
             {
-                x: 950,
+                x: 1440,
                 Ustate: this.lvl2 || false,
                 scene: "LoadingScene2",
             },
             {
-                x: 1400,
+                x: 2400,
                 Ustate: this.lvl3 || false,
                 scene: "LoadingScene3",
             },
             {
-                x: 1850,
+                x: 3360,
                 Ustate: this.lvl4 || false,
                 scene: "LoadingScene4",
             },
             {
-                x: 2300,
+                x: 4320,
                 Ustate: this.lvl5 || false,
                 scene: "",
             },
