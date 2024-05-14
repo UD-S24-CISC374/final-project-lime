@@ -116,7 +116,7 @@ export default class LevelSelect extends Phaser.Scene {
             { x: 4310, level: "5" },
         ];
         levelTextPositions.forEach((pos) => {
-            const text = this.add.text(pos.x, 395, pos.level, {
+            this.add.text(pos.x, 395, pos.level, {
                 fontFamily: "Arial",
                 fontSize: 24,
                 color: "#000",
