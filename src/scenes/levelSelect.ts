@@ -239,7 +239,7 @@ export default class LevelSelect extends Phaser.Scene {
             {
                 x: 4320,
                 Ustate: this.lvl5 || false,
-                scene: "",
+                scene: "LoadingScene5",
             },
         ];
 

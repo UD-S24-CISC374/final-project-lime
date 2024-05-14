@@ -543,8 +543,8 @@ export default class Level4Scene extends Phaser.Scene {
             username: this.username,
             lvl2: true,
             lvl3: true,
-            lvl4: this.lvl4,
-            lvl5: this.lvl5,
+            lvl4: true,
+            lvl5: true,
         });
     }
 }
