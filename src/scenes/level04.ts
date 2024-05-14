@@ -13,12 +13,19 @@ export default class Level4Scene extends Phaser.Scene {
     private lvl4: boolean;
     private username: string;
     private lvl5: boolean;
-    private typing: boolean = true;
+    private trapComplete: boolean = false;
+    private bombComplete: boolean = false;
     private objectiveCompleted: boolean = false;
     private lastText: string[] = [""];
-    private manual: Manual;
     private lastPosition: number = -1;
+    private manual: Manual;
     private menuMusic: Phaser.Sound.BaseSound | undefined;
+    private endTime: number;
+    private time1: number;
+    private time2: number;
+    private time3: number;
+    private time4: number;
+    private time5: number;
 
     constructor() {
         super({ key: "Level04" });
@@ -36,18 +43,29 @@ export default class Level4Scene extends Phaser.Scene {
         lvl4: boolean;
 
         lvl5: boolean;
+
+        time1: number;
+
+        time2: number;
+
+        time3: number;
+
+        time4: number;
+
+        time5: number;
     }) {
         this.lvl2 = data.lvl2;
         this.lvl3 = data.lvl3;
         this.lvl4 = data.lvl4;
         this.username = data.username;
         this.lvl5 = data.lvl5;
+        this.time1 = data.time1;
+        this.time2 = data.time2;
+        this.time3 = data.time3;
+        this.time4 = data.time4;
+        this.time5 = data.time5;
     }
-    preload() {
-        this.load.image("ClosedBook", "../assets/LevelUI/ClosedBook.png");
-        this.load.image("HoveredBook", "../assets/LevelUI/HoveredBook.png");
-        this.load.image("OpenBook", "../assets/LevelUI/OpenBook.png");
-    }
+    preload() {}
 
     create() {
         this.objectiveCompleted = false;
@@ -56,7 +74,6 @@ export default class Level4Scene extends Phaser.Scene {
         this.add.image(220, 100, "alfredicon").setDisplaySize(130, 130);
         this.add.image(1050, 100, "pin").setDisplaySize(30, 40);
         this.add.image(150, 570, "bomb").setDisplaySize(150, 200);
-
         this.manual = new Manual(
             this,
             50,
@@ -69,46 +86,46 @@ export default class Level4Scene extends Phaser.Scene {
         let cdDing = this.sound.add("cdDing", { loop: false });
         let cdBackDing = this.sound.add("cdBackDing", { loop: false });
         let manDing = this.sound.add("manDing", { loop: false });
-        let rmDing = this.sound.add("rmDing", { loop: false });
         let winChime = this.sound.add("winChime", { loop: false });
 
-        let state: string = "home";
+        let state: string = "facility";
 
         const lsMap = new Map<string, string>();
         const cdMap = new Map<string, string[]>();
+        const catMap = new Map<string, string>();
+
         const cdBack = new Map<string, string>();
         const manMap = new Map<string, string>();
 
-        lsMap.set("home", "dir_break_room dir_closet dir_control_room");
         lsMap.set(
-            "break_room",
-            "dir_suitcase file_vending_machine file_chair file_table"
+            "facility",
+            "dir_office dir_hallway dir_storage_room file_alfred_note.txt"
         );
-        lsMap.set("closet", "dir_cardboard_box file_wires file_hazmat_suit");
-        lsMap.set(
-            "control_room",
-            "file_surveillance_camera file_monitor file_apple_juice"
-        );
-        lsMap.set(
-            "suitcase",
-            "file_namuhs_glasses file_batteries file_papers file_apple"
-        );
-        lsMap.set("cardboard_box", "file_papers");
+        lsMap.set("office", "");
+        lsMap.set("storage_room", "");
+        lsMap.set("hallway", "dir_chamber");
+        lsMap.set("chamber", "");
 
-        cdMap.set("home", ["break_room", "closet", "control_room"]);
-        cdMap.set("break_room", ["suitcase"]);
-        cdMap.set("closet", ["cardboard_box"]);
-        cdMap.set("control_room", [""]);
+        cdMap.set("facility", ["office", "hallway", "storage_room"]);
+        cdMap.set("office", []);
+        cdMap.set("storage_room", []);
+        cdMap.set("hallway", ["chamber"]);
+        cdMap.set("chamber", []);
 
-        cdBack.set("break_room", "home");
-        cdBack.set("closet", "home");
-        cdBack.set("control_room", "home");
-        cdBack.set("suitcase", "break_room");
-        cdBack.set("cardboard_box", "closet");
+        cdBack.set("office", "facility");
+        cdBack.set("storage_room", "facility");
+        cdBack.set("hallway", "facility");
+        cdBack.set("chamber", "hallway");
+
+        catMap.set("alfred_note.txt", "Read 'Namuh Yortsed' backwards..");
 
         manMap.set(
             "ls",
             "Alfred: Remember, the 'ls' command\nis useful for viewing your surroundings."
+        );
+        manMap.set(
+            "mv",
+            "Alfred: Remember, the 'mv' command\nis used to move a file into a new directory."
         );
         manMap.set(
             "rm",
@@ -152,6 +169,7 @@ export default class Level4Scene extends Phaser.Scene {
         this.appendToScroller("Alfred: Welcome back " + this.username + "!");
 
         // Add text input field
+        // Add text input field
         this.inputField = document.createElement("input");
         this.inputField.type = "text";
         this.inputField.style.position = "absolute";
@@ -183,7 +201,7 @@ export default class Level4Scene extends Phaser.Scene {
         // Create the text element
         this.textElement = document.createElement("div");
         this.textElement.textContent =
-            "Enter the 'control_room' and remove the 'surveillance_camera' so you can proceed into the next area.";
+            "Create a file named 'trap' in the 'office' directory. Create a file named 'bomb' in the 'chamber' directory.";
         this.textElement.style.color = "#fff"; // Text color
         this.textElement.style.fontSize = "20px"; // Font size
         this.textElement.style.fontFamily = "Monospace"; // Font family
@@ -201,51 +219,28 @@ export default class Level4Scene extends Phaser.Scene {
         this.inputField.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
                 this.lastPosition = -1;
-                const command = this.inputField.value.trim();
+                const command = this.inputField.value;
                 this.lastText.push(command.trim());
+
                 this.inputField.value = ""; // Clear the input field
                 if (command === "ls") {
                     lsDing.play();
-                    this.appendToScroller(
-                        this.username.toLowerCase().replace(/\s+/g, "_") +
-                            ": " +
-                            command
-                    );
+                    this.appendToScroller(this.username + ": " + command);
                     this.appendLsToScroller(lsMap.get(state) as string);
-                } else if (command.substring(0, 3) == "rm ") {
-                    const file = command.substring(3);
-                    if (
-                        state === "control_room" &&
-                        file === "surveillance_camera"
-                    ) {
+                } else if (command.substring(0, 4) == "cat ") {
+                    const file = command.substring(4);
+                    const fileContents = catMap.get(file);
+                    if (fileContents !== undefined) {
+                        lsDing.play();
                         this.appendToScroller(
                             this.username.toLowerCase().replace(/\s+/g, "_") +
                                 ": " +
                                 command
                         );
-
-                        rmDing.play();
-
-                        lsMap.set(
-                            "control_room",
-                            lsMap
-                                .get("control_room")
-                                ?.replace("surveillance_camera", "")
-                                .trim() || ""
-                        ); // Remove surveillance_camera from lsMap
-                        this.appendToScroller(
-                            "surveillance_camera successfully removed"
-                        );
-
-                        this.appendToScroller("Objective complete");
-                        this.objectiveCompleted = true;
-                        winChime.play();
-                        this.time.delayedCall(3000, this.loadLevel, [], this);
+                        this.appendToScroller(fileContents as string);
                     } else {
                         ding.play();
-                        this.appendToScroller(
-                            "'" + file + "'" + " cannot be removed or found."
-                        );
+                        this.appendToScroller("File " + file + " not found.");
                     }
                 } else if (
                     command.substring(0, 3) == "cd " &&
@@ -253,13 +248,10 @@ export default class Level4Scene extends Phaser.Scene {
                 ) {
                     const dir = command.substring(3);
                     const dirC = cdMap.get(dir);
+
                     if (dirC !== undefined) {
                         cdDing.play();
-                        this.appendToScroller(
-                            this.username.toLowerCase().replace(/\s+/g, "_") +
-                                ": " +
-                                command
-                        );
+                        this.appendToScroller(this.username + ": " + command);
                         state = command.substring(3);
                         this.stateText.setText(state);
                     } else {
@@ -270,13 +262,9 @@ export default class Level4Scene extends Phaser.Scene {
                     }
                 } else if (command.substring(0, 5) == "cd ..") {
                     const dir = cdBack.get(state);
-                    if (state !== "back_door" && dir) {
+                    if (state !== "facility" && dir) {
                         cdBackDing.play();
-                        this.appendToScroller(
-                            this.username.toLowerCase().replace(/\s+/g, "_") +
-                                ": " +
-                                command
-                        );
+                        this.appendToScroller(this.username + ": " + command);
                         this.stateText.setText(dir);
                         state = dir;
                     } else {
@@ -290,11 +278,7 @@ export default class Level4Scene extends Phaser.Scene {
                     const tip = manMap.get(manual);
                     if (tip !== undefined) {
                         manDing.play();
-                        this.appendToScroller(
-                            this.username.toLowerCase().replace(/\s+/g, "_") +
-                                ": " +
-                                command
-                        );
+                        this.appendToScroller(this.username + ": " + command);
                         this.appendToScroller(tip);
                     } else {
                         ding.play();
@@ -302,13 +286,70 @@ export default class Level4Scene extends Phaser.Scene {
                             "Command " + manual + " not found."
                         );
                     }
+                } else if (command.substring(0, 6) == "touch ") {
+                    const file = command.substring(6);
+                    const fileArr: string[] = file.split(" ");
+
+                    let touchFile = fileArr[0];
+                    let touchDir;
+                    if (fileArr.length > 1) {
+                        touchDir = fileArr[1];
+                    } else {
+                        touchDir = state;
+                    }
+
+                    this.appendToScroller(this.username + ": " + command);
+
+                    if (
+                        fileArr.length > 2 ||
+                        (fileArr.length == 2 &&
+                            !cdMap.get(state)?.includes(touchDir))
+                    ) {
+                        ding.play();
+                        this.appendToScroller("Invalid directory.");
+                    } else {
+                        const existingValue = lsMap.get(touchDir);
+                        const updatedValue =
+                            (existingValue ? existingValue + " " : "") +
+                            "file_" +
+                            touchFile;
+
+                        lsMap.set(touchDir, updatedValue.trim());
+
+                        lsDing.play();
+                        if (touchFile == "trap" && touchDir == "office") {
+                            this.trapComplete = true;
+                            this.appendToScroller(
+                                "Trap placed in office successfully."
+                            );
+                        }
+                        if (touchFile == "bomb" && touchDir == "chamber") {
+                            this.bombComplete = true;
+                            this.appendToScroller(
+                                "Bomb placed in chamber successfully."
+                            );
+                        }
+                        if (this.bombComplete && this.trapComplete) {
+                            this.time.delayedCall(
+                                1000,
+                                () => {
+                                    winChime.play();
+                                    this.appendToScroller(
+                                        "Objective Complete: Trap and bomb placed."
+                                    );
+
+                                    this.time.delayedCall(2000, () => {
+                                        this.loadLevel();
+                                    });
+                                },
+                                [],
+                                this
+                            );
+                        }
+                    }
                 } else {
                     ding.play();
-                    this.appendToScroller(
-                        this.username.toLowerCase().replace(/\s+/g, "_") +
-                            ": " +
-                            command
-                    );
+                    this.appendToScroller(this.username + ": " + command);
                     this.appendToScroller("Command not found.");
                 }
             }
@@ -353,10 +394,10 @@ export default class Level4Scene extends Phaser.Scene {
         });
 
         let time = 60;
+        this.time2 = 60;
         let lastUpdateTime = Date.now();
 
-        // Create the timer text
-        let timerText = this.add.text(109, 589, time.toFixed(2), {
+        this.timer = this.add.text(109, 589, time.toFixed(2), {
             fontSize: "30px",
             color: "red",
         });
@@ -368,17 +409,17 @@ export default class Level4Scene extends Phaser.Scene {
 
                 time -= elapsedTime / 1000; // Adjust time based on elapsed time in seconds
                 lastUpdateTime = currentTime; // Update the last update time
+                this.endTime = time;
 
                 if (time > 0) {
-                    timerText.setText(time.toFixed(2)); // Update the timer text
+                    this.timer.setText(time.toFixed(2)); // Update the timer text
                     this.time.delayedCall(10, updateTimer);
                 } else {
-                    timerText.setText("0.00");
+                    this.timer.setText("0.00");
+                    this.sound.stopAll();
                     this.scroller.style.display = "none";
                     this.textContainer.style.display = "none";
                     this.textElement.style.display = "none";
-                    this.sound.stopAll();
-
                     this.scene.start("SecurityBreachScene", {
                         username: this.username,
                         lvl2: this.lvl2,
@@ -390,8 +431,6 @@ export default class Level4Scene extends Phaser.Scene {
         };
 
         updateTimer();
-
-        this.events.on("shutdown", () => {});
 
         this.stateText = this.add.text(1075, 95, "pwd: " + state, {
             fontSize: "24px",
@@ -413,41 +452,45 @@ export default class Level4Scene extends Phaser.Scene {
         backArrow.on("pointerout", () => {
             backArrow.clearTint();
         });
-    }
 
+        document.addEventListener("mousedown", (event) => {
+            if (!this.inputField.contains(event.target as Node)) {
+                this.inputField.blur();
+            }
+        });
+        this.inputField.focus();
+    }
     removeInputField() {
         if (this.inputField.parentElement) {
             this.inputField.parentElement.removeChild(this.inputField);
         }
     }
-
     update() {}
 
     appendToScroller(text: string) {
         const textNode = document.createElement("text");
         const spaceNode = document.createElement("p");
         let spaces: string = "";
-        if (text.includes("Alfred: ")) {
+        if (text.includes("Alfred: ") || text.includes("successfully")) {
             textNode.style.color = "gold";
-        } else if (
-            text.includes("Access Granted") ||
-            text.includes("Objective complete") ||
-            text.includes("surveillance_camera successfully removed")
-        ) {
+        } else if (text.includes("Access Granted")) {
+            textNode.style.color = "#86DC3D";
+        } else if (text.includes("Objective Complete")) {
             textNode.style.color = "#86DC3D";
         } else if (
-            text.includes("cannot be removed or found.") ||
-            text.includes("not found") ||
-            text.includes("Cannot")
+            text.includes("Cannot") ||
+            text.includes("Access Denied") ||
+            text.includes("Invalid Directory") ||
+            text.includes("Command not found") ||
+            text.includes("not found")
         ) {
             textNode.style.color = "#d0413f";
-        } else {
-            textNode.style.color = "white";
         }
         textNode.style.fontFamily = "Monospace";
         textNode.style.fontSize = "24px";
         textNode.style.marginBottom = "-15px";
         textNode.style.paddingLeft = "15px";
+
         const desiredWidth = 41;
 
         const textLength = text.length;
@@ -476,21 +519,24 @@ export default class Level4Scene extends Phaser.Scene {
                 total += word.length + spaceLength;
                 const addNode = document.createElement("text");
                 addNode.textContent = word.substring(4) + spaces;
-                addNode.style.paddingLeft = "15px";
-
                 addNode.style.color = "#86DC3D";
                 addNode.style.fontFamily = "Monospace";
                 addNode.style.fontSize = "24px";
+                addNode.style.paddingLeft = "15px";
+
                 this.scroller.appendChild(addNode);
             } else if (word.substring(0, 5) === "file_") {
                 total += word.length + spaceLength;
                 const addNode = document.createElement("text");
                 addNode.textContent = word.substring(5) + spaces;
-                addNode.style.paddingLeft = "15px";
-
-                addNode.style.color = "#77C3EC";
+                if (word.substring(5) === "empty") {
+                    addNode.style.color = "white";
+                } else {
+                    addNode.style.color = "#77C3EC";
+                }
                 addNode.style.fontFamily = "Monospace";
                 addNode.style.fontSize = "24px";
+                addNode.style.paddingLeft = "15px";
 
                 this.scroller.appendChild(addNode);
             }
@@ -513,15 +559,20 @@ export default class Level4Scene extends Phaser.Scene {
             loop: true,
         });
         this.menuMusic.play();
+        this.scroller.style.display = "none";
         this.textContainer.style.display = "none";
         this.textElement.style.display = "none";
-        this.scroller.style.display = "none";
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: true,
-            lvl3: this.lvl3,
+            lvl3: true,
             lvl4: this.lvl4,
             lvl5: this.lvl5,
+            time1: this.time1,
+            time2: this.time2,
+            time3: this.time3,
+            time4: this.time4,
+            time5: this.time5,
         });
     }
 }

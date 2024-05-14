@@ -50,6 +50,12 @@ export default class LoadingScene1 extends Phaser.Scene {
         // Display all content
         this.displayNextLine();
 
+        this.add.text(460, 670, "[Enter] to start Level 1", {
+            color: "#fff",
+            fontSize: "24px",
+            fontFamily: "Monospace",
+        });
+
         // On enter, transition to Level 1 if content is fully displayed, otherwise, display next line
         this.input.keyboard?.on("keydown-ENTER", () => {
             if (this.contentFullyDisplayed) {
@@ -99,9 +105,6 @@ export default class LoadingScene1 extends Phaser.Scene {
             "assistance to reach the end of a mission.",
             " ",
             "Disable the camera to advance further into Yortsed Corp.",
-            " ",
-            " ",
-            "                  [Enter] to Continue",
         ];
     }
     // Helper to display all content at once

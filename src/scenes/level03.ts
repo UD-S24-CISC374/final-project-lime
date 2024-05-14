@@ -249,14 +249,11 @@ export default class Level03 extends Phaser.Scene {
                         winChime.play();
                         this.appendToScroller("Access Granted");
                         this.appendToScroller(
-                            "Objective Complete: Access Granted to "
+                            "Objective Complete: Access granted to electrical room"
                         );
 
                         this.time.delayedCall(2000, () => {
-                            this.scroller.style.display = "none";
-                            this.textContainer.style.display = "none";
-                            this.textElement.style.display = "none";
-                            this.scene.start("LevelSelect");
+                            this.loadLevel;
                         });
                     } else {
                         displayScreen.text = "";
@@ -504,6 +501,13 @@ export default class Level03 extends Phaser.Scene {
         backArrow.on("pointerout", () => {
             backArrow.clearTint();
         });
+
+        document.addEventListener("mousedown", (event) => {
+            if (!this.inputField.contains(event.target as Node)) {
+                this.inputField.blur();
+            }
+        });
+        this.inputField.focus();
     }
     removeInputField() {
         if (this.inputField.parentElement) {
@@ -520,7 +524,7 @@ export default class Level03 extends Phaser.Scene {
             textNode.style.color = "gold";
         } else if (
             text.includes("Access Granted") ||
-            text.includes("Objective complete")
+            text.includes("Objective Complete")
         ) {
             textNode.style.color = "#86DC3D";
         } else if (text.includes("Access denied")) {
@@ -602,8 +606,8 @@ export default class Level03 extends Phaser.Scene {
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: true,
-            lvl3: this.lvl3,
-            lvl4: this.lvl4,
+            lvl3: true,
+            lvl4: true,
             lvl5: this.lvl5,
         });
     }

@@ -11,6 +11,15 @@ export default class LevelSelect extends Phaser.Scene {
     private lvl3?: boolean = false;
     private lvl4?: boolean = false;
     private lvl5?: boolean = false;
+    private popupBackground: Phaser.GameObjects.Graphics;
+    private popupQuestion: Phaser.GameObjects.Text;
+    private popupNoText: Phaser.GameObjects.Text;
+    private popupYesText: Phaser.GameObjects.Text;
+    private time1?: number = NaN;
+    private time2?: number = NaN;
+    private time3?: number = NaN;
+    private time4?: number = NaN;
+    private time5?: number = NaN;
 
     private username: string;
     private lastDirection: string;
@@ -33,6 +42,11 @@ export default class LevelSelect extends Phaser.Scene {
         lvl3: boolean;
         lvl4: boolean;
         lvl5: boolean;
+        time1: number;
+        time2: number;
+        time3: number;
+        time4: number;
+        time5: number;
     }) {
         this.username = data.username;
 
@@ -41,47 +55,98 @@ export default class LevelSelect extends Phaser.Scene {
             this.lvl3 = true;
             this.lvl4 = true;
             this.lvl5 = true;
+            this.time1 = data.time1;
+            this.time2 = data.time2;
+            this.time3 = data.time3;
+            this.time4 = data.time4;
+            this.time5 = data.time5;
         } else {
             this.lvl2 = data.lvl2;
             this.lvl3 = data.lvl3;
             this.lvl4 = data.lvl4;
             this.lvl5 = data.lvl5;
+            this.time1 = data.time1;
+            this.time2 = data.time2;
+            this.time3 = data.time3;
+            this.time4 = data.time4;
+            this.time5 = data.time5;
         }
         this.lvl1 = true;
     }
 
     preload() {
         this.load.audio("menuMusic", ["assets/Audio/menuMusic.mp3"]);
-        this.load.image("greenLight", "assets/LevelSelect/greenLight.png");
+        this.load.image("sign", ["assets/LevelSelect/sign.png"]);
+        this.load.image("backdrop", ["assets/Backgrounds/Levelselect.png"]);
+        this.load.image("timer", ["assets/LevelSelect/timeBox.png"]);
     }
 
     create() {
         this.platforms = this.physics.add.staticGroup();
-        this.cameras.main.setBackgroundColor("#E9E9E9");
+        this.cameras.main.setBackgroundColor("#332211");
 
-        const groundWidth = this.scale.width;
-        const groundX = this.scale.width / 2;
-        const groundX2 = groundWidth + groundWidth / 2;
+        const groundWidth = this.scale.width * 5;
+        const groundX = (this.scale.width * 5) / 2;
 
         const ground = this.platforms.create(
             groundX,
-            568,
+            648,
             "ground"
         ) as Phaser.Physics.Arcade.Sprite;
 
         ground
-            .setScale(groundWidth / ground.width, 1)
+            .setScale(groundWidth / ground.width, 6)
             .refreshBody()
-            .setTint(808080);
-        const ground2 = this.platforms.create(groundX2, 568, "ground");
-        ground2
-            .setScale(groundWidth / ground.width, 1)
-            .refreshBody()
-            .setTint(808080);
+            .setTint(0x000000);
 
-        this.add.image(1175, 330, "arrow").setScale(0.5);
+        this.add.image(525, 373, "backdrop").setScale(0.535);
+        this.add.image(1483, 373, "backdrop").setScale(0.535);
+        this.add.image(2441, 373, "backdrop").setScale(0.535);
+        this.add.image(3399, 373, "backdrop").setScale(0.535);
+        this.add.image(4357, 373, "backdrop").setScale(0.535);
 
-        const walls = [{ x: -357 }, { x: 2555 }];
+        this.add.image(250, 230, "sign").setScale(0.9);
+        this.add.image(480, 440, "timer").setScale(0.3);
+        this.add.image(1440, 440, "timer").setScale(0.3);
+        this.add.image(2400, 440, "timer").setScale(0.3);
+        this.add.image(3360, 440, "timer").setScale(0.3);
+        this.add.image(4320, 440, "timer").setScale(0.3);
+
+        const timerText1 = {
+            font: "15px Impact", // Adjust the size and font as necessary
+            fill: "#ff0000", // Red text color
+        };
+        const timerText2 = {
+            font: "15px Impact",
+            fill: "#09ab03", //green text color
+        };
+        const levelText = {
+            fontFamily: "Impact",
+            fill: "#756b64",
+            fontSize: "40px",
+        };
+        let times = [
+            this.time1,
+            this.time2,
+            this.time3,
+            this.time4,
+            this.time5,
+        ];
+        let xPos = [480, 1440, 2400, 3360, 4320];
+        let ct = 0;
+        for (let time of times) {
+            this.add
+                .text(
+                    xPos[ct], // X position adjusted for centering, assuming text width around 200px
+                    440, // Y position just below the sign (sign height plus some margin)
+                    time ? String(time.toFixed(2)) : "0.00",
+                    time ? timerText2 : timerText1
+                )
+                .setOrigin(0.5, 0.25); // Centers the text horizontally relative to its position
+            ct++;
+        }
+
+        const walls = [{ x: -357 }, { x: 4555 }];
 
         walls.forEach((pos) => {
             this.platforms
@@ -89,49 +154,31 @@ export default class LevelSelect extends Phaser.Scene {
                 .setOrigin(0, 0)
                 .setScale(1, this.scale.height)
                 .refreshBody()
-                .setTint(808080);
+                .setTint(0x000000);
         });
 
-        // Title Text
-
-        const title = this.add.text(475, 100, "Level Select", {
+        this.add.text(150, 160, "Move: ← →\n\nJump: ↑ \n\nEnter doors: ↑", {
             fontFamily: "Arial",
-            fontSize: 60,
+            fontSize: 25,
             color: "#000000",
         });
-        const directions = this.add.text(
-            475,
-            200,
-            "Move with ← →\n\nJump and enter doors with ↑",
-            {
-                fontFamily: "Arial",
-                fontSize: 40,
-                color: "#000000",
-            }
-        );
-        title.setStroke("#FFFF00", 6);
-        directions.setStroke("#FFFFFF", 6);
+
         const levelTextPositions = [
-            { x: 490, level: "1" },
-            { x: 940, level: "2" },
-            { x: 1390, level: "3" },
-            { x: 1840, level: "4" },
-            { x: 2290, level: "5" },
+            { x: 470, level: "1" },
+            { x: 1430, level: "2" },
+            { x: 2390, level: "3" },
+            { x: 3350, level: "4" },
+            { x: 4310, level: "5" },
         ];
         levelTextPositions.forEach((pos) => {
-            const text = this.add.text(pos.x, 430, pos.level, {
-                fontFamily: "Arial",
-                fontSize: 24,
-                color: "#000000",
-            });
-            text.setStroke("#FFFF00", 6);
+            this.add.text(pos.x, 375, pos.level, levelText);
         });
 
         // this.player = this.physics.add.sprite(250, 370, "spy");
         this.player = this.physics.add.sprite(250, 370, "dude").setScale(0.2);
         this.player.setCollideWorldBounds(false);
         this.player.setDepth(1);
-        this.cameras.main.setBounds(0, 0, 2595, this.scale.height);
+        this.cameras.main.setBounds(0, 0, 4595, this.scale.height);
 
         this.cameras.main.startFollow(this.player);
 
@@ -141,7 +188,7 @@ export default class LevelSelect extends Phaser.Scene {
                 start: 7,
                 end: 0,
             }),
-            frameRate: 12,
+            frameRate: 18,
             repeat: -1,
         });
         this.anims.create({
@@ -180,7 +227,7 @@ export default class LevelSelect extends Phaser.Scene {
                 start: 10,
                 end: 17,
             }),
-            frameRate: 10,
+            frameRate: 18,
             repeat: -1,
         });
 
@@ -213,14 +260,7 @@ export default class LevelSelect extends Phaser.Scene {
                 wallDoor.setVisible(true);
                 backDoor.setVisible(false);
                 this.time.delayedCall(600, () => {
-                    console.log(this.username);
-                    this.scene.start("IntroScene", {
-                        username: this.username,
-                        lvl1: this.lvl1,
-                        lvl2: this.lvl2,
-                        lvl3: this.lvl3,
-                        lvl4: this.lvl4,
-                    });
+                    this.createPopup();
                 });
             });
         });
@@ -229,44 +269,160 @@ export default class LevelSelect extends Phaser.Scene {
 
         this.doorPositions = [
             {
-                x: 500,
+                x: 480,
                 Ustate: this.lvl1 || false,
                 scene: "LoadingScene1",
             },
             {
-                x: 950,
+                x: 1440,
                 Ustate: this.lvl2 || false,
                 scene: "LoadingScene2",
             },
             {
-                x: 1400,
+                x: 2400,
                 Ustate: this.lvl3 || false,
                 scene: "LoadingScene3",
             },
             {
-                x: 1850,
+                x: 3360,
                 Ustate: this.lvl4 || false,
                 scene: "LoadingScene4",
             },
             {
-                x: 2300,
+                x: 4320,
                 Ustate: this.lvl5 || false,
                 scene: "",
             },
         ];
-        this.lights.enable().setAmbientColor(0x555555);
 
-        this.doorPositions.forEach((door) => {
-            if (door.Ustate) {
-                let lightSprite = this.add
-                    .sprite(door.x, 450, "greenLight")
-                    .setScale(0.1)
-                    .setDepth(0);
-                this.lights.addLight(door.x, 450, 300, 0x00ff00, 1);
-                lightSprite.setPipeline("Light2D");
-            }
-        });
+        this.popupBackground = this.add.graphics();
+        this.popupBackground.fillStyle(0x000000, 0.7);
+        this.popupBackground.fillRect(330, 200, 600, 200);
+
+        // Add text for the question
+        this.popupQuestion = this.add
+            .text(635, 270, "Do you want to enter \nthe tutorial again?", {
+                fontSize: "30px",
+                color: "#ffffff",
+            })
+            .setOrigin(0.5);
+
+        // Add text for 'Yes' option
+        this.popupYesText = this.add
+            .text(550, 350, "Yes", {
+                fontSize: "30px",
+                color: "#000",
+                backgroundColor: "gold",
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 2,
+                    bottom: 2,
+                },
+            })
+            .setOrigin(0.5)
+            .on("pointerover", () => {
+                this.yesHoverState();
+            })
+            .on("pointerout", () => {
+                this.yesRestState();
+            });
+
+        // Add text for 'No' option
+        this.popupNoText = this.add
+            .text(700, 350, "No", {
+                fontSize: "30px",
+                color: "#000",
+                backgroundColor: "gold",
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 2,
+                    bottom: 2,
+                },
+            })
+            .setOrigin(0.5);
+
+        // Enable input on 'Yes' and 'No' text
+        this.popupYesText.setInteractive();
+        this.popupNoText.setInteractive();
+
+        // Add pointer down event for 'Yes' option
+        this.popupYesText
+            .on("pointerdown", () => {
+                this.closePopup();
+
+                this.scene.start("IntroScene", {
+                    username: this.username,
+                    lvl1: this.lvl1,
+                    lvl2: this.lvl2,
+                    lvl3: this.lvl3,
+                    lvl4: this.lvl4,
+                });
+            })
+            .on("pointerover", () => {
+                this.yesHoverState();
+            })
+            .on("pointerout", () => {
+                this.yesRestState();
+            });
+
+        // Add pointer down event for 'No' option
+        this.popupNoText
+            .setInteractive()
+            .on("pointerdown", () => {
+                this.player?.setVisible(true);
+                this.player?.setY(100);
+                this.player?.setX(200);
+                this.closePopup();
+            })
+            .on("pointerover", () => {
+                this.noHoverState();
+            })
+            .on("pointerout", () => {
+                this.noRestState();
+            });
+
+        this.popupBackground.setVisible(false);
+        this.popupQuestion.setVisible(false);
+        this.popupYesText.setVisible(false);
+        this.popupNoText.setVisible(false);
     }
+
+    createPopup() {
+        this.popupBackground.setVisible(true);
+        this.popupQuestion.setVisible(true);
+        this.popupYesText.setVisible(true);
+        this.popupNoText.setVisible(true);
+    }
+
+    closePopup() {
+        this.popupBackground.setVisible(false);
+        this.popupQuestion.setVisible(false);
+        this.popupYesText.setVisible(false);
+        this.popupNoText.setVisible(false);
+    }
+
+    noHoverState() {
+        this.popupNoText.setStyle({ fill: "#333" });
+        this.popupNoText.setStyle({ backgroundColor: "yellow" });
+    }
+
+    noRestState() {
+        this.popupNoText.setStyle({ backgroundColor: "gold" });
+        this.popupNoText.setStyle({ fill: "black" });
+    }
+
+    yesHoverState() {
+        this.popupYesText.setStyle({ fill: "#333" });
+        this.popupYesText.setStyle({ backgroundColor: "yellow" });
+    }
+
+    yesRestState() {
+        this.popupYesText.setStyle({ backgroundColor: "gold" });
+        this.popupYesText.setStyle({ fill: "black" });
+    }
+
     update() {
         if (!this.cursors) {
             return;

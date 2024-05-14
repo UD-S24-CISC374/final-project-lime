@@ -14,7 +14,6 @@ export default class LoadingScene4 extends Phaser.Scene {
     private lvl5: boolean;
     private username: string;
     private contentFullyDisplayed: boolean; // flag to track if content is fully displayed
-    private speaking: Phaser.Sound.BaseSound | undefined; // Sound object for speaking
 
     constructor() {
         super({ key: "LoadingScene4" });
@@ -34,7 +33,7 @@ export default class LoadingScene4 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.audio("Level1Music", ["assets/Audio/Level1Music.mp3"]);
+        this.load.audio("Level4Music", ["assets/Audio/Level4Music.mp3"]);
         this.load.image("alfredicon", "assets/LevelUI/AlfredIcon.png");
         this.load.image("cutscene", "assets/Backgrounds/4Cutscene1.png");
     }
@@ -42,7 +41,9 @@ export default class LoadingScene4 extends Phaser.Scene {
     create() {
         this.cameras.main.fadeIn(1000); // Fade in the next scene
 
-        let music = this.sound.add("Level1Music", { loop: true });
+        let music = this.sound.add("Level4Music", { loop: true });
+        music.setSeek(3);
+        music.setVolume(0.6);
         music.play();
 
         this.resetScene();
@@ -61,9 +62,6 @@ export default class LoadingScene4 extends Phaser.Scene {
         // On enter, transition to Level 1 if content is fully displayed, otherwise, display next line
         this.input.keyboard?.on("keydown-ENTER", () => {
             if (this.contentFullyDisplayed) {
-                if (this.speaking) {
-                    this.speaking.stop(); // Stop speaking sound if it's playing
-                }
                 // In the create method of your scene
 
                 this.cameras.main.fadeOut(300, 0, 0, 0);
@@ -90,7 +88,7 @@ export default class LoadingScene4 extends Phaser.Scene {
 
     resetScene() {
         // helper to reset intial values on load
-        this.charDelay = 30;
+        this.charDelay = 80;
         this.lineDelay = 120;
         this.startX = 440;
         this.startY = 630;
@@ -135,8 +133,6 @@ export default class LoadingScene4 extends Phaser.Scene {
 
     // Helper to animate text typing
     typeText(line: string) {
-        this.speaking = this.sound.add("speaking", { loop: false });
-        this.speaking.play();
         // split the line into characters
         const characters = line.split("");
         let i = 0;
@@ -147,8 +143,6 @@ export default class LoadingScene4 extends Phaser.Scene {
             callback: () => {
                 this.currentLine.text += characters[i++];
                 if (i === characters.length) {
-                    this.speaking?.stop();
-
                     // once all characters are added, add a delayed event to display the next line
                     this.time.delayedCall(
                         this.lineDelay,

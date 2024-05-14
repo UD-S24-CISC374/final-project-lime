@@ -19,6 +19,12 @@ export default class Level1Scene extends Phaser.Scene {
     private manual: Manual;
     private lastPosition: number = -1;
     private menuMusic: Phaser.Sound.BaseSound | undefined;
+    private endTime: number;
+    private time1: number;
+    private time2: number;
+    private time3: number;
+    private time4: number;
+    private time5: number;
 
     constructor() {
         super({ key: "Level01" });
@@ -36,12 +42,27 @@ export default class Level1Scene extends Phaser.Scene {
         lvl4: boolean;
 
         lvl5: boolean;
+
+        time1: number;
+
+        time2: number;
+
+        time3: number;
+
+        time4: number;
+
+        time5: number;
     }) {
         this.lvl2 = data.lvl2;
         this.lvl3 = data.lvl3;
         this.lvl4 = data.lvl4;
         this.username = data.username;
         this.lvl5 = data.lvl5;
+        this.time1 = data.time1;
+        this.time2 = data.time2;
+        this.time3 = data.time3;
+        this.time4 = data.time4;
+        this.time5 = data.time5;
     }
     preload() {
         this.load.image("ClosedBook", "../assets/LevelUI/ClosedBook.png");
@@ -355,6 +376,7 @@ export default class Level1Scene extends Phaser.Scene {
         });
 
         let time = 60;
+        this.time1 = 60;
         let lastUpdateTime = Date.now();
 
         // Create the timer text
@@ -370,6 +392,7 @@ export default class Level1Scene extends Phaser.Scene {
 
                 time -= elapsedTime / 1000; // Adjust time based on elapsed time in seconds
                 lastUpdateTime = currentTime; // Update the last update time
+                this.endTime = time;
 
                 if (time > 0) {
                     timerText.setText(time.toFixed(2)); // Update the timer text
@@ -415,6 +438,13 @@ export default class Level1Scene extends Phaser.Scene {
         backArrow.on("pointerout", () => {
             backArrow.clearTint();
         });
+
+        document.addEventListener("mousedown", (event) => {
+            if (!this.inputField.contains(event.target as Node)) {
+                this.inputField.blur();
+            }
+        });
+        this.inputField.focus();
     }
 
     removeInputField() {
@@ -433,7 +463,7 @@ export default class Level1Scene extends Phaser.Scene {
             textNode.style.color = "gold";
         } else if (
             text.includes("Access Granted") ||
-            text.includes("Objective complete") ||
+            text.includes("Objective Complete") ||
             text.includes("surveillance_camera successfully removed")
         ) {
             textNode.style.color = "#86DC3D";
@@ -511,6 +541,7 @@ export default class Level1Scene extends Phaser.Scene {
     loadLevel() {
         this.removeInputField();
         this.sound.stopAll();
+        this.time1 = this.time1 - this.endTime;
         this.menuMusic = this.sound.add("menuMusic", {
             loop: true,
         });
@@ -524,6 +555,11 @@ export default class Level1Scene extends Phaser.Scene {
             lvl3: this.lvl3,
             lvl4: this.lvl4,
             lvl5: this.lvl5,
+            time1: this.time1,
+            time2: this.time2,
+            time3: this.time3,
+            time4: this.time4,
+            time5: this.time5,
         });
     }
 }

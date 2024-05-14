@@ -214,7 +214,7 @@ export default class Level2Scene extends Phaser.Scene {
                         winChime.play();
                         this.appendToScroller(this.username + ": " + command);
                         this.appendToScroller(
-                            "Objective complete: Laboratory access granted. Good work, " +
+                            "Objective Complete: Laboratory access granted. Good work, " +
                                 this.username +
                                 "!"
                         );
@@ -344,6 +344,8 @@ export default class Level2Scene extends Phaser.Scene {
                         }
                     } else {
                         ding.play();
+                        this.appendToScroller(this.username + ": " + command);
+
                         this.appendToScroller("Cannot move or invalid file.");
                     }
                 } else {
@@ -449,6 +451,13 @@ export default class Level2Scene extends Phaser.Scene {
         backArrow.on("pointerout", () => {
             backArrow.clearTint();
         });
+
+        document.addEventListener("mousedown", (event) => {
+            if (!this.inputField.contains(event.target as Node)) {
+                this.inputField.blur();
+            }
+        });
+        this.inputField.focus();
     }
     removeInputField() {
         if (this.inputField.parentElement) {
@@ -466,7 +475,7 @@ export default class Level2Scene extends Phaser.Scene {
         } else if (text.includes("Access Granted")) {
             textNode.style.color = "#86DC3D";
         } else if (
-            text.includes("Objective complete") ||
+            text.includes("Objective Complete") ||
             text.includes("successfully")
         ) {
             textNode.style.color = "#86DC3D";

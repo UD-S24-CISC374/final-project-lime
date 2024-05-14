@@ -42,15 +42,12 @@ export default class LoadingScene4part3 extends Phaser.Scene {
     create() {
         this.cameras.main.fadeIn(200); // Fade in the next scene
 
-        let music = this.sound.add("Level1Music", { loop: true });
-        music.play();
-
         this.resetScene();
 
         this.add.image(640, 360, "cutscene3").setDisplaySize(1280, 720);
         this.add.image(250, 635, "spyicon").setDisplaySize(130, 130);
 
-        this.add.text(940, 670, "[Enter] to start Level 4", {
+        this.add.text(940, 670, "[Enter] to continue", {
             color: "#fff",
             fontSize: "20px",
             fontFamily: "Monospace",
@@ -65,7 +62,7 @@ export default class LoadingScene4part3 extends Phaser.Scene {
                 if (this.speaking) {
                     this.speaking.stop(); // Stop speaking sound if it's playing
                 }
-                this.scene.start("Level04", {
+                this.scene.start("LoadingScene4part4", {
                     username: this.username,
                     lvl2: this.lvl2,
                     lvl3: this.lvl3,
@@ -80,7 +77,7 @@ export default class LoadingScene4part3 extends Phaser.Scene {
 
     resetScene() {
         // helper to reset intial values on load
-        this.charDelay = 30;
+        this.charDelay = 80;
         this.lineDelay = 120;
         this.startX = 360;
         this.startY = 630;

@@ -45,6 +45,11 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
         //display text
         this.displayNextLine();
 
+        this.add.text(460, 670, "[Enter] to start Level 3", {
+            color: "#fff",
+            fontSize: "24px",
+            fontFamily: "Monospace",
+        });
         // On enter, transition to Level 1
         this.input.keyboard?.on("keydown-ENTER", () => {
             if (this.contentFullyDisplayed) {
@@ -95,8 +100,6 @@ export default class LevelThreeIntro2 extends Phaser.Scene {
 
             " ",
             "Good luck " + this.username.toLowerCase() + ".",
-            " ",
-            "                  [Enter] to Continue",
         ];
     }
 
