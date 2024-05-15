@@ -27,7 +27,10 @@ Keyboard to Type
 
 # Gameplay Video
 
-TEXT GOES HERE
+<video width="640" height="480" controls>
+  <source src="https://drive.google.com/uc?export=download&id=120nLjexkjQGDwh_3VhxRBaEudeolIu-i" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 # Educational Game Design Document
 
