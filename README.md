@@ -31,7 +31,7 @@ TEXT GOES HERE
 
 # Educational Game Design Document
 
-Link to our [egdd](Educational Game Design Document)
+Link to our [egdd](https://github.com/UD-S24-CISC374/final-project-lime/blob/main/docs/egdd.md)
 
 # Credits
 
