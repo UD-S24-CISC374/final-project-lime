@@ -590,6 +590,7 @@ export default class Level4Scene extends Phaser.Scene {
             time3: this.time3,
             time4: this.time4,
             time5: this.time5,
+
         });
     }
 }
