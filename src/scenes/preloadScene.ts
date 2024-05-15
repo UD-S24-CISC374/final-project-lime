@@ -16,7 +16,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image("pin", "assets/LevelUI/pin.png");
         this.load.image("ground", "assets/Platform.png");
         this.load.image("prompt", "assets/LevelUI/PromptBox.png");
-        this.load.image("backArrow", "../assets/backArrow.png");
+        this.load.image("backArrow", "assets/backArrow.png");
 
         this.load.image(
             "closed_metal_door",
