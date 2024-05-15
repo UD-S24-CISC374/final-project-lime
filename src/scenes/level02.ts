@@ -20,6 +20,13 @@ export default class Level2Scene extends Phaser.Scene {
     private lastPosition: number = -1;
     private manual: Manual;
     private menuMusic: Phaser.Sound.BaseSound | undefined;
+    private endTime: number;
+    private time1: number;
+    private time2: number;
+    private time3: number;
+    private time4: number;
+    private time5: number;
+    private bestTime: number;
 
     constructor() {
         super({ key: "Level02" });
@@ -37,12 +44,28 @@ export default class Level2Scene extends Phaser.Scene {
         lvl4: boolean;
 
         lvl5: boolean;
+
+        time1: number;
+
+        time2: number;
+
+        time3: number;
+
+        time4: number;
+
+        time5: number;
     }) {
         this.lvl2 = data.lvl2;
         this.lvl3 = data.lvl3;
         this.lvl4 = data.lvl4;
         this.username = data.username;
         this.lvl5 = data.lvl5;
+        this.time1 = data.time1;
+        this.time2 = data.time2;
+        this.time3 = data.time3;
+        this.time4 = data.time4;
+        this.time5 = data.time5;
+        this.bestTime = data.time2;
     }
     preload() {}
 
@@ -395,6 +418,7 @@ export default class Level2Scene extends Phaser.Scene {
         });
 
         let time = 60;
+        this.time2 = 60;
         let lastUpdateTime = Date.now();
 
         this.timer = this.add.text(109, 589, time.toFixed(2), {
@@ -409,6 +433,7 @@ export default class Level2Scene extends Phaser.Scene {
 
                 time -= elapsedTime / 1000; // Adjust time based on elapsed time in seconds
                 lastUpdateTime = currentTime; // Update the last update time
+                this.endTime = time;
 
                 if (time > 0) {
                     this.timer.setText(time.toFixed(2)); // Update the timer text
@@ -416,6 +441,7 @@ export default class Level2Scene extends Phaser.Scene {
                 } else {
                     this.timer.setText("0.00");
                     this.sound.stopAll();
+
                     this.scroller.style.display = "none";
                     this.textContainer.style.display = "none";
                     this.textElement.style.display = "none";
@@ -424,6 +450,11 @@ export default class Level2Scene extends Phaser.Scene {
                         lvl2: this.lvl2,
                         lvl3: this.lvl3,
                         lvl4: this.lvl4,
+                        time1: this.time1,
+                        time2: this.time2,
+                        time3: this.time3,
+                        time4: this.time4,
+                        time5: this.time5,
                     });
                 }
             }
@@ -560,6 +591,16 @@ export default class Level2Scene extends Phaser.Scene {
             loop: true,
         });
         this.menuMusic.play();
+        if (this.objectiveCompleted) {
+            let finalTime = this.time2 - this.endTime;
+            if (!this.bestTime || finalTime < this.bestTime) {
+                this.time2 = finalTime;
+            } else {
+                this.time2 = this.bestTime;
+            }
+        } else {
+            this.time2 = this.bestTime;
+        }
         this.scroller.style.display = "none";
         this.textContainer.style.display = "none";
         this.textElement.style.display = "none";
@@ -569,6 +610,11 @@ export default class Level2Scene extends Phaser.Scene {
             lvl3: true,
             lvl4: this.lvl4,
             lvl5: this.lvl5,
+            time1: this.time1,
+            time2: this.time2,
+            time3: this.time3,
+            time4: this.time4,
+            time5: this.time5,
         });
     }
 }

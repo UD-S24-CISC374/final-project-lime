@@ -20,11 +20,11 @@ export default class TitleScene extends Phaser.Scene {
         menuMusic.play();
         // menuMusic.setSeek(10);
         const cityBackground1 = this.add
-            .tileSprite(0, -110, 0, 0, "cityBackground")
+            .tileSprite(0, -128, 0, 0, "cityBackground")
             .setOrigin(0, 0);
 
         const cityBackground2 = this.add
-            .tileSprite(cityBackground1.width, -110, 0, 0, "cityBackground")
+            .tileSprite(cityBackground1.width, -128, 0, 0, "cityBackground")
             .setOrigin(0, 0);
 
         // Animate city backgrounds to move from right to left infinitely
@@ -52,10 +52,9 @@ export default class TitleScene extends Phaser.Scene {
                 this.enterButtonRestState();
             });
 
-        this.clickButton.setStroke("#000000", 6);
-
         this.input.keyboard?.once("keydown-ENTER", () => {
             this.scene.start("LoginScene");
+            // this.scene.start("LoginScene");
         });
     }
 

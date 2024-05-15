@@ -17,22 +17,14 @@ export default class LevelTemplate extends Phaser.Scene {
     private manualText: string;
     private promptText: string;
     private timer: Phaser.GameObjects.Text;
-    private lastPosition: number = -1;
-    private lsFlag: boolean = true;
-    private cdFlag: boolean = true;
-    private rmFlag: boolean = true;
-    private manFlag: boolean = false;
-    private catFlag: boolean = false;
-    private lsMap = new Map<string, string>();
-    private cdMap = new Map<string, string[]>();
-    private cdBack = new Map<string, string>();
-    private manMap = new Map<string, string>();
-    private rmMap = new Map<string, string[]>();
-    private mvMap = new Map<string, string[]>();
-    private catMap = new Map<string, string>();
-
-    // private commands: Command[];
+    private menuMusic: Phaser.Sound.BaseSound | undefined;
     private timeLimit: number;
+    private endTime: number;
+    private time1: number;
+    private time2: number;
+    private time3: number;
+    private time4: number;
+    private time5: number;
 
     constructor(levelKey: string) {
         super({ key: levelKey });
@@ -49,61 +41,43 @@ export default class LevelTemplate extends Phaser.Scene {
         lvl4: boolean;
 
         lvl5: boolean;
+
+        time1: number;
+
+        time2: number;
+
+        time3: number;
+
+        time4: number;
+
+        time5: number;
     }) {
         this.lvl2 = data.lvl2;
         this.lvl3 = data.lvl3;
         this.lvl4 = data.lvl4;
         this.username = data.username;
         this.lvl5 = data.lvl5;
+        this.time1 = data.time1;
+        this.time2 = data.time2;
+        this.time3 = data.time3;
+        this.time4 = data.time4;
+        this.time5 = data.time5;
     }
     preload() {
         // load images
-        this.load.image("ClosedBook", "../assets/LevelUI/ClosedBook.png");
-        this.load.image("HoveredBook", "../assets/LevelUI/HoveredBook.png");
-        this.load.image("OpenBook", "../assets/LevelUI/OpenBook.png");
-        this.load.image("alfredicon", "assets/LevelUI/AlfredIcon.png");
-        this.load.image("pin", "assets/LevelUI/pin.png");
-        this.load.image("prompt", "assets/LevelUI/PromptBox.png");
-        this.load.image("bomb", "assets/LevelUI/bomb.png");
+        this.load.image("ClosedBook", "../assets/ClosedBook.png");
+        this.load.image("HoveredBook", "../assets/HoveredBook.png");
+        this.load.image("OpenBook", "../assets/OpenBook.png");
+        this.load.image("alfredicon", "assets/AlfredIcon.png");
+        this.load.image("pin", "assets/pin.png");
+        this.load.image("prompt", "assets/PromptBox.png");
+        this.load.image("bomb", "assets/bomb.png");
         // load audio elements
-        this.load.audio("ding", ["assets/Audio/ding.mp3"]);
-        this.load.audio("cdDing", ["assets/Audio/cdDing.mp3"]);
-        this.load.audio("lsDing", ["assets/Audio/lsDing.mp3"]);
-        this.load.audio("cdBackDing", ["assets/Audio/cdBackDing.mp3"]);
-        this.load.audio("manDing", ["assets/Audio/manDing.mp3"]);
-    }
-    setLsFlag(flag: boolean) {
-        this.lsFlag = flag;
-    }
-    setCdFlag(flag: boolean) {
-        this.cdFlag = flag;
-    }
-    setRmFlag(flag: boolean) {
-        this.rmFlag = flag;
-    }
-    setManFlag(flag: boolean) {
-        this.manFlag = flag;
-    }
-    setCatFlag(flag: boolean) {
-        this.catFlag = flag;
-    }
-    setLsMap(map: Map<string, string>) {
-        this.lsMap = map;
-    }
-    setCdMap(map: Map<string, string[]>) {
-        this.cdMap = map;
-    }
-    setCdBack(map: Map<string, string>) {
-        this.cdBack = map;
-    }
-    setManMap(map: Map<string, string>) {
-        this.manMap = map;
-    }
-    setRmMap(map: Map<string, string[]>) {
-        this.rmMap = map;
-    }
-    setMvMap(map: Map<string, string[]>) {
-        this.mvMap = map;
+        this.load.audio("ding", ["assets/ding.mp3"]);
+        this.load.audio("cdDing", ["assets/cdDing.mp3"]);
+        this.load.audio("lsDing", ["assets/lsDing.mp3"]);
+        this.load.audio("cdBackDing", ["assets/cdBackDing.mp3"]);
+        this.load.audio("manDing", ["assets/manDing.mp3"]);
     }
     setLastText(text: string) {
         this.lastText.push(text);
@@ -113,160 +87,6 @@ export default class LevelTemplate extends Phaser.Scene {
     }
     setPromptText(text: string) {
         this.promptText = text;
-    }
-
-    handleCommand(event: KeyboardEvent) {
-        let ding = this.sound.add("ding", { loop: false });
-        let lsDing = this.sound.add("lsDing", { loop: false });
-        let cdDing = this.sound.add("cdDing", { loop: false });
-        let cdBackDing = this.sound.add("cdBackDing", { loop: false });
-        let manDing = this.sound.add("manDing", { loop: false });
-
-        let state: string = "home";
-
-        if (event.key === "Enter") {
-            this.lastPosition = -1;
-            const newText = this.inputField.value;
-            if (newText.trim() !== "") {
-                if (newText.trim() == "ls") {
-                    lsDing.play();
-                    this.inputField.value = ""; // Empty the input field
-                    this.addTextToContainer(
-                        this.username.toLowerCase().replace(/\s+/g, "_") +
-                            ": " +
-                            newText
-                    );
-                    this.addLsToContainer(this.lsMap.get(state) as string);
-                } else if (newText.substring(0, 4) == "cat ") {
-                    let catInput: string = newText.substring(4);
-                    const catState = this.catMap.get(catInput);
-                    if (catState !== undefined) {
-                        lsDing.play();
-                        this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer("agent09: " + newText);
-                        this.addTextToContainer(catState);
-                    } else {
-                        ding.play();
-                        this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer("agent09: " + newText);
-                        this.addTextToContainer(
-                            "File '" + catInput + "' not found"
-                        );
-                    }
-                } else if (newText.substring(0, 3) == "cd ") {
-                    let cdInput: string = newText.substring(3, newText.length);
-                    // CD .. FUNCTIONALITY BELOW
-                    const backState = this.cdBack.get(state);
-                    const cdState = this.cdMap.get(state);
-                    if (backState !== undefined && cdInput == "..") {
-                        cdBackDing.play();
-
-                        state = backState;
-                        this.stateText.setText(state);
-                        this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer("agent09: " + newText);
-                    }
-                    // CD FUNCTIONALITY BELOW
-                    else if (
-                        cdState !== undefined &&
-                        this.cdMap.get(state)?.includes(cdInput)
-                    ) {
-                        cdDing.play();
-
-                        state = newText.substring(3);
-                        this.stateText.setText(state);
-                        this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer("agent09: " + newText);
-                    }
-                    // CD DIRECTORY NOT FOUND BELOW
-                    else {
-                        ding.play();
-
-                        this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer("agent09: " + newText);
-                        this.addTextToContainer("Directory not found");
-                    }
-                    // MAN INPUT BELOW
-                } else if (newText.substring(0, 4) == "man ") {
-                    let manInput: string = newText.substring(4);
-
-                    const manState = this.manMap.get(manInput);
-                    if (manState !== undefined) {
-                        manDing.play();
-                        this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer("agent09: " + newText);
-                        this.addTextToContainer(
-                            this.manMap.get(manInput) as string
-                        );
-                    } else {
-                        ding.play();
-
-                        this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer("agent09: " + newText);
-                        this.addTextToContainer(
-                            "Command '" + manInput + "' not found"
-                        );
-                    }
-                }
-                // NONSENSE INPUT BELOW
-                else {
-                    ding.play();
-                    this.inputField.value = ""; // Empty the input field
-                    this.addTextToContainer("agent09: " + newText);
-                    this.addTextToContainer(
-                        "Command '" + newText + "' not found"
-                    );
-                }
-            }
-        }
-        if (event.key === "ArrowUp") {
-            let index = this.lastText.length + this.lastPosition;
-            if (index > 0) {
-                this.inputField.value = this.lastText[index];
-                this.lastPosition -= 1;
-            }
-        }
-        if (event.key === "ArrowDown") {
-            let index = this.lastText.length + this.lastPosition;
-            if (index < this.lastText.length - 2) {
-                this.inputField.value = this.lastText[index + 2];
-                this.lastPosition += 1;
-            }
-        }
-    }
-
-    addLsToContainer(text: string) {
-        const words = text.split(" ");
-
-        const numNewlines = words.length;
-
-        this.inputContainer.y -= numNewlines * 24.7;
-
-        for (let word of words) {
-            if (word.substring(0, 5) === "file_") {
-                let newWord = word.substring(5);
-                const newText = this.add.text(0, 0, newWord, {
-                    fontSize: "24px",
-                    color: "#77C3EC",
-                });
-                this.inputContainer.add(newText);
-            } else if (word.substring(0, 4) === "dir_") {
-                let newWord = word.substring(4);
-                const newText = this.add.text(0, 0, newWord, {
-                    fontSize: "24px",
-                    color: "#86DC3D",
-                });
-                this.inputContainer.add(newText);
-            } else {
-                const newText = this.add.text(0, 0, word, {
-                    fontSize: "24px",
-                    color: "#fff",
-                });
-                this.inputContainer.add(newText);
-            }
-
-            this.repositionTextObjects();
-        }
     }
 
     addTextToContainer(text: string) {
@@ -327,8 +147,6 @@ export default class LevelTemplate extends Phaser.Scene {
 
         this.inputContainer.setMask(mask);
 
-        this.addTextToContainer("Alfred: Welcome back " + this.username + "!");
-
         // Add text input field
         this.inputField = document.createElement("input");
         this.inputField.type = "text";
@@ -351,15 +169,11 @@ export default class LevelTemplate extends Phaser.Scene {
             fontSize: "22px",
             fontFamily: "Monospace",
         });
-        this.input.keyboard?.removeCapture(
-            Phaser.Input.Keyboard.KeyCodes.SPACE
-        );
-
-        this.input.keyboard?.on("keydown", this.handleCommand, this);
 
         let lastUpdateTime = Date.now();
+        this.endTime = this.timeLimit;
 
-        this.timer = this.add.text(109, 589, this.timeLimit.toFixed(2), {
+        this.timer = this.add.text(109, 589, this.endTime.toFixed(2), {
             fontSize: "30px",
             color: "red",
         });
@@ -369,7 +183,7 @@ export default class LevelTemplate extends Phaser.Scene {
                 const currentTime = Date.now();
                 const elapsedTime = currentTime - lastUpdateTime;
 
-                this.timeLimit -= elapsedTime / 1000; // Adjust time based on elapsed time in seconds
+                this.endTime -= elapsedTime / 1000; // Adjust time based on elapsed time in seconds
                 lastUpdateTime = currentTime; // Update the last update time
 
                 if (this.timeLimit > 0) {
@@ -388,5 +202,31 @@ export default class LevelTemplate extends Phaser.Scene {
         };
 
         updateTimer();
+    }
+    removeInputField() {
+        if (this.inputField.parentElement) {
+            this.inputField.parentElement.removeChild(this.inputField);
+        }
+    }
+    loadLevel() {
+        this.removeInputField();
+        this.sound.stopAll();
+        this.time1 = this.time1 - this.endTime;
+        this.menuMusic = this.sound.add("menuMusic", {
+            loop: true,
+        });
+        this.menuMusic.play();
+        this.scene.start("LevelSelect", {
+            username: this.username,
+            lvl2: true,
+            lvl3: this.lvl3,
+            lvl4: this.lvl4,
+            lvl5: this.lvl5,
+            time1: this.time1,
+            time2: this.time2,
+            time3: this.time3,
+            time4: this.time4,
+            time5: this.time5,
+        });
     }
 }

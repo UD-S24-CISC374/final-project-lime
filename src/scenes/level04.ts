@@ -20,6 +20,13 @@ export default class Level4Scene extends Phaser.Scene {
     private lastPosition: number = -1;
     private manual: Manual;
     private menuMusic: Phaser.Sound.BaseSound | undefined;
+    private endTime: number;
+    private time1: number;
+    private time2: number;
+    private time3: number;
+    private time4: number;
+    private time5: number;
+    private bestTime: number;
 
     constructor() {
         super({ key: "Level04" });
@@ -37,12 +44,28 @@ export default class Level4Scene extends Phaser.Scene {
         lvl4: boolean;
 
         lvl5: boolean;
+
+        time1: number;
+
+        time2: number;
+
+        time3: number;
+
+        time4: number;
+
+        time5: number;
     }) {
         this.lvl2 = data.lvl2;
         this.lvl3 = data.lvl3;
         this.lvl4 = data.lvl4;
         this.username = data.username;
         this.lvl5 = data.lvl5;
+        this.time1 = data.time1;
+        this.time2 = data.time2;
+        this.time3 = data.time3;
+        this.time4 = data.time4;
+        this.time5 = data.time5;
+        this.bestTime = data.time4;
     }
     preload() {}
 
@@ -316,6 +339,7 @@ export default class Level4Scene extends Phaser.Scene {
                                     this.appendToScroller(
                                         "Objective Complete: Trap and bomb placed."
                                     );
+                                    this.objectiveCompleted = true;
 
                                     this.time.delayedCall(2000, () => {
                                         this.loadLevel();
@@ -373,6 +397,7 @@ export default class Level4Scene extends Phaser.Scene {
         });
 
         let time = 60;
+        this.time4 = 60;
         let lastUpdateTime = Date.now();
 
         this.timer = this.add.text(109, 589, time.toFixed(2), {
@@ -387,6 +412,7 @@ export default class Level4Scene extends Phaser.Scene {
 
                 time -= elapsedTime / 1000; // Adjust time based on elapsed time in seconds
                 lastUpdateTime = currentTime; // Update the last update time
+                this.endTime = time;
 
                 if (time > 0) {
                     this.timer.setText(time.toFixed(2)); // Update the timer text
@@ -532,6 +558,20 @@ export default class Level4Scene extends Phaser.Scene {
     loadLevel() {
         this.removeInputField();
         this.sound.stopAll();
+        console.log("Time4: " + this.time4);
+        console.log("Best Time: " + this.bestTime);
+        console.log("Objective Completed: " + this.objectiveCompleted);
+        console.log("End Time: " + this.endTime);
+        if (this.objectiveCompleted) {
+            let finalTime = this.time4 - this.endTime;
+            if (!this.bestTime || finalTime < this.bestTime) {
+                this.time4 = finalTime;
+            } else {
+                this.time4 = this.bestTime;
+            }
+        } else {
+            this.time4 = this.bestTime;
+        }
         this.menuMusic = this.sound.add("menuMusic", {
             loop: true,
         });
@@ -543,8 +583,14 @@ export default class Level4Scene extends Phaser.Scene {
             username: this.username,
             lvl2: true,
             lvl3: true,
-            lvl4: true,
-            lvl5: true,
+            lvl4: this.lvl4,
+            lvl5: this.lvl5,
+            time1: this.time1,
+            time2: this.time2,
+            time3: this.time3,
+            time4: this.time4,
+            time5: this.time5,
+
         });
     }
 }

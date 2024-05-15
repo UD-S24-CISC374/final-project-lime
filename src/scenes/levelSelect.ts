@@ -5,6 +5,7 @@ export default class LevelSelect extends Phaser.Scene {
     private player?: Phaser.Physics.Arcade.Sprite;
     private platforms?: Phaser.Physics.Arcade.StaticGroup;
     private doors?: Phaser.Physics.Arcade.StaticGroup;
+    private greenLights?: Phaser.Physics.Arcade.StaticGroup;
     private lvl1?: boolean = true;
     private lvl2?: boolean = false;
     private lvl3?: boolean = false;
@@ -14,6 +15,11 @@ export default class LevelSelect extends Phaser.Scene {
     private popupQuestion: Phaser.GameObjects.Text;
     private popupNoText: Phaser.GameObjects.Text;
     private popupYesText: Phaser.GameObjects.Text;
+    private time1?: number = NaN;
+    private time2?: number = NaN;
+    private time3?: number = NaN;
+    private time4?: number = NaN;
+    private time5?: number = NaN;
 
     private username: string;
     private lastDirection: string;
@@ -36,6 +42,11 @@ export default class LevelSelect extends Phaser.Scene {
         lvl3: boolean;
         lvl4: boolean;
         lvl5: boolean;
+        time1: number;
+        time2: number;
+        time3: number;
+        time4: number;
+        time5: number;
     }) {
         this.username = data.username;
 
@@ -44,11 +55,23 @@ export default class LevelSelect extends Phaser.Scene {
             this.lvl3 = true;
             this.lvl4 = true;
             this.lvl5 = true;
+            this.time1 = data.time1;
+            this.time2 = data.time2;
+            this.time3 = data.time3;
+            this.time4 = data.time4;
+            this.time5 = data.time5;
+            console.log("time1 lobby: " + this.time1);
         } else {
             this.lvl2 = data.lvl2;
             this.lvl3 = data.lvl3;
             this.lvl4 = data.lvl4;
             this.lvl5 = data.lvl5;
+            this.time1 = data.time1;
+            this.time2 = data.time2;
+            this.time3 = data.time3;
+            this.time4 = data.time4;
+            this.time5 = data.time5;
+            console.log(this.time1);
         }
         this.lvl1 = true;
     }
@@ -57,6 +80,7 @@ export default class LevelSelect extends Phaser.Scene {
         this.load.audio("menuMusic", ["assets/Audio/menuMusic.mp3"]);
         this.load.image("sign", ["assets/LevelSelect/sign.png"]);
         this.load.image("backdrop", ["assets/Backgrounds/Levelselect.png"]);
+        this.load.image("timer", ["assets/LevelSelect/timeBox.png"]);
     }
 
     create() {
@@ -84,12 +108,45 @@ export default class LevelSelect extends Phaser.Scene {
         this.add.image(4357, 373, "backdrop").setScale(0.535);
 
         this.add.image(250, 230, "sign").setScale(0.9);
+        this.add.image(480, 440, "timer").setScale(0.35);
+        this.add.image(1440, 440, "timer").setScale(0.35);
+        this.add.image(2400, 440, "timer").setScale(0.35);
+        this.add.image(3360, 440, "timer").setScale(0.35);
+        this.add.image(4320, 440, "timer").setScale(0.35);
 
-        this.add.image(480, 410, "sign").setScale(0.3);
-        this.add.image(1440, 410, "sign").setScale(0.3);
-        this.add.image(2400, 410, "sign").setScale(0.3);
-        this.add.image(3360, 410, "sign").setScale(0.3);
-        this.add.image(4320, 410, "sign").setScale(0.3);
+        const timerText1 = {
+            font: "15px Impact", // Adjust the size and font as necessary
+            fill: "#ab1703", // Red text color
+        };
+        const timerText2 = {
+            font: "15px Impact",
+            fill: "#09ab03", //green text color
+        };
+        const levelText = {
+            fontFamily: "Impact",
+            fill: "#756b64",
+            fontSize: "40px",
+        };
+        let times = [
+            this.time1,
+            this.time2,
+            this.time3,
+            this.time4,
+            this.time5,
+        ];
+        let xPos = [480, 1440, 2400, 3360, 4320];
+        let ct = 0;
+        for (let time of times) {
+            this.add
+                .text(
+                    xPos[ct], // X position adjusted for centering, assuming text width around 200px
+                    440, // Y position just below the sign (sign height plus some margin)
+                    time ? String(time.toFixed(2)) : "0.00",
+                    time ? timerText2 : timerText1
+                )
+                .setOrigin(0.5, 0.3); // Centers the text horizontally relative to its position
+            ct++;
+        }
 
         const walls = [{ x: -357 }, { x: 4555 }];
 
@@ -116,11 +173,7 @@ export default class LevelSelect extends Phaser.Scene {
             { x: 4310, level: "5" },
         ];
         levelTextPositions.forEach((pos) => {
-            this.add.text(pos.x, 395, pos.level, {
-                fontFamily: "Arial",
-                fontSize: 24,
-                color: "#000",
-            });
+            this.add.text(pos.x, 375, pos.level, levelText);
         });
 
         // this.player = this.physics.add.sprite(250, 370, "spy");
@@ -185,6 +238,7 @@ export default class LevelSelect extends Phaser.Scene {
 
         this.doors = this.physics.add.staticGroup();
         this.doors.setDepth(0);
+        this.greenLights = this.physics.add.staticGroup();
 
         const wallDoor = this.doors.create(
             48,
@@ -306,6 +360,12 @@ export default class LevelSelect extends Phaser.Scene {
                     lvl2: this.lvl2,
                     lvl3: this.lvl3,
                     lvl4: this.lvl4,
+                    lvl5: this.lvl5,
+                    time1: this.time1,
+                    time2: this.time2,
+                    time3: this.time3,
+                    time4: this.time4,
+                    time5: this.time5,
                 });
             })
             .on("pointerover", () => {
@@ -388,6 +448,10 @@ export default class LevelSelect extends Phaser.Scene {
                 ) as Phaser.Physics.Arcade.Sprite;
                 closedDoor.setScale(0.25).refreshBody();
                 closedDoor.setVisible(true);
+                //add green light
+
+                // Optional: Add an effect to make the light 'glow'
+
                 const openDoor = this.doors?.create(
                     door.x,
                     507,
@@ -417,13 +481,18 @@ export default class LevelSelect extends Phaser.Scene {
                             onComplete: () => {
                                 this.time.delayedCall(1000, () => {
                                     this.sound.stopAll();
-
+                                    console.log("time1 now: " + this.time1);
                                     this.scene.start(door.scene, {
                                         username: this.username,
                                         lvl2: this.lvl2,
                                         lvl3: this.lvl3,
                                         lvl4: this.lvl4,
                                         lvl5: this.lvl5,
+                                        time1: this.time1,
+                                        time2: this.time2,
+                                        time3: this.time3,
+                                        time4: this.time4,
+                                        time5: this.time5,
                                     });
                                 });
                             },
