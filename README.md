@@ -28,7 +28,7 @@ Keyboard to Type
 # Gameplay Video
 
 <video width="640" height="480" controls>
-  <source src="https://drive.google.com/uc?export=download&id=120nLjexkjQGDwh_3VhxRBaEudeolIu-i" type="video/mp4">
+  <source src="https://drive.google.com/file/d/120nLjexkjQGDwh_3VhxRBaEudeolIu-i/view?usp=drive_link" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
