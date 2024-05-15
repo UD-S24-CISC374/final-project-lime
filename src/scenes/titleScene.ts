@@ -40,6 +40,8 @@ export default class TitleScene extends Phaser.Scene {
                 color: "#fff",
                 fontSize: "25px",
                 fontFamily: "Monospace",
+                stroke: "#000", // Set stroke color to black
+                strokeThickness: 5,
             })
             .setInteractive()
             .on("pointerdown", () => {
@@ -54,7 +56,6 @@ export default class TitleScene extends Phaser.Scene {
 
         this.input.keyboard?.once("keydown-ENTER", () => {
             this.scene.start("LoginScene");
-            // this.scene.start("LoginScene");
         });
     }
 
