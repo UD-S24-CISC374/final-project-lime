@@ -52,7 +52,7 @@ After playing Cyber Spy, students should be able to traverse the terminal using 
 
 ## Prerequisite Knowledge
 
-- Players should know how to type a minimum of 30 wpm
+- Players should know how to type a minimum of 20 wpm
 - Players should know that commands can cause their computer to perform actions
 
 ## Assessment Measures
