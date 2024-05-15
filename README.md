@@ -18,6 +18,7 @@ Cyber Spy is an educational puzzle game introducing players to the intricacies o
 # Basic Instructions
 
 Arrow Keys to Move
+
 Keyboard to Type
 
 # Screenshot
@@ -34,4 +35,7 @@ Link to our [egdd](Educational Game Design Document)
 
 # Credits
 
-TEXT GOES HERE
+*![8Bit Maker](https://make8bitart.com/)
+*![Game Music No Copyright Channel](https://www.youtube.com/@Pixverses)
+*![Level 4 Music](https://www.youtube.com/watch?v=MIppc7zfqis&list=PLO4jlmGoc6uAy9S9J3SPXv-UrHBm9Bgz9&index=2)
+
