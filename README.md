@@ -28,7 +28,7 @@ Keyboard to Type
 
 # Gameplay Video
 
-<iframe width="560" height="315" src="https://youtu.be/embed/Zo90xJLjoSc" frameborder="0" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/watch?v=Zo90xJLjoSc" frameborder="0" allowfullscreen></iframe>
 
 # Educational Game Design Document
 
