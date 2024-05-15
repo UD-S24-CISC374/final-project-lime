@@ -5,11 +5,12 @@ Cyber Spy
 # Team Color
 
 Lime
+
 # Developers
 
-* Nicholas Lago (nlago@udel.edu)
-* John Henry Cooper (jhcoop@udel.edu)
-* Alex Maneri (amaneri@udel.edu)
+-   Nicholas Lago (nlago@udel.edu)
+-   John Henry Cooper (jhcoop@udel.edu)
+-   Alex Maneri (amaneri@udel.edu)
 
 # Blurb
 
@@ -18,20 +19,26 @@ Cyber Spy is an educational puzzle game introducing players to the intricacies o
 # Basic Instructions
 
 Arrow Keys to Move
+
 Keyboard to Type
 
 # Screenshot
 
-TEXT GOES HERE
+![Gameplay Image](/docs/large.png)
 
 # Gameplay Video
 
-TEXT GOES HERE
+<iframe width="560" height="315" src="https://www.youtube.com/embed/watch?v=Zo90xJLjoSc" frameborder="0" allowfullscreen></iframe>
 
 # Educational Game Design Document
 
-Link to our [egdd](Educational Game Design Document)
+Link to our [egdd](docs/egdd.md)
 
 # Credits
 
-TEXT GOES HERE
+-   Sprites Created By us in make8bitart & Pixilart
+-   [make8bitart](https://make8bitart.com/)
+-   [Pixilart](https://www.pixilart.com/)
+-   [Game Music No Copyright Channel](https://www.youtube.com/@Pixverses)
+-   [Level 4 Music](https://www.youtube.com/watch?v=MIppc7zfqis&list=PLO4jlmGoc6uAy9S9J3SPXv-UrHBm9Bgz9&index=2)
+-   [ChatGPT](https://chatgpt.com/)
