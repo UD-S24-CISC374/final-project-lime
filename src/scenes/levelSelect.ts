@@ -60,6 +60,7 @@ export default class LevelSelect extends Phaser.Scene {
             this.time3 = data.time3;
             this.time4 = data.time4;
             this.time5 = data.time5;
+            console.log("time1 lobby: " + this.time1);
         } else {
             this.lvl2 = data.lvl2;
             this.lvl3 = data.lvl3;
@@ -70,6 +71,7 @@ export default class LevelSelect extends Phaser.Scene {
             this.time3 = data.time3;
             this.time4 = data.time4;
             this.time5 = data.time5;
+            console.log(this.time1);
         }
         this.lvl1 = true;
     }
@@ -106,15 +108,15 @@ export default class LevelSelect extends Phaser.Scene {
         this.add.image(4357, 373, "backdrop").setScale(0.535);
 
         this.add.image(250, 230, "sign").setScale(0.9);
-        this.add.image(480, 440, "timer").setScale(0.3);
-        this.add.image(1440, 440, "timer").setScale(0.3);
-        this.add.image(2400, 440, "timer").setScale(0.3);
-        this.add.image(3360, 440, "timer").setScale(0.3);
-        this.add.image(4320, 440, "timer").setScale(0.3);
+        this.add.image(480, 440, "timer").setScale(0.35);
+        this.add.image(1440, 440, "timer").setScale(0.35);
+        this.add.image(2400, 440, "timer").setScale(0.35);
+        this.add.image(3360, 440, "timer").setScale(0.35);
+        this.add.image(4320, 440, "timer").setScale(0.35);
 
         const timerText1 = {
             font: "15px Impact", // Adjust the size and font as necessary
-            fill: "#ff0000", // Red text color
+            fill: "#ab1703", // Red text color
         };
         const timerText2 = {
             font: "15px Impact",
@@ -142,7 +144,7 @@ export default class LevelSelect extends Phaser.Scene {
                     time ? String(time.toFixed(2)) : "0.00",
                     time ? timerText2 : timerText1
                 )
-                .setOrigin(0.5, 0.25); // Centers the text horizontally relative to its position
+                .setOrigin(0.5, 0.3); // Centers the text horizontally relative to its position
             ct++;
         }
 
@@ -358,6 +360,12 @@ export default class LevelSelect extends Phaser.Scene {
                     lvl2: this.lvl2,
                     lvl3: this.lvl3,
                     lvl4: this.lvl4,
+                    lvl5: this.lvl5,
+                    time1: this.time1,
+                    time2: this.time2,
+                    time3: this.time3,
+                    time4: this.time4,
+                    time5: this.time5,
                 });
             })
             .on("pointerover", () => {
@@ -473,13 +481,18 @@ export default class LevelSelect extends Phaser.Scene {
                             onComplete: () => {
                                 this.time.delayedCall(1000, () => {
                                     this.sound.stopAll();
-
+                                    console.log("time1 now: " + this.time1);
                                     this.scene.start(door.scene, {
                                         username: this.username,
                                         lvl2: this.lvl2,
                                         lvl3: this.lvl3,
                                         lvl4: this.lvl4,
                                         lvl5: this.lvl5,
+                                        time1: this.time1,
+                                        time2: this.time2,
+                                        time3: this.time3,
+                                        time4: this.time4,
+                                        time5: this.time5,
                                     });
                                 });
                             },

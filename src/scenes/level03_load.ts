@@ -12,6 +12,11 @@ export default class LevelThreeIntro extends Phaser.Scene {
     private lvl3: boolean;
     private lvl4: boolean;
     private lvl5: boolean;
+    private time1: number;
+    private time2: number;
+    private time3: number;
+    private time4: number;
+    private time5: number;
     private username: string;
     private contentFullyDisplayed: boolean; // flag to track if content is fully displayed
     private speaking: Phaser.Sound.BaseSound | undefined; // Sound object for speaking
@@ -25,13 +30,22 @@ export default class LevelThreeIntro extends Phaser.Scene {
         lvl2: boolean;
         lvl3: true;
         lvl4: boolean;
+        time1: number;
+        time2: number;
+        time3: number;
+        time4: number;
+        time5: number;
     }) {
         this.lvl2 = data.lvl2;
         this.lvl3 = data.lvl3;
         this.lvl4 = data.lvl4;
         this.username = data.username;
+        this.time1 = data.time1;
+        this.time2 = data.time2;
+        this.time3 = data.time3;
+        this.time4 = data.time4;
+        this.time5 = data.time5;
     }
-
     preload() {
         this.load.audio("Level3Music", ["assets/Audio/Level3Music.mp3"]);
 
@@ -67,6 +81,11 @@ export default class LevelThreeIntro extends Phaser.Scene {
                     lvl3: this.lvl3,
                     lvl4: this.lvl4,
                     lvl5: this.lvl5,
+                    time1: this.time1,
+                    time2: this.time2,
+                    time3: this.time3,
+                    time4: this.time4,
+                    time5: this.time5,
                 });
             } else {
                 this.displayAllContent();

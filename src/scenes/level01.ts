@@ -25,7 +25,7 @@ export default class Level1Scene extends Phaser.Scene {
     private time3: number;
     private time4: number;
     private time5: number;
-
+    private bestTime: number;
     constructor() {
         super({ key: "Level01" });
     }
@@ -63,6 +63,7 @@ export default class Level1Scene extends Phaser.Scene {
         this.time3 = data.time3;
         this.time4 = data.time4;
         this.time5 = data.time5;
+        this.bestTime = data.time1;
     }
     preload() {
         this.load.image("ClosedBook", "../assets/LevelUI/ClosedBook.png");
@@ -541,7 +542,16 @@ export default class Level1Scene extends Phaser.Scene {
     loadLevel() {
         this.removeInputField();
         this.sound.stopAll();
-        this.time1 = this.time1 - this.endTime;
+        if (this.objectiveCompleted) {
+            let finalTime = this.time1 - this.endTime;
+            if (!this.bestTime || finalTime < this.bestTime) {
+                this.time1 = finalTime;
+            } else {
+                this.time1 = this.bestTime;
+            }
+        } else {
+            this.time1 = this.bestTime;
+        }
         this.menuMusic = this.sound.add("menuMusic", {
             loop: true,
         });
@@ -551,7 +561,7 @@ export default class Level1Scene extends Phaser.Scene {
         this.scroller.style.display = "none";
         this.scene.start("LevelSelect", {
             username: this.username,
-            lvl2: true,
+            lvl2: this.objectiveCompleted,
             lvl3: this.lvl3,
             lvl4: this.lvl4,
             lvl5: this.lvl5,

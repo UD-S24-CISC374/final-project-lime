@@ -26,6 +26,7 @@ export default class Level4Scene extends Phaser.Scene {
     private time3: number;
     private time4: number;
     private time5: number;
+    private bestTime: number;
 
     constructor() {
         super({ key: "Level04" });
@@ -64,6 +65,7 @@ export default class Level4Scene extends Phaser.Scene {
         this.time3 = data.time3;
         this.time4 = data.time4;
         this.time5 = data.time5;
+        this.bestTime = data.time4;
     }
     preload() {}
 
@@ -337,6 +339,7 @@ export default class Level4Scene extends Phaser.Scene {
                                     this.appendToScroller(
                                         "Objective Complete: Trap and bomb placed."
                                     );
+                                    this.objectiveCompleted = true;
 
                                     this.time.delayedCall(2000, () => {
                                         this.loadLevel();
@@ -394,7 +397,7 @@ export default class Level4Scene extends Phaser.Scene {
         });
 
         let time = 60;
-        this.time2 = 60;
+        this.time4 = 60;
         let lastUpdateTime = Date.now();
 
         this.timer = this.add.text(109, 589, time.toFixed(2), {
@@ -555,6 +558,20 @@ export default class Level4Scene extends Phaser.Scene {
     loadLevel() {
         this.removeInputField();
         this.sound.stopAll();
+        console.log("Time4: " + this.time4);
+        console.log("Best Time: " + this.bestTime);
+        console.log("Objective Completed: " + this.objectiveCompleted);
+        console.log("End Time: " + this.endTime);
+        if (this.objectiveCompleted) {
+            let finalTime = this.time4 - this.endTime;
+            if (!this.bestTime || finalTime < this.bestTime) {
+                this.time4 = finalTime;
+            } else {
+                this.time4 = this.bestTime;
+            }
+        } else {
+            this.time4 = this.bestTime;
+        }
         this.menuMusic = this.sound.add("menuMusic", {
             loop: true,
         });
