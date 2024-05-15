@@ -13,7 +13,7 @@ Lime
 
 # Blurb
 
-TEXT GOES HERE
+Cyber Spy is an educational puzzle game introducing players to the intricacies of navigating in the terminal. Cyber Spy will teach players basic bash commands in a time based environment, challenging them to improve their skills. The story follows a hacker spy and his companion Alfred, through several missions to dethrone a corrupt organization. Whether its finding hidden passcodes or removing a dangerous file created by the opposition, players can always rely on utilizing commands to get the mission done. Players should be able to traverse through the terminal efficiently with the knowledge gained after completing this game.
 
 # Basic Instructions
 
