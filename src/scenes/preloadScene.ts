@@ -20,7 +20,7 @@ export default class PreloadScene extends Phaser.Scene {
 
         this.load.image(
             "closed_metal_door",
-            "assets/LevelSelect/closed_metal_door.png"
+            "assets/LevelSelect/closedDoor.png"
         );
         this.load.image("lockedDoor", "assets/LevelSelect/lockedDoor.png");
         this.load.image("arrow", "assets/LevelSelect/arrow.png");
@@ -29,10 +29,7 @@ export default class PreloadScene extends Phaser.Scene {
             "assets/LevelSelect/backwardsDoor.png"
         );
         this.load.image("wallDoor", "assets/LevelSelect/wallDoor.png");
-        this.load.image(
-            "open_metal_door",
-            "assets/LevelSelect/open_metal_door.png"
-        );
+        this.load.image("open_metal_door", "assets/LevelSelect/openDoor.png");
         this.load.image("bomb", "assets/LevelUI/bomb.png");
         this.load.image("screen", "assets/Backgrounds/screen.png");
         this.load.spritesheet("dude", "assets/Characters/dude.png", {
