@@ -15,7 +15,6 @@ export default class LoadingScene5part4 extends Phaser.Scene {
     private time1: number;
     private time2: number;
     private time3: number;
-
     private time4: number;
     private time5: number;
     private username: string;

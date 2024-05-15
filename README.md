@@ -5,11 +5,12 @@ Cyber Spy
 # Team Color
 
 Lime
+
 # Developers
 
-* Nicholas Lago (nlago@udel.edu)
-* John Henry Cooper (jhcoop@udel.edu)
-* Alex Maneri (amaneri@udel.edu)
+-   Nicholas Lago (nlago@udel.edu)
+-   John Henry Cooper (jhcoop@udel.edu)
+-   Alex Maneri (amaneri@udel.edu)
 
 # Blurb
 
@@ -23,25 +24,24 @@ Keyboard to Type
 
 # Screenshot
 
-![Gameplay Image](https://github.com/UD-S24-CISC374/final-project-lime/blob/main/docs/large.png)
+![Gameplay Image](/docs/large.png)
 
 # Gameplay Video
 
-<video width="640" height="480" controls>
-  <source src="https://drive.google.com/file/d/120nLjexkjQGDwh_3VhxRBaEudeolIu-i/view?usp=drive_link" type="video/mp4">
+<video width="600" controls>
+  <source src="docs/CyberSpyDemo.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
 # Educational Game Design Document
 
-Link to our [egdd](https://github.com/UD-S24-CISC374/final-project-lime/blob/main/docs/egdd.md)
+Link to our [egdd](docs/egdd.md)
 
 # Credits
 
-* Sprites Created By us in make8bitart & Pixilart
-* [make8bitart](https://make8bitart.com/)
-* [Pixilart](https://www.pixilart.com/)
-* [Game Music No Copyright Channel](https://www.youtube.com/@Pixverses)
-* [Level 4 Music](https://www.youtube.com/watch?v=MIppc7zfqis&list=PLO4jlmGoc6uAy9S9J3SPXv-UrHBm9Bgz9&index=2)
-* [ChatGPT](https://chatgpt.com/)
-
+-   Sprites Created By us in make8bitart & Pixilart
+-   [make8bitart](https://make8bitart.com/)
+-   [Pixilart](https://www.pixilart.com/)
+-   [Game Music No Copyright Channel](https://www.youtube.com/@Pixverses)
+-   [Level 4 Music](https://www.youtube.com/watch?v=MIppc7zfqis&list=PLO4jlmGoc6uAy9S9J3SPXv-UrHBm9Bgz9&index=2)
+-   [ChatGPT](https://chatgpt.com/)
