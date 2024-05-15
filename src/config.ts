@@ -19,6 +19,10 @@ import LoadingScene4 from "./scenes/level04_load";
 import LoadingScene4part2 from "./scenes/level04_load2";
 import LoadingScene4part3 from "./scenes/level04_load3";
 import LoadingScene4part4 from "./scenes/level04_load4";
+import LoadingScene5 from "./scenes/level05_load";
+import LoadingScene5part2 from "./scenes/level05_load2";
+import LoadingScene5part3 from "./scenes/level05_load3";
+import LoadingScene5part4 from "./scenes/level05_load4";
 import Level4Scene from "./scenes/level04";
 
 const DEFAULT_WIDTH = 1280;
@@ -57,6 +61,10 @@ export const CONFIG = {
         LoadingScene4part2,
         LoadingScene4part3,
         LoadingScene4part4,
+        LoadingScene5,
+        LoadingScene5part2,
+        LoadingScene5part3,
+        LoadingScene5part4,
         Level4Scene,
     ],
 
