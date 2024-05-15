@@ -276,7 +276,7 @@ export default class Level03 extends Phaser.Scene {
                         );
 
                         this.time.delayedCall(2000, () => {
-                            this.loadLevel;
+                            this.loadLevel();
                         });
                     } else {
                         displayScreen.text = "";
