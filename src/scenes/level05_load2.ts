@@ -19,6 +19,7 @@ export default class LoadingScene5part2 extends Phaser.Scene {
     private time5: number;
     private username: string;
     private contentFullyDisplayed: boolean; // flag to track if content is fully displayed
+    private speaking: Phaser.Sound.BaseSound | undefined; // Sound object for speaking
 
     constructor() {
         super({ key: "LoadingScene5part2" });
@@ -48,18 +49,12 @@ export default class LoadingScene5part2 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.audio("Level4Music", ["assets/Audio/Level4Music.mp3"]);
         this.load.image("alfredicon", "assets/LevelUI/AlfredIcon.png");
         this.load.image("5cutscene2", "assets/Backgrounds/5Cutscene2.png");
     }
 
     create() {
         this.cameras.main.fadeIn(1000); // Fade in the next scene
-
-        let music = this.sound.add("Level4Music", { loop: true });
-        music.setSeek(3);
-        music.setVolume(0.6);
-        music.play();
 
         this.resetScene();
 
@@ -79,6 +74,9 @@ export default class LoadingScene5part2 extends Phaser.Scene {
         this.input.keyboard?.on("keydown-ENTER", () => {
             if (this.contentFullyDisplayed) {
                 // In the create method of your scene
+                if (this.speaking) {
+                    this.speaking.stop(); // Stop speaking sound if it's playing
+                }
 
                 this.cameras.main.fadeOut(300, 0, 0, 0);
 
@@ -156,6 +154,8 @@ export default class LoadingScene5part2 extends Phaser.Scene {
 
     // Helper to animate text typing
     typeText(line: string) {
+        this.speaking = this.sound.add("speaking", { loop: false });
+        this.speaking.play();
         // split the line into characters
         const characters = line.split("");
         let i = 0;
@@ -166,6 +166,8 @@ export default class LoadingScene5part2 extends Phaser.Scene {
             callback: () => {
                 this.currentLine.text += characters[i++];
                 if (i === characters.length) {
+                    this.speaking?.stop();
+
                     // once all characters are added, add a delayed event to display the next line
                     this.time.delayedCall(
                         this.lineDelay,
