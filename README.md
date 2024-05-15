@@ -22,7 +22,7 @@ Keyboard to Type
 
 # Screenshot
 
-TEXT GOES HERE
+![Gameplay Image](https://github.com/UD-S24-CISC374/final-project-lime/blob/main/docs/large.png)
 
 # Gameplay Video
 
