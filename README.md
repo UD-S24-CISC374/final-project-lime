@@ -35,8 +35,8 @@ Link to our [egdd](Educational Game Design Document)
 
 # Credits
 
-* Sprites Created By us in make8bitart & pixilbay
-* [8Bit Maker](https://make8bitart.com/)
+* Sprites Created By us in make8bitart & Pixilart
+* [make8bitart](https://make8bitart.com/)
 * [Pixilart](https://www.pixilart.com/)
 * [Game Music No Copyright Channel](https://www.youtube.com/@Pixverses)
 * [Level 4 Music](https://www.youtube.com/watch?v=MIppc7zfqis&list=PLO4jlmGoc6uAy9S9J3SPXv-UrHBm9Bgz9&index=2)
