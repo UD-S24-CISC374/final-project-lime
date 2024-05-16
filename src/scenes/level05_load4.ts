@@ -31,6 +31,7 @@ export default class LoadingScene5part4 extends Phaser.Scene {
         lvl2: boolean;
         lvl3: boolean;
         lvl4: boolean;
+        lvl5: boolean;
         time1: number;
         time2: number;
         time3: number;
@@ -40,6 +41,7 @@ export default class LoadingScene5part4 extends Phaser.Scene {
         this.lvl2 = data.lvl2;
         this.lvl3 = data.lvl3;
         this.lvl4 = data.lvl4;
+        this.lvl5 = data.lvl5;
         this.time1 = data.time1;
         this.time2 = data.time2;
         this.time3 = data.time3;
