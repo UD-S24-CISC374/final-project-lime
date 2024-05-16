@@ -161,20 +161,21 @@ export default class Level03 extends Phaser.Scene {
         const manMap = new Map<string, string>();
 
         lsMap.set("back_door", "dir_container dir_garbage_can dir_file_box");
-        lsMap.set("container", "file_paper file_staples");
+        lsMap.set("container", "file_paper dir_blue_folder file_staples");
+        lsMap.set("blue_folder", "file_code_1.txt file_paper");
         lsMap.set(
             "garbage_can",
             "file_soda_can file_sticks dir_red_folder file_pencil"
         );
-        lsMap.set("file_box", "file_pencil dir_secret_folder_1 dir_wallet");
-        lsMap.set("red_folder", "file_code_#4.txt");
-        lsMap.set("wallet", "file_code_#1.txt file_photograph");
-        lsMap.set("secret_folder_1", "file_code_#2.txt file_code_#3.txt");
+        lsMap.set("red_folder", "file_code_2.txt");
+        lsMap.set("file_box", "file_pencil dir_secret_folder dir_wallet");
+        lsMap.set("secret_folder", "file_code_3.txt");
+        lsMap.set("wallet", "file_code_4.txt file_photograph");
 
-        catMap.set("code_#1.txt", randomNum1);
-        catMap.set("code_#2.txt", randomNum2);
-        catMap.set("code_#3.txt", randomNum3);
-        catMap.set("code_#4.txt", randomNum4);
+        catMap.set("code_1.txt", randomNum1);
+        catMap.set("code_2.txt", randomNum2);
+        catMap.set("code_3.txt", randomNum3);
+        catMap.set("code_4.txt", randomNum4);
 
         catMap.set("paper", "Namuh is evil.");
         catMap.set("staples", "Just some staples.");
@@ -184,18 +185,21 @@ export default class Level03 extends Phaser.Scene {
         catMap.set("photograph", "Photo of a cat.");
 
         cdMap.set("back_door", ["container", "garbage_can", "file_box"]);
+        cdMap.set("container", ["blue_folder"]);
+        cdMap.set("blue_folder", []);
         cdMap.set("garbage_can", ["red_folder"]);
-        cdMap.set("file_box", ["secret_folder_1", "wallet"]);
         cdMap.set("red_folder", []);
+        cdMap.set("file_box", ["secret_folder", "wallet"]);
+        cdMap.set("secret_folder", []);
         cdMap.set("wallet", []);
-        cdMap.set("secret_folder_1", []);
 
         cdBack.set("container", "back_door");
         cdBack.set("garbage_can", "back_door");
         cdBack.set("file_box", "back_door");
         cdBack.set("red_folder", "garbage_can");
+        cdBack.set("blue_folder", "container");
         cdBack.set("wallet", "file_box");
-        cdBack.set("secret_folder_1", "file_box");
+        cdBack.set("secret_folder", "file_box");
 
         manMap.set(
             "ls",
