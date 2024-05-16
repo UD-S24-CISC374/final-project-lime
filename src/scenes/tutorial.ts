@@ -107,7 +107,7 @@ export default class Tutorial extends Phaser.Scene {
 
         manMap.set(
             "ls",
-            "Alfred: The 'ls' command is usefulfor viewing your surroundings."
+            "Alfred: The 'ls' command is useful for viewing your surroundings."
         );
         manMap.set("rm", "Alfred: The 'rm' command neutralizes enemy files.");
         manMap.set(
