@@ -23,7 +23,9 @@ import LoadingScene5 from "./scenes/level05_load";
 import LoadingScene5part2 from "./scenes/level05_load2";
 import LoadingScene5part3 from "./scenes/level05_load3";
 import LoadingScene5part4 from "./scenes/level05_load4";
+import LoadingScene5part5 from "./scenes/level05_load5";
 import Level4Scene from "./scenes/level04";
+import Level5Scene from "./scenes/level05";
 
 const DEFAULT_WIDTH = 1280;
 const DEFAULT_HEIGHT = 720;
@@ -65,7 +67,9 @@ export const CONFIG = {
         LoadingScene5part2,
         LoadingScene5part3,
         LoadingScene5part4,
+        LoadingScene5part5,
         Level4Scene,
+        Level5Scene,
     ],
 
     physics: {
