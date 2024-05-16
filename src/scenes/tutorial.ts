@@ -188,7 +188,7 @@ export default class Tutorial extends Phaser.Scene {
                         ) {
                             this.secondLsObjective = true;
 
-                            this.time.delayedCall(1500, () => {
+                            this.time.delayedCall(1200, () => {
                                 this.addTextToContainer(
                                     "\nAlfred: There is a door_lock.\n\nTry removing it with 'rm door_lock'.\n"
                                 );
@@ -197,7 +197,7 @@ export default class Tutorial extends Phaser.Scene {
                             !this.firstLsObjective &&
                             !this.secondLsObjective
                         ) {
-                            this.time.delayedCall(1500, () => {
+                            this.time.delayedCall(1200, () => {
                                 this.firstLsObjective = true;
 
                                 this.addTextToContainer(
@@ -240,7 +240,7 @@ export default class Tutorial extends Phaser.Scene {
                                 state = backState;
                                 this.stateText.setText(state);
 
-                                this.time.delayedCall(1500, () => {
+                                this.time.delayedCall(1200, () => {
                                     this.addTextToContainer(
                                         "\nAlfred: Great. Remember to use 'man' if you need assistance.\nTry it now with 'man ls'.\n"
                                     );
@@ -272,7 +272,7 @@ export default class Tutorial extends Phaser.Scene {
                                 state = newText.substring(3);
                                 this.stateText.setText(state);
                                 this.cdObjective = true;
-                                this.time.delayedCall(1500, () => {
+                                this.time.delayedCall(1200, () => {
                                     this.addTextToContainer(
                                         "\nAlfred: Great work. Your location has updated\nin the top right.\n\nNow view what's in the headquarters with the 'ls' command.\n"
                                     );
@@ -404,7 +404,7 @@ export default class Tutorial extends Phaser.Scene {
                                         "' removed successfully."
                                 );
 
-                                this.time.delayedCall(1500, () => {
+                                this.time.delayedCall(1200, () => {
                                     this.addTextToContainer(
                                         "\nAlfred: Perfect. You've removed the lock on the door.\n\nTry leaving the area with 'cd ..'.\n"
                                     );
@@ -466,7 +466,7 @@ export default class Tutorial extends Phaser.Scene {
                 this.cdObjective &&
                 this.manObjective
             ) {
-                this.time.delayedCall(5000, () => {
+                this.time.delayedCall(4000, () => {
                     winChime.play();
                     this.addTextToContainer(
                         "Objective complete: Passed basic training. \nGood work, " +

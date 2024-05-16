@@ -142,7 +142,7 @@ export default class Level1Scene extends Phaser.Scene {
         );
         manMap.set(
             "alfred",
-            "Alfred: Try using the 'cd' command to traverse through\ndifferent areas. Then use 'rm' to remove critical files."
+            "Alfred: Try using the 'cd' command to traverse through different areas. Then use 'rm' to remove the 'surveillance_camera'."
         );
 
         // Add scrollable text area

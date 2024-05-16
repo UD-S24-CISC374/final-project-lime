@@ -134,7 +134,7 @@ export default class Level2Scene extends Phaser.Scene {
         );
         manMap.set(
             "alfred",
-            "Alfred: Try using the 'cd' command to traverse through\ndifferent areas. Then use 'rm' to remove critical files."
+            "Alfred: Try using the 'mv' command to move files. 'emp_bomb1' needs to be in 'generator1' and 'emp_bomb2' needs to be in 'generator2'."
         );
 
         // Add scrollable text area
