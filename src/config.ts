@@ -29,7 +29,6 @@ import Level5Scene from "./scenes/level05";
 
 const DEFAULT_WIDTH = 1280;
 const DEFAULT_HEIGHT = 720;
-
 export const CONFIG = {
     title: "Cyber Spy",
     version: "0.0.1",

@@ -410,6 +410,7 @@ export default class Level1Scene extends Phaser.Scene {
                         lvl2: this.lvl2,
                         lvl3: this.lvl3,
                         lvl4: this.lvl4,
+                        lvl5: this.lvl5,
                         time1: this.time1,
                         time2: this.time2,
                         time3: this.time3,
