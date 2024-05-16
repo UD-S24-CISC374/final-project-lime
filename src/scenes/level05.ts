@@ -609,7 +609,7 @@ export default class Level5Scene extends Phaser.Scene {
             loop: true,
         });
         if (this.objectiveCompleted) {
-            let finalTime = this.time1 - this.endTime;
+            let finalTime = this.time5 - this.endTime;
             if (!this.bestTime || finalTime < this.bestTime) {
                 this.time5 = finalTime;
             } else {
@@ -627,7 +627,7 @@ export default class Level5Scene extends Phaser.Scene {
             lvl2: this.lvl2,
             lvl3: this.lvl3,
             lvl4: this.lvl4,
-            lvl5: this.lvl5,
+            lvl5: this.objectiveCompleted,
             time1: this.time1,
             time2: this.time2,
             time3: this.time3,
