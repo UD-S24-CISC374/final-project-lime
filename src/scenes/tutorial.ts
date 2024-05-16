@@ -611,7 +611,7 @@ export default class Tutorial extends Phaser.Scene {
 
     loadLevel() {
         this.removeInputField();
-
+        this.scroller.style.display = "none";
         this.scene.start("LevelSelect", {
             username: this.username,
             lvl2: this.lvl2,
