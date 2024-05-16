@@ -523,7 +523,6 @@ export default class Tutorial extends Phaser.Scene {
         let spaces: string = "";
         if (text.includes("Alfred")) {
             textNode.style.color = "gold";
-            textNode.style.marginLeft = "40px";
         } else if (
             text.includes("Access Granted") ||
             text.includes("Objective Complete") ||
