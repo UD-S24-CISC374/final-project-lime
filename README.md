@@ -28,10 +28,7 @@ Keyboard to Type
 
 # Gameplay Video
 
-<video width="600" controls>
-  <source src="docs/CyberSpyDemo.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/watch?v=Zo90xJLjoSc" frameborder="0" allowfullscreen></iframe>
 
 # Educational Game Design Document
 

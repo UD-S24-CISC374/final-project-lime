@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 
-export default class LoadingScene5part4 extends Phaser.Scene {
+export default class LoadingScene5part5 extends Phaser.Scene {
     private content: string[]; // text to display
     private charDelay: number; // delay between characters
     private lineDelay: number; // delay between lines
@@ -12,94 +12,64 @@ export default class LoadingScene5part4 extends Phaser.Scene {
     private lvl3: boolean;
     private lvl4: boolean;
     private lvl5: boolean;
-    private time1: number;
-    private time2: number;
-    private time3: number;
-    private time4: number;
-    private time5: number;
     private username: string;
     private contentFullyDisplayed: boolean; // flag to track if content is fully displayed
     private speaking: Phaser.Sound.BaseSound | undefined; // Sound object for speaking
 
     constructor() {
-        super({ key: "LoadingScene5part4" });
+        super({ key: "LoadingScene5part5" });
     }
-
     init(data: {
         username: string;
         lvl1: boolean;
         lvl2: boolean;
-        lvl3: boolean;
+        lvl3: true;
         lvl4: boolean;
-        time1: number;
-        time2: number;
-        time3: number;
-        time4: number;
-        time5: number;
+        lvl5: boolean;
     }) {
         this.lvl2 = data.lvl2;
         this.lvl3 = data.lvl3;
         this.lvl4 = data.lvl4;
-        this.time1 = data.time1;
-        this.time2 = data.time2;
-        this.time3 = data.time3;
-        this.time4 = data.time4;
-        this.time5 = data.time5;
+        this.lvl5 = data.lvl5;
         this.username = data.username;
     }
 
     preload() {
-        this.load.image("spyicon", "assets/LevelUI/spyicon.png");
+        this.load.audio("Level3Music", ["assets/Audio/Level3Music.mp3"]);
 
-        this.load.image("5cutscene4", "assets/Backgrounds/5Cutscene4.png");
+        this.load.image("spyicon", "assets/LevelUI/AlfredIcon.png");
     }
 
     create() {
-        this.cameras.main.fadeIn(1000); // Fade in the next scene
-
+        let music = this.sound.add("Level3Music", { loop: true });
+        music.play();
         this.resetScene();
 
-        this.add.image(640, 360, "5cutscene4").setDisplaySize(1280, 720);
-        this.add.image(250, 635, "spyicon").setDisplaySize(130, 130);
+        this.add.rectangle(640, 360, 1280, 720, 0x000);
+        this.add.image(150, 100, "spyicon").setDisplaySize(130, 130);
 
-        this.add.text(980, 670, "[Enter] to continue", {
+        //display text
+        this.displayNextLine();
+
+        this.add.text(460, 670, "[Enter] to continue", {
             color: "#fff",
-            fontSize: "20px",
+            fontSize: "24px",
             fontFamily: "Monospace",
         });
 
-        // Display all content
-        this.displayNextLine();
-
-        // On enter, transition to Level 1 if content is fully displayed, otherwise, display next line
+        // On enter, transition to Level 3
         this.input.keyboard?.on("keydown-ENTER", () => {
             if (this.contentFullyDisplayed) {
-                // In the create method of your scene
                 if (this.speaking) {
                     this.speaking.stop(); // Stop speaking sound if it's playing
                 }
-
-                this.cameras.main.fadeOut(300, 0, 0, 0);
-
-                this.cameras.main.once(
-                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
-                    () => {
-                        this.scene.start("LoadingScene5part5", {
-                            username: this.username,
-                            lvl2: this.lvl2,
-                            lvl3: this.lvl3,
-                            lvl4: this.lvl4,
-                            lvl5: this.lvl5,
-                            time1: this.time1,
-                            time2: this.time2,
-                            time3: this.time3,
-                            time4: this.time4,
-                            time5: this.time5,
-                        });
-                    }
-                );
-
-                // In the create method of your scene
+                this.scene.start("Level05", {
+                    username: this.username,
+                    lvl2: this.lvl2,
+                    lvl3: this.lvl3,
+                    lvl4: this.lvl4,
+                    lvl5: this.lvl5,
+                });
             } else {
                 this.displayAllContent();
             }
@@ -108,17 +78,40 @@ export default class LoadingScene5part4 extends Phaser.Scene {
 
     resetScene() {
         // helper to reset intial values on load
-        this.charDelay = 70;
+        this.charDelay = 30;
         this.lineDelay = 120;
-        this.startX = 340;
-        this.startY = 600;
+        this.startX = 250;
+        this.startY = 90;
         this.lineIndex = 0;
-        this.contentFullyDisplayed = false;
         this.content = [
-            "How could Alfred do this...\n\nHe was a mentor. He was a friend.",
+            " ",
+            " ",
+            " ",
+            "To get out of this room I must hack the",
+            " ",
+            "computer system and execute the open_door file.",
+            " ",
+            " ",
+            " ",
+            "If I remeber correctly, Alfred taught me that I can",
+            " ",
+            "execute files by using ./ followed by the file name.",
+            " ",
+            " ",
+            " ",
+            "For example, to execute the file:",
+            " ",
+            "open_door.out",
+            " ",
+            "I would type:",
+            " ",
+            "./open_door.out",
+            " ",
+            " ",
+            "Executable files are marked with a .out tag.",
         ];
     }
-    // Helper to display all content at once
+
     displayAllContent() {
         this.lineIndex = 0;
 
@@ -132,7 +125,7 @@ export default class LoadingScene5part4 extends Phaser.Scene {
         this.contentFullyDisplayed = true;
     }
 
-    // Helper to display text line by line, calling typeText to animate
+    // helper to display text line by line, calling typeText to animate
     displayNextLine() {
         if (this.lineIndex < this.content.length) {
             const line = this.content[this.lineIndex++];
@@ -153,7 +146,7 @@ export default class LoadingScene5part4 extends Phaser.Scene {
         }
     }
 
-    // Helper to animate text typing
+    // helper to animate text typing
     typeText(line: string) {
         this.speaking = this.sound.add("speaking", { loop: false });
         this.speaking.play();
@@ -168,7 +161,6 @@ export default class LoadingScene5part4 extends Phaser.Scene {
                 this.currentLine.text += characters[i++];
                 if (i === characters.length) {
                     this.speaking?.stop();
-
                     // once all characters are added, add a delayed event to display the next line
                     this.time.delayedCall(
                         this.lineDelay,

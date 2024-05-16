@@ -9,6 +9,7 @@ export default class Tutorial extends Phaser.Scene {
     private lvl4: boolean;
     private username: string;
     private lvl5: boolean;
+    private scroller: HTMLDivElement;
     private firstLsObjective: boolean = false;
     private secondLsObjective: boolean = false;
     private cdObjective: boolean = false;
@@ -87,20 +88,6 @@ export default class Tutorial extends Phaser.Scene {
         let rmDing = this.sound.add("rmDing", { loop: false });
         let winChime = this.sound.add("winChime", { loop: false });
 
-        this.inputContainer = this.add.container(360, 520);
-
-        const maskGraphics = this.make.graphics();
-        maskGraphics.fillRect(300, 185, 1080, 500);
-        const mask = new Phaser.Display.Masks.GeometryMask(this, maskGraphics);
-
-        this.inputContainer.setMask(mask);
-
-        this.addTextToContainer(
-            "Alfred: Welcome back " +
-                this.username +
-                ".\n\nIt has been quite a while so let's make sure\nyou are familiar with all the basic commands.\n\nType 'ls' to display the surroundings of \nyour current directory.\n"
-        );
-
         let state: string = "home";
 
         const lsMap = new Map<string, string>();
@@ -120,39 +107,65 @@ export default class Tutorial extends Phaser.Scene {
 
         manMap.set(
             "ls",
-            "\nAlfred: The 'ls' command is useful\nfor viewing your surroundings."
+            "Alfred: The 'ls' command is usefulfor viewing your surroundings."
         );
-        manMap.set("rm", "Alfred: The 'rm' command\nneutralizes enemy files.");
+        manMap.set("rm", "Alfred: The 'rm' command neutralizes enemy files.");
         manMap.set(
             "cd",
-            "\nAlfred: The 'cd' command\npermits you to navigate through rooms and items."
+            "Alfred: The 'cd' command permits you to navigate through rooms and items."
         );
         manMap.set(
             "alfred",
-            "\nAlfred: Try using the 'cd' command to traverse through\ndifferent areas. Then use 'rm' to remove critical files."
+            "Alfred: Try using the 'cd' command to traverse through different areas. Then use 'rm' to remove critical files."
         );
 
-        // Add text input field
+        // Add scrollable text area
+        this.scroller = document.createElement("div");
+        this.scroller.style.width = "44vw";
+        this.scroller.style.height = "46vh"; // Set height relative to width
+        // this.scroller.style.maxWidth = "600px"; // Set maximum width
+        this.scroller.style.maxHeight = "29vw";
+        this.scroller.style.backgroundColor = "black";
+        this.scroller.style.color = "white";
+        this.scroller.style.borderRadius = "10px";
+        this.scroller.style.overflowY = "auto"; // Enable vertical scrolling
+        this.scroller.style.position = "absolute";
+        this.scroller.style.border = "solid 2px gray";
+        this.scroller.style.padding = "5px ";
+        this.scroller.style.background =
+            "linear-gradient(-200deg, #444444, #000000)";
+        this.scroller.style.top = "48%";
+        this.scroller.style.left = "50%";
+        this.scroller.style.bottom = "49%";
+        this.scroller.style.transform = "translate(-50%, -50%)";
+        document.body.appendChild(this.scroller);
+
+        const whiteSpace = document.createElement("p");
+        whiteSpace.textContent = "                                        ";
+        whiteSpace.style.marginTop = "350px";
+        this.scroller.appendChild(whiteSpace);
+
+        this.appendToScroller(
+            "Alfred: Welcome back " +
+                this.username +
+                "!" +
+                "It has been quite a while so let's make sure you are familiar with all the basic commands. Type 'ls' to display the surroundings of your current directory."
+        );
         this.inputField = document.createElement("input");
         this.inputField.type = "text";
         this.inputField.style.position = "absolute";
-        this.inputField.style.width = "600px";
-        this.inputField.style.height = "40px";
+        this.inputField.style.width = "44vw";
+        this.inputField.style.height = "80px";
         this.inputField.style.fontSize = "20px";
         this.inputField.style.top = "80%";
         this.inputField.style.left = "50%";
         this.inputField.style.backgroundColor = "#000"; // Change background color to white
         this.inputField.style.color = "#fff"; // Change text color to black
         this.inputField.placeholder = ">$"; // Placeholder text
-        this.inputField.style.border = "2px solid gold";
+        this.inputField.style.border = "2px solid white";
 
         this.inputField.style.transform = "translate(-50%, -50%)";
         document.body.appendChild(this.inputField);
-        this.add.text(500, 59, "Tutorial", {
-            color: "#fff",
-            fontSize: "47px",
-            fontFamily: "Monospace",
-        });
 
         this.input.keyboard?.removeCapture(
             Phaser.Input.Keyboard.KeyCodes.SPACE
@@ -167,20 +180,21 @@ export default class Tutorial extends Phaser.Scene {
                     if (newText.trim() == "ls") {
                         lsDing.play();
                         this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer(
+
+                        this.appendToScroller(
                             this.username.toLowerCase().replace(/\s+/g, "_") +
                                 ": " +
                                 newText
                         );
-                        this.addLsToContainer(lsMap.get(state) as string);
+                        this.appendLsToScroller(lsMap.get(state) as string);
 
                         if (
                             !this.cdObjective &&
                             this.firstLsObjective &&
                             !this.secondLsObjective
                         ) {
-                            this.addTextToContainer(
-                                "\nAlfred: Try the 'cd headquarters' command first.\n"
+                            this.appendToScroller(
+                                "Alfred: Try the 'cd headquarters' command first."
                             );
                         } else if (
                             this.firstLsObjective &&
@@ -188,21 +202,26 @@ export default class Tutorial extends Phaser.Scene {
                         ) {
                             this.secondLsObjective = true;
 
-                            this.time.delayedCall(1500, () => {
-                                this.addTextToContainer(
-                                    "\nAlfred: There is a door_lock.\n\nTry removing it with 'rm door_lock'.\n"
+                            this.time.delayedCall(1200, () => {
+                                this.appendToScroller(
+                                    "Alfred: There is a door_lock. Try removing it with 'rm door_lock'."
                                 );
                             });
                         } else if (
                             !this.firstLsObjective &&
                             !this.secondLsObjective
                         ) {
-                            this.time.delayedCall(1500, () => {
+                            this.time.delayedCall(1200, () => {
                                 this.firstLsObjective = true;
 
-                                this.addTextToContainer(
-                                    "\nAlfred: Good job, now you can see that Namuh's \nheadquarters is nearby.\n\nUse the 'cd headquarters' command to enter the directory.\n"
+                                this.appendToScroller(
+                                    "Alfred: Good job, now you can see that Namuh's headquarters is nearby. Use the 'cd headquarters' command to enter the directory."
                                 );
+
+                                // this.appendToScroller("basic commands.");
+                                // this.appendToScroller("basic commands.");
+                                // this.appendToScroller("basic commands.");
+                                // this.appendToScroller("basic commands.");
                             });
                         }
                     } else if (newText.substring(0, 3) == "cd ") {
@@ -215,7 +234,7 @@ export default class Tutorial extends Phaser.Scene {
                         const cdState = cdMap.get(state);
                         if (backState !== undefined && cdInput == "..") {
                             this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
+                            this.appendToScroller(
                                 this.username
                                     .toLowerCase()
                                     .replace(/\s+/g, "_") +
@@ -224,13 +243,13 @@ export default class Tutorial extends Phaser.Scene {
                             );
                             if (!this.secondLsObjective) {
                                 ding.play();
-                                this.addTextToContainer(
-                                    "\nAlfred: Try the 'ls' command again.\n"
+                                this.appendToScroller(
+                                    "Alfred: Try the 'ls' command again."
                                 );
                             } else if (!this.rmObjective) {
                                 ding.play();
-                                this.addTextToContainer(
-                                    "\nAlfred: Try the 'rm door_lock' command before leaving.\n"
+                                this.appendToScroller(
+                                    "Alfred: Try the 'rm door_lock' command before leaving."
                                 );
                             } else if (!this.cdBackObjective) {
                                 cdBackDing.play();
@@ -240,9 +259,9 @@ export default class Tutorial extends Phaser.Scene {
                                 state = backState;
                                 this.stateText.setText(state);
 
-                                this.time.delayedCall(1500, () => {
-                                    this.addTextToContainer(
-                                        "\nAlfred: Great. Remember to use 'man' if you need assistance.\nTry it now with 'man ls'.\n"
+                                this.time.delayedCall(1200, () => {
+                                    this.appendToScroller(
+                                        "Alfred: Great. Remember to use 'man' if you need assistance. Try it now with 'man ls'."
                                     );
                                 });
                             }
@@ -253,7 +272,7 @@ export default class Tutorial extends Phaser.Scene {
                             cdMap.get(state)?.includes(cdInput)
                         ) {
                             this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
+                            this.appendToScroller(
                                 this.username
                                     .toLowerCase()
                                     .replace(/\s+/g, "_") +
@@ -263,8 +282,8 @@ export default class Tutorial extends Phaser.Scene {
 
                             if (!this.firstLsObjective) {
                                 ding.play();
-                                this.addTextToContainer(
-                                    "\nAlfred: Try the 'ls' command first.\n"
+                                this.appendToScroller(
+                                    "Alfred: Try the 'ls' command first."
                                 );
                             } else if (!this.cdObjective) {
                                 cdDing.play();
@@ -272,9 +291,9 @@ export default class Tutorial extends Phaser.Scene {
                                 state = newText.substring(3);
                                 this.stateText.setText(state);
                                 this.cdObjective = true;
-                                this.time.delayedCall(1500, () => {
-                                    this.addTextToContainer(
-                                        "\nAlfred: Great work. Your location has updated\nin the top right.\n\nNow view what's in the headquarters with the 'ls' command.\n"
+                                this.time.delayedCall(1200, () => {
+                                    this.appendToScroller(
+                                        "Alfred: Great work. Your location has updated in the top right. Now view what's in the headquarters with the 'ls' command."
                                     );
                                 });
                             }
@@ -284,21 +303,21 @@ export default class Tutorial extends Phaser.Scene {
                             ding.play();
 
                             this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
+                            this.appendToScroller(
                                 this.username
                                     .toLowerCase()
                                     .replace(/\s+/g, "_") +
                                     ": " +
                                     newText
                             );
-                            this.addTextToContainer("Directory not found");
+                            this.appendToScroller("Directory not found");
                         }
                         // MAN INPUT BELOW
                     } else if (newText.substring(0, 4) == "man ") {
                         let manInput: string = newText.substring(4);
                         this.inputField.value = ""; // Empty the input field
 
-                        this.addTextToContainer(
+                        this.appendToScroller(
                             this.username.toLowerCase().replace(/\s+/g, "_") +
                                 ": " +
                                 newText
@@ -309,48 +328,48 @@ export default class Tutorial extends Phaser.Scene {
                             if (!this.firstLsObjective) {
                                 ding.play();
 
-                                this.addTextToContainer(
-                                    "\nAlfred: Try the 'ls' command first.\n"
+                                this.appendToScroller(
+                                    "Alfred: Try the 'ls' command first."
                                 );
                             } else if (!this.cdObjective) {
                                 ding.play();
 
-                                this.addTextToContainer(
-                                    "\nAlfred: Try the 'cd headquarters' command first.\n"
+                                this.appendToScroller(
+                                    "Alfred: Try the 'cd headquarters' command first."
                                 );
                             } else if (!this.secondLsObjective) {
                                 ding.play();
 
-                                this.addTextToContainer(
-                                    "\nAlfred: Try the 'ls' command again.\n"
+                                this.appendToScroller(
+                                    "Alfred: Try the 'ls' command again."
                                 );
                             } else if (!this.rmObjective) {
                                 ding.play();
-                                this.addTextToContainer(
-                                    "\nAlfred: Try the 'rm door_lock' command first.\n"
+                                this.appendToScroller(
+                                    "Alfred: Try the 'rm door_lock' command first."
                                 );
                             } else if (!this.cdBackObjective) {
                                 ding.play();
-                                this.addTextToContainer(
-                                    "\nAlfred: Try the 'cd ..' command first.\n"
+                                this.appendToScroller(
+                                    "Alfred: Try the 'cd ..' command first."
                                 );
                             } else if (manInput != "ls" && !this.manObjective) {
                                 ding.play();
-                                this.addTextToContainer(
-                                    "\nAlfred: Try the 'man ls' command first.\n"
+                                this.appendToScroller(
+                                    "Alfred: Try the 'man ls' command first."
                                 );
                             } else if (!this.manObjective) {
                                 this.manObjective = true;
 
                                 manDing.play();
 
-                                this.addTextToContainer(
+                                this.appendToScroller(
                                     manMap.get(manInput) as string
                                 );
 
                                 this.time.delayedCall(2000, () => {
-                                    this.addTextToContainer(
-                                        "\nAlfred: It seems you are ready to take on the mission.\n\nRemember that typing 'man alfred' will call me in for help.\n"
+                                    this.appendToScroller(
+                                        "Alfred: It seems you are ready to take on the mission. Remember that typing 'man alfred' will call me in for help."
                                     );
                                 });
                             } else {
@@ -360,14 +379,14 @@ export default class Tutorial extends Phaser.Scene {
                             ding.play();
 
                             this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
+                            this.appendToScroller(
                                 this.username
                                     .toLowerCase()
                                     .replace(/\s+/g, "_") +
                                     ": " +
                                     newText
                             );
-                            this.addTextToContainer(
+                            this.appendToScroller(
                                 "Command '" + manInput + "' not found"
                             );
                         }
@@ -376,7 +395,7 @@ export default class Tutorial extends Phaser.Scene {
                         if (rmMap.get(state)?.includes(rmInput)) {
                             let files = lsMap.get(state) || "";
                             this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
+                            this.appendToScroller(
                                 this.username
                                     .toLowerCase()
                                     .replace(/\s+/g, "_") +
@@ -386,8 +405,8 @@ export default class Tutorial extends Phaser.Scene {
 
                             if (!this.secondLsObjective) {
                                 ding.play();
-                                this.addTextToContainer(
-                                    "\nAlfred: Try the 'ls' command again.\n"
+                                this.appendToScroller(
+                                    "Alfred: Try the 'ls' command again."
                                 );
                             } else if (!this.rmObjective) {
                                 this.rmObjective = true;
@@ -398,15 +417,15 @@ export default class Tutorial extends Phaser.Scene {
                                     .replace(/\s{2,}/g, " "); // Remove the file and extra spaces
                                 lsMap.set(state, files);
                                 rmDing.play();
-                                this.addTextToContainer(
+                                this.appendToScroller(
                                     "File '" +
                                         rmInput +
                                         "' removed successfully."
                                 );
 
-                                this.time.delayedCall(1500, () => {
-                                    this.addTextToContainer(
-                                        "\nAlfred: Perfect. You've removed the lock on the door.\n\nTry leaving the area with 'cd ..'.\n"
+                                this.time.delayedCall(1200, () => {
+                                    this.appendToScroller(
+                                        "Alfred: Perfect. You've removed the lock on the door. Try leaving the area with 'cd ..'."
                                     );
                                 });
                             }
@@ -414,14 +433,14 @@ export default class Tutorial extends Phaser.Scene {
                             ding.play();
 
                             this.inputField.value = ""; // Empty the input field
-                            this.addTextToContainer(
+                            this.appendToScroller(
                                 this.username
                                     .toLowerCase()
                                     .replace(/\s+/g, "_") +
                                     ": " +
                                     newText
                             );
-                            this.addTextToContainer(
+                            this.appendToScroller(
                                 "File '" +
                                     rmInput +
                                     "' cannot be found or removed."
@@ -432,12 +451,12 @@ export default class Tutorial extends Phaser.Scene {
                     else {
                         ding.play();
                         this.inputField.value = ""; // Empty the input field
-                        this.addTextToContainer(
+                        this.appendToScroller(
                             this.username.toLowerCase().replace(/\s+/g, "_") +
                                 ": " +
                                 newText
                         );
-                        this.addTextToContainer(
+                        this.appendToScroller(
                             "Command '" + newText + "' not found"
                         );
                     }
@@ -466,9 +485,9 @@ export default class Tutorial extends Phaser.Scene {
                 this.cdObjective &&
                 this.manObjective
             ) {
-                this.time.delayedCall(5000, () => {
+                this.time.delayedCall(4000, () => {
                     winChime.play();
-                    this.addTextToContainer(
+                    this.appendToScroller(
                         "Objective complete: Passed basic training. \nGood work, " +
                             this.username +
                             "!"
@@ -498,79 +517,96 @@ export default class Tutorial extends Phaser.Scene {
     }
     update() {}
 
-    addLsToContainer(text: string) {
+    appendToScroller(text: string) {
+        const textNode = document.createElement("text");
+        const spaceNode = document.createElement("p");
+        let spaces: string = "";
+        if (text.includes("Alfred")) {
+            textNode.style.color = "gold";
+            textNode.style.marginLeft = "40px";
+        } else if (
+            text.includes("Access Granted") ||
+            text.includes("Objective Complete") ||
+            text.includes("successfully") ||
+            text.includes("Successful")
+        ) {
+            textNode.style.color = "#86DC3D";
+        } else if (
+            text.includes("cannot be removed or found.") ||
+            text.includes("not found") ||
+            text.includes("Cannot") ||
+            text.includes("Wrong") ||
+            text.includes("must") ||
+            text.includes("cannot")
+        ) {
+            textNode.style.color = "#d0413f";
+        } else {
+            textNode.style.color = "white";
+        }
+        textNode.style.fontFamily = "Monospace";
+        textNode.style.fontSize = "24px";
+        textNode.style.marginBottom = "-15px";
+        textNode.style.paddingLeft = "15px";
+        const desiredWidth = 41;
+
+        const textLength = text.length;
+        const spacesNeeded = desiredWidth - textLength;
+
+        for (let i = 0; i < spacesNeeded; i++) {
+            spaces += " ";
+        }
+        spaceNode.textContent = spaces;
+        textNode.textContent = text;
+        this.scroller.appendChild(textNode);
+        this.scroller.appendChild(spaceNode);
+
+        // Scroll to the bottom
+        this.scroller.scrollTop = this.scroller.scrollHeight;
+    }
+
+    appendLsToScroller(text: string) {
+        if (text === "empty") {
+            this.appendToScroller("Directory is empty.");
+            return;
+        }
+        const desiredWidth = 41;
+        const spaces = "                            ";
+        const spaceLength = spaces.length;
+        let total = 0;
         const words = text.split(" ");
-
-        const numNewlines = words.length;
-
-        this.inputContainer.y -= numNewlines * 27.8;
-
         for (let word of words) {
-            if (word.substring(0, 5) === "file_") {
-                let newWord = word.substring(5);
-                const newText = this.add.text(0, 0, newWord, {
-                    fontSize: "24px",
-                    color: "#77C3EC",
-                    fontFamily: "Monospace",
-                });
-                this.inputContainer.add(newText);
-            } else if (word.substring(0, 4) === "dir_") {
-                let newWord = word.substring(4);
-                const newText = this.add.text(0, 0, newWord, {
-                    fontSize: "24px",
-                    color: "#86DC3D",
-                    fontFamily: "Monospace",
-                });
-                this.inputContainer.add(newText);
-            } else {
-                const newText = this.add.text(0, 0, word, {
-                    fontSize: "24px",
-                    color: "#fff",
-                    fontFamily: "Monospace",
-                });
-                this.inputContainer.add(newText);
+            if (word.substring(0, 4) === "dir_") {
+                total += word.length + spaceLength;
+                const addNode = document.createElement("text");
+                addNode.textContent = word.substring(4) + spaces;
+                addNode.style.paddingLeft = "15px";
+
+                addNode.style.color = "#86DC3D";
+                addNode.style.fontFamily = "Monospace";
+                addNode.style.fontSize = "24px";
+                this.scroller.appendChild(addNode);
+            } else if (word.substring(0, 5) === "file_") {
+                total += word.length + spaceLength;
+                const addNode = document.createElement("text");
+                addNode.textContent = word.substring(5) + spaces;
+                addNode.style.paddingLeft = "15px";
+
+                addNode.style.color = "#77C3EC";
+                addNode.style.fontFamily = "Monospace";
+                addNode.style.fontSize = "24px";
+
+                this.scroller.appendChild(addNode);
             }
-
-            this.repositionTextObjects();
         }
-    }
-
-    addTextToContainer(text: string) {
-        const newText = this.add.text(0, 0, text, {
-            fontSize: "24px",
-            color: "#fff",
-            fontFamily: "Monospace",
-        });
-
-        const numNewlines = (text.match(/\n/g) || []).length + 1;
-
-        // Adjust y position based on the number of newline characters
-        this.inputContainer.y -= numNewlines * 27.8;
-
-        if (text.includes("Alfred: ")) {
-            newText.setColor("gold");
+        let endSpace = "";
+        const spaceNeeded = desiredWidth - total;
+        for (let i = 0; i < spaceNeeded; i++) {
+            endSpace += " ";
         }
-        if (text.includes("Objective complete: ")) {
-            newText.setColor("lime");
-        }
-
-        // Add the new text object to the container
-        this.inputContainer.add(newText);
-
-        // Reposition text objects vertically within the container
-        this.repositionTextObjects();
-    }
-
-    repositionTextObjects() {
-        let yPos = 0;
-
-        // Loop through all text objects in the container and position them vertically
-        this.inputContainer.iterate((child: Phaser.GameObjects.GameObject) => {
-            if (child instanceof Phaser.GameObjects.Text) {
-                child.y = yPos;
-                yPos += child.height;
-            }
-        });
+        const endNode = document.createElement("p");
+        endNode.textContent = endSpace;
+        this.scroller.appendChild(endNode);
+        this.scroller.scrollTop = this.scroller.scrollHeight;
     }
 
     loadLevel() {

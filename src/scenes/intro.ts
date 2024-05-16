@@ -65,6 +65,12 @@ export default class IntroScene extends Phaser.Scene {
         //display text
         this.displayNextLine();
 
+        this.add.text(460, 650, "[Enter] to start Tutorial", {
+            color: "#fff",
+            fontSize: "24px",
+            fontFamily: "Monospace",
+        });
+
         // On enter, transition to Level 1
         this.input.keyboard?.on("keydown-ENTER", () => {
             if (this.contentFullyDisplayed) {
@@ -123,10 +129,6 @@ export default class IntroScene extends Phaser.Scene {
             " ",
 
             "...",
-            " ",
-            " ",
-            " ",
-            "                  [Enter] to Continue",
         ];
     }
 
